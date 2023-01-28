@@ -1,0 +1,37 @@
+time="2023-01-28T15:27:05+08:00" level=info Ip=127.0.0.1 Method=POST SpendTime="1086 ms" body= param="[]" path=/api/admin/register query= resBody="&{0xc00019e380 289 200}" status=200
+ime="2023-01-28T14:21:54+08:00" level=info Ip=127.0.0.1 Method=POST SpendTime="4960 ms" body= param="[]" path=/api/admin/register query= resBody="&{0xc0001da460 43 200}" status=200
+time="2023-01-28T14:22:00+08:00" level=info Ip=127.0.0.1 Method=POST SpendTime="4577 ms" body= param="[]" path=/api/admin/register query= resBody="&{0xc000568000 43 200}" status=200
+time="2023-01-28T14:22:01+08:00" level=info Ip=127.0.0.1 Method=POST SpendTime="7420 ms" body= param="[]" path=/api/admin/register query= resBody="&{0xc0005320e0 43 200}" status=200
+time="2023-01-28T14:22:04+08:00" level=info Ip=127.0.0.1 Method=POST SpendTime="8771 ms" body= param="[]" path=/api/admin/register query= resBody="&{0xc0005321c0 43 200}" status=200
+time="2023-01-28T14:22:04+08:00" level=info Ip=127.0.0.1 Method=POST SpendTime="8603 ms" body= param="[]" path=/api/admin/register query= resBody="&{0xc0001da540 43 200}" status=200
+time="2023-01-28T14:22:04+08:00" level=info Ip=127.0.0.1 Method=POST SpendTime="8884 ms" body= param="[]" path=/api/admin/register query= resBody="&{0xc0005680e0 43 200}" status=200
+hod=POST SpendTime="83 ms" body= param="[]" path=/user/login query= resBody="&{0xc0001da380 49 200}" status=200
+time="2022-10-25T14:45:59+08:00" level=info Ip=127.0.0.1 Method=POST SpendTime="82 ms" body= param="[]" path=/user/login query= resBody="&{0xc0001da460 49 200}" status=200
+:00" level=info Ip=127.0.0.1 Method=GET SpendTime="0 ms" body= param="[]" path=/user/login query= resBody="&{0xc000550700 46 200}" status=200
+am="[]" path=/user/add/user query= resBody="&{0xc0000ca620 139 400}" status=400
+time="2022-10-18T11:20:00+08:00" level=warning Ip=127.0.0.1 Method=POST SpendTime="0 ms" body= param="[]" path=/user/add/user query= resBody="&{0xc00021eb60 139 400}" status=400
+-10-17T17:22:08+08:00" level=warning Ip=127.0.0.1 Method=POST SpendTime="1 ms" body= param="[]" path=/user/add/user query= resBody="&{0xc0004b4460 119 400}" status=400
+time="2022-10-17T17:20:08+08:00" level=error Ip=127.0.0.1 Method=POST SpendTime="0 ms" body= param="[]" path=/user/add/user query= resBody="&{0xc00005c460 119 400}" status=400
+time="2022-10-17T17:20:08+08:00" level=warning Ip=127.0.0.1 Method=POST SpendTime="0 ms" body= param="[]" path=/user/add/user query= resBody="&{0xc00005c460 119 400}" status=400
+time="2022-10-17T17:20:09+08:00" level=error Ip=127.0.0.1 Method=POST SpendTime="0 ms" body= param="[]" path=/user/add/user query= resBody="&{0xc00005c620 119 400}" status=400
+time="2022-10-17T17:20:09+08:00" level=warning Ip=127.0.0.1 Method=POST SpendTime="0 ms" body= param="[]" path=/user/add/user query= resBody="&{0xc00005c620 119 400}" status=400
+time="2022-10-17T17:20:09+08:00" level=error Ip=127.0.0.1 Method=POST SpendTime="1 ms" body= param="[]" path=/user/add/user query= resBody="&{0xc00005c7e0 119 400}" status=400
+time="2022-10-17T17:20:09+08:00" level=warning Ip=127.0.0.1 Method=POST SpendTime="1 ms" body= param="[]" path=/user/add/user query= resBody="&{0xc00005c7e0 119 400}" status=400
+time="2022-10-17T17:20:09+08:00" level=error Ip=127.0.0.1 Method=POST SpendTime="0 ms" body= param="[]" path=/user/add/user query= resBody="&{0xc0004aa7e0 119 400}" status=400
+time="2022-10-17T17:20:09+08:00" level=warning Ip=127.0.0.1 Method=POST SpendTime="0 ms" body= param="[]" path=/user/add/user query= resBody="&{0xc0004aa7e0 119 400}" status=400
+me="2022-10-17T17:16:49+08:00" level=error Ip=127.0.0.1 Method=POST SpendTime="0 ms" body= param="[]" path=/user/add/user query= resBody="&{0xc00053aee0 119 400}" status=400
+time="2022-10-17T17:16:49+08:00" level=warning Ip=127.0.0.1 Method=POST SpendTime="0 ms" body= param="[]" path=/user/add/user query= resBody="&{0xc00053aee0 119 400}" status=400
+time="2022-10-17T17:16:50+08:00" level=error Ip=127.0.0.1 Method=POST SpendTime="1 ms" body= param="[]" path=/user/add/user query= resBody="&{0xc00053b0a0 119 400}" status=400
+time="2022-10-17T17:16:50+08:00" level=warning Ip=127.0.0.1 Method=POST SpendTime="1 ms" body= param="[]" path=/user/add/user query= resBody="&{0xc00053b0a0 119 400}" status=400
+time="2022-10-17T17:16:50+08:00" level=error Ip=127.0.0.1 Method=POST SpendTime="0 ms" body= param="[]" path=/user/add/user query= resBody="&{0xc00053b260 119 400}" status=400
+time="2022-10-17T17:16:50+08:00" level=warning Ip=127.0.0.1 Method=POST SpendTime="0 ms" body= param="[]" path=/user/add/user query= resBody="&{0xc00053b260 119 400}" status=400
+time="2022-10-17T17:16:50+08:00" level=error Ip=127.0.0.1 Method=POST SpendTime="0 ms" body= param="[]" path=/user/add/user query= resBody="&{0xc00053b420 119 400}" status=400
+time="2022-10-17T17:16:50+08:00" level=warning Ip=127.0.0.1 Method=POST SpendTime="0 ms" body= param="[]" path=/user/add/user query= resBody="&{0xc00053b420 119 400}" status=400
+time="2022-10-17T17:16:50+08:00" level=error Ip=127.0.0.1 Method=POST SpendTime="0 ms" body= param="[]" path=/user/add/user query= resBody="&{0xc00053b5e0 119 400}" status=400
+time="2022-10-17T17:16:50+08:00" level=warning Ip=127.0.0.1 Method=POST SpendTime="0 ms" body= param="[]" path=/user/add/user query= resBody="&{0xc00053b5e0 119 400}" status=400
+time="2022-10-17T17:16:50+08:00" level=error Ip=127.0.0.1 Method=POST SpendTime="1 ms" body= param="[]" path=/user/add/user query= resBody="&{0xc00053b7a0 119 400}" status=400
+time="2022-10-17T17:16:50+08:00" level=warning Ip=127.0.0.1 Method=POST SpendTime="1 ms" body= param="[]" path=/user/add/user query= resBody="&{0xc00053b7a0 119 400}" status=400
+time="2022-10-17T17:16:51+08:00" level=error Ip=127.0.0.1 Method=POST SpendTime="0 ms" body= param="[]" path=/user/add/user query= resBody="&{0xc0004b40e0 119 400}" status=400
+time="2022-10-17T17:16:51+08:00" level=warning Ip=127.0.0.1 Method=POST SpendTime="0 ms" body= param="[]" path=/user/add/user query= resBody="&{0xc0004b40e0 119 400}" status=400
+time="2022-10-17T17:16:51+08:00" level=error Ip=127.0.0.1 Method=POST SpendTime="0 ms" body= param="[]" path=/user/add/user query= resBody="&{0xc0004b42a0 119 400}" status=400
+time="2022-10-17T17:16:51+08:00" level=warning Ip=127.0.0.1 Method=POST SpendTime="0 ms" body= param="[]" path=/user/add/user query= resBody="&{0xc0004b42a0 119 400}" status=400
