@@ -25,7 +25,8 @@ const (
 	JSON_MARSHAL_ERROR               = "json序列化失败"
 	ACCOUT_NOT_EXIST_ERROR           = "账号不存在"
 	ADD_ERROR                        = "添加错误"
-	TOKEN_NOT_NULL                   = "token不能为空"
+	NO_AUTHORIZATION                 = "token不能为空"
+	FILE_TYPE_ERROR                  = "文件类型错误"
 
 	INSUFFICIENT_PERMISSION_ERROR = "权限不足"
 	METHOD_NOT_FILLED_ERROR       = "方法未填写"

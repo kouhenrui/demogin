@@ -16,9 +16,8 @@ func Routers(e *gin.Engine) {
 	{
 		adminGroup.POST("/login", adminLogin)
 		adminGroup.GET("/info", getAdminInfo)
-		//userGroup.POST("/post/message", postMessage)
-		//userGroup.PUT("/put/user", updateUser)
 		adminGroup.POST("/register", registerAdmin)
+		//adminGroup.
 	}
 }
 

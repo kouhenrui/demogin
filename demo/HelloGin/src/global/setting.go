@@ -18,7 +18,7 @@ type RedisConnect struct {
 	poolSize int
 }
 
-var ReuqestPaths = []string{"user/login", "user/register", "admin/login", "admin/register"}
+var ReuqestPaths = []string{"user/login", "user/register", "admin/login", "admin/register", "upload/file"}
 
 const (
 	UserLoginTime  = 5

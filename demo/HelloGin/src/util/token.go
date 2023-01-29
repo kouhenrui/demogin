@@ -53,7 +53,7 @@ func AnalysyToken(c *gin.Context) interface{} {
 	result := global.NewResult(c)
 	tokenString := c.GetHeader("Authorization")
 	if tokenString == "" {
-		result.Success(gin.H{"code": http.StatusUnauthorized, "msg": TOKEN_NOT_NULL})
+		result.Success(gin.H{"code": http.StatusUnauthorized, "msg": NO_AUTHORIZATION})
 		c.Abort()
 		return result
 	}
