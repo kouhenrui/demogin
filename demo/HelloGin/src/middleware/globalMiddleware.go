@@ -35,10 +35,10 @@ func AuthMiddleWare() gin.HandlerFunc {
 		t := time.Now()
 		requestUrl := c.Request.URL.String()
 		reqUrl := strings.Split(requestUrl, "/api/")
-
+		//fmt.Println(reqUrl, "地址")
 		paths := global.ReuqestPaths
 		pathIsExist := existIn(reqUrl[1], paths)
-		fmt.Println(pathIsExist, "打印是否存在白名单")
+		//fmt.Println(pathIsExist, "打印是否存在白名单")
 		if !pathIsExist {
 			fmt.Println("身份验证")
 			user := util.AnalysyToken(c)
@@ -53,7 +53,7 @@ func AuthMiddleWare() gin.HandlerFunc {
 
 func existIn(requestUrl string, paths []string) bool {
 	for _, v := range paths {
-		fmt.Println(v, requestUrl)
+		//fmt.Println(v, requestUrl)
 		if requestUrl == v {
 			return true
 		}

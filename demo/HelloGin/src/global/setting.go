@@ -19,6 +19,9 @@ type RedisConnect struct {
 }
 
 var ReuqestPaths = []string{"user/login", "user/register", "admin/login", "admin/register", "upload/file"}
+var PictureType = []string{"jpg", "png", "gif", "bmp", "tif",
+	//不常用图片类型
+	"pcx", "tga", "exif", "fpx", "svg", "psd", "cdr", "pcd", "dxf", "ufo", "eps", "ai", "raw", "WMF", "webp", "avif", "apng"}
 
 const (
 	UserLoginTime  = 5

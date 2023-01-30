@@ -18,7 +18,7 @@ var (
 
 func init() {
 	//db.AutoMigrate(user, admins, t)
-	db.AutoMigrate(e)
+	//db.AutoMigrate(e)
 	fmt.Println("数据库创建")
 }
 
