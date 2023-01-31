@@ -2,7 +2,7 @@ package reqDto
 
 type AdminLogin struct {
 	Account  string `json:"account" `
-	Password string `  json:"password" binding:"required"`
+	Password string `json:"password" binding:"required"`
 	Revoke   bool   `json:"revoke" validate:"required"`
 }
 type UpdateAdmin struct {
@@ -16,4 +16,9 @@ type AddAdmin struct {
 	Password string `json:"password,omitempty"`
 	Role     int    `json:"role"`
 	Salt     string `json:"salt,omitempty"`
+}
+type AdminList struct {
+	Take int    `json:"take,omitempty" binding:"required"`
+	Skip int    `json:"skip,omitempty" binding:"required"`
+	name string `json:"name,omitempty"`
 }

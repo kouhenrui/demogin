@@ -31,8 +31,6 @@ func upload(c *gin.Context) {
 	//获取上传文件的类型
 	filetype := file.Header.Get("Content-Type")
 	types := strings.Split(filetype, "/")
-
-	//fmt.Println(types, "文件类型")
 	if types[0] != "image" {
 		res.DiyErr(http.StatusBadRequest, util.FILE_TYPE_ERROR)
 		return

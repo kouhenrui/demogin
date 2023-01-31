@@ -40,6 +40,13 @@ func (r *Result) Error(code int, msg interface{}) {
 	res.Data = gin.H{}
 	r.Ctx.JSON(http.StatusOK, res)
 }
+func (r *Result) Err(msg interface{}) {
+	res := ResultCont{}
+	res.Code = 700
+	res.Msg = msg
+	res.Data = gin.H{}
+	r.Ctx.JSON(http.StatusOK, res)
+}
 
 //func (r *Result) IntErr()  {
 //

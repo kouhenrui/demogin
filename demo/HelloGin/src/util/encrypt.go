@@ -157,8 +157,8 @@ func DePwdCode(pwd string, pwdKey string) (string, error) {
 	//解密base64字符串
 	pwdByte, err := base64.StdEncoding.DecodeString(pwd)
 	if err != nil {
-		errors.New(INTERNAL_ERROR)
-		//return nil, err
+		//errors.New(INTERNAL_ERROR)
+		return INTERNAL_ERROR, err
 	}
 	//执行AES解密
 

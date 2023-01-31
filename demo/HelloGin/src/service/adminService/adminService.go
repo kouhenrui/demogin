@@ -20,39 +20,11 @@ type AdminService struct {
 var db = global.Db
 var admin pojo.Admin
 var b bool
+var admins []pojo.Admin
 
-//func (c *AdminService) FindByAccount(account string) (pojo.Admin, bool) {
-//	//user.Account = account
-//	db.Select("id,name,account,password,salt,access_token,role").Where("account=?", account).First(&admin)
-//	return admin, true
-//}
-//func (c *AdminService) FindByName(name string) (pojo.Admin, bool) {
-//	//user.Name = name
-//	db.Select("id,name,account,password,salt,access_token,role").Where("name=?", name).First(&admin)
-//	return admin, true
-//}
-//func (c *AdminService) AddUser(name string, account string, password string, salt string) (bool, string) {
-//	admin.Name = name
-//	admin.Salt = salt
-//	admin.Password = password
-//	admin.Account = account
-//	res := db.Create(&admin)
-//	if res.RowsAffected == 0 {
-//		return false, util.INSET_USER_ERROR
-//	}
-//	return true, util.SUCCESS
-//}
-//func (c *AdminService) UpdateUserToken(accessToken string, id uint) bool {
-//	admin.ID = id
-//	res := db.Model(&admin).Update("AccessToken", accessToken)
-//	if res.RowsAffected != 1 {
-//		return false
-//	}
-//	return true
-//}
 func FindByAccount(account string) (pojo.Admin, bool) {
 	r := db.Select("id,name,account,password,salt,access_token,role").Where("account=?", account).First(&admin)
-	fmt.Println(r.RowsAffected, "影响行数")
+	fmt.Println(admin, "影响行数")
 	if r.RowsAffected != 1 {
 		return admin, false
 	}
@@ -101,7 +73,12 @@ func AdminLogin(loginReq interface{}) (tokenAndExp interface{}) {
 		return util.ACCOUT_NOT_EXIST_ERROR
 	}
 	salt := admin.Salt
-	pwd, deerr := util.DePwdCode(password, salt)
+	//fmt.Println(password, "加眯眼")
+	//a, _ := util.EnPwdCode(password, salt)
+	//fmt.Println(a, salt, "加密喵喵")
+	//解密
+	pwd, deerr := util.DePwdCode(admin.Password, salt)
+	fmt.Println(pwd, deerr, "密码加密")
 	if deerr != nil {
 		return util.PASSWORD_RESOLUTION_ERROR
 	}
@@ -201,4 +178,16 @@ func AdminAdd(req interface{}) interface{} {
 		return util.ADD_ERROR
 	}
 
+}
+func AdminList(list interface{}) pojo.Admin {
+	fmt.Println(list)
+	lp := reflect.ValueOf(list)
+	take := lp.FieldByName("Take").NumField()
+	skip := lp.FieldByName("Skip").NumField()
+	name := lp.FieldByName("Name").String()
+	if name != "" {
+		admin.Name = name
+	}
+	db.Select("id,name,account,role").Find(&admin).Limit(take).Offset(skip)
+	return admin
 }

@@ -17,13 +17,14 @@ func Routers(e *gin.Engine) {
 		adminGroup.POST("/login", adminLogin)
 		adminGroup.GET("/info", getAdminInfo)
 		adminGroup.POST("/register", registerAdmin)
-		//adminGroup.
+		adminGroup.POST("/list", adminList)
 	}
 }
 
 func adminLogin(c *gin.Context) {
 	res := global.NewResult(c)
 	var js reqDto.AdminLogin
+	fmt.Println(js, "请求体")
 	if err := c.BindJSON(&js); err != nil {
 		errs, ok := err.(validator.ValidationErrors)
 		if !ok {
@@ -66,4 +67,24 @@ func registerAdmin(c *gin.Context) {
 	fmt.Println(result)
 	res.Success(result)
 	return
+}
+func adminList(c *gin.Context) {
+	res := global.NewResult(c)
+	var ls reqDto.AdminList
+	fmt.Println(ls)
+	if err := c.BindJSON(&ls); err != nil {
+		errs, ok := err.(validator.ValidationErrors)
+		if !ok {
+			res.Error(http.StatusBadRequest, err.Error())
+			return
+		}
+		res.DiyErr(http.StatusBadRequest, global.Translate(errs))
+		return
+	}
+
+	list := adminService.AdminList(ls)
+
+	res.Success(list)
+	return
+
 }
