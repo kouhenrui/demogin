@@ -21,10 +21,10 @@ func Routers(e *gin.Engine) {
 	}
 }
 
+// 登录接口
 func adminLogin(c *gin.Context) {
 	res := global.NewResult(c)
 	var js reqDto.AdminLogin
-	fmt.Println(js, "请求体")
 	if err := c.BindJSON(&js); err != nil {
 		errs, ok := err.(validator.ValidationErrors)
 		if !ok {
@@ -38,6 +38,8 @@ func adminLogin(c *gin.Context) {
 	res.Success(result)
 	return
 }
+
+//获取详情接口
 func getAdminInfo(c *gin.Context) {
 	res := global.NewResult(c)
 	user, _ := c.Get("user")
@@ -49,6 +51,8 @@ func getAdminInfo(c *gin.Context) {
 	})
 	return
 }
+
+//增加管理员接口
 func registerAdmin(c *gin.Context) {
 	fmt.Println("进入控制层")
 	res := global.NewResult(c)
@@ -68,10 +72,12 @@ func registerAdmin(c *gin.Context) {
 	res.Success(result)
 	return
 }
+
+//管理员列表
 func adminList(c *gin.Context) {
 	res := global.NewResult(c)
 	var ls reqDto.AdminList
-	fmt.Println(ls)
+	//fmt.Println(ls, "请求参数")
 	if err := c.BindJSON(&ls); err != nil {
 		errs, ok := err.(validator.ValidationErrors)
 		if !ok {

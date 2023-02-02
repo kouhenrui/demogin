@@ -15,6 +15,7 @@ type Admin struct {
 	Revoke      bool   `json:"revoke" gorm:"default:false"`
 	Role        int    `json:"role" `
 }
+
 type AdminInterface interface {
 	FindByAccount(string) (User, error)
 	FindByName(string) (User, error)

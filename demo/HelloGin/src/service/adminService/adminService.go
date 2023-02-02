@@ -2,6 +2,7 @@ package adminService
 
 import (
 	"HelloGin/src/dto/reqDto"
+	"HelloGin/src/dto/resDto"
 	"HelloGin/src/global"
 	"HelloGin/src/pojo"
 	"HelloGin/src/util"
@@ -63,6 +64,11 @@ func registerAdmin(addAdmin reqDto.AddAdmin) (pojo.Admin, bool) {
 
 	return admin, true
 }
+
+/**
+反射控制层登录参数，查询数据库账号是否相同，
+比对密码一致性，将用户信息存入jwt令牌中，签发令牌和过期时间
+*/
 func AdminLogin(loginReq interface{}) (tokenAndExp interface{}) {
 	lp := reflect.ValueOf(loginReq)
 	account := lp.FieldByName("Account").String()
@@ -73,10 +79,6 @@ func AdminLogin(loginReq interface{}) (tokenAndExp interface{}) {
 		return util.ACCOUT_NOT_EXIST_ERROR
 	}
 	salt := admin.Salt
-	//fmt.Println(password, "加眯眼")
-	//a, _ := util.EnPwdCode(password, salt)
-	//fmt.Println(a, salt, "加密喵喵")
-	//解密
 	pwd, deerr := util.DePwdCode(admin.Password, salt)
 	fmt.Println(pwd, deerr, "密码加密")
 	if deerr != nil {
@@ -179,15 +181,21 @@ func AdminAdd(req interface{}) interface{} {
 	}
 
 }
-func AdminList(list interface{}) pojo.Admin {
-	fmt.Println(list)
+func AdminList(list interface{}) []resDto.AdminList {
+	//fmt.Println(list, "接收参数")
 	lp := reflect.ValueOf(list)
-	take := lp.FieldByName("Take").NumField()
-	skip := lp.FieldByName("Skip").NumField()
-	name := lp.FieldByName("Name").String()
-	if name != "" {
-		admin.Name = name
-	}
-	db.Select("id,name,account,role").Find(&admin).Limit(take).Offset(skip)
-	return admin
+	//fmt.Println(lp.FieldByName("Take"))
+
+	take := lp.FieldByName("Take").Int()
+	skip := lp.FieldByName("Skip").Uint()
+	//name := lp.FieldByName("Name").String()
+	fmt.Println(take, skip)
+	fmt.Println(lp.FieldByName("Name").IsValid()) //判断值是否有效
+	var adminLists []resDto.AdminList
+	//if !lp.FieldByName("Name").IsValid() {
+	//
+	//}
+	db.Model(&pojo.Admin{}).Limit(int(take)).Offset(int(skip)).Find(&adminLists)
+	//fmt.Println(adminLists)
+	return adminLists
 }
