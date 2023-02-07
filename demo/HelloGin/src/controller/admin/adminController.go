@@ -87,7 +87,7 @@ func adminList(c *gin.Context) {
 		res.DiyErr(http.StatusBadRequest, global.Translate(errs))
 		return
 	}
-
+	//fmt.Println(ls)
 	list := adminService.AdminList(ls)
 
 	res.Success(list)

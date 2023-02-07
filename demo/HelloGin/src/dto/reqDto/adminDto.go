@@ -20,5 +20,5 @@ type AddAdmin struct {
 type AdminList struct {
 	Take int    `json:"take,omitempty" binding:"required"`
 	Skip uint   `json:"skip,omitempty"`
-	name string `json:"name,omitempty"`
+	Name string `json:"name,omitempty"`
 }

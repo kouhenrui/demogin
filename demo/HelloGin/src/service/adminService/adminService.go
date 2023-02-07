@@ -181,21 +181,26 @@ func AdminAdd(req interface{}) interface{} {
 	}
 
 }
-func AdminList(list interface{}) []resDto.AdminList {
-	//fmt.Println(list, "接收参数")
+func AdminList(list interface{}) interface{} {
 	lp := reflect.ValueOf(list)
-	//fmt.Println(lp.FieldByName("Take"))
-
 	take := lp.FieldByName("Take").Int()
 	skip := lp.FieldByName("Skip").Uint()
-	//name := lp.FieldByName("Name").String()
-	fmt.Println(take, skip)
-	fmt.Println(lp.FieldByName("Name").IsValid()) //判断值是否有效
+	name := lp.FieldByName("Name").String()
+	t1 := lp.FieldByName("Name")
+	fmt.Println(name)
+	fmt.Println(lp.FieldByName("Name").IsValid(), t1, "判断是否合法") //判断值是否有效
 	var adminLists []resDto.AdminList
-	//if !lp.FieldByName("Name").IsValid() {
-	//
-	//}
-	db.Model(&pojo.Admin{}).Limit(int(take)).Offset(int(skip)).Find(&adminLists)
-	//fmt.Println(adminLists)
-	return adminLists
+	query := db.Model(&pojo.Admin{})
+	if name != "" {
+		query.Where("name like ?", "%"+name+"%")
+	}
+	//query.Where("name like ?", "%"+name+"%")
+	query.Limit(int(take)).Offset(int(skip)).Find(&adminLists)
+	count := query.RowsAffected
+	resList := resDto.CommonList{}
+	resList.List = adminLists
+	resList.Count = uint(count)
+
+	fmt.Println(resList)
+	return resList
 }
