@@ -188,7 +188,9 @@ func AdminList(list interface{}) interface{} {
 	name := lp.FieldByName("Name").String()
 	t1 := lp.FieldByName("Name")
 	fmt.Println(name)
-	fmt.Println(lp.FieldByName("Name").IsValid(), t1, "判断是否合法") //判断值是否有效
+	fmt.Println(lp.FieldByName("Name").IsValid(), t1, "判断是否合法") //判断值是否有
+
+	// 效
 	var adminLists []resDto.AdminList
 	query := db.Model(&pojo.Admin{})
 	if name != "" {
