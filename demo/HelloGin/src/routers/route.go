@@ -5,6 +5,8 @@ import (
 	middleWare "HelloGin/src/middleware"
 	"HelloGin/src/util"
 	"github.com/gin-gonic/gin"
+	//"websockTest/websocket"
+	//"golang.org/x/net/websocket"
 	"log"
 	"net/http"
 	"runtime/debug"
@@ -18,6 +20,12 @@ func Include(opts ...Option) {
 	options = append(options, opts...)
 }
 func InitRoute() *gin.Engine {
+
+	//ws := websocket.New(websocket.Config{
+	//	ReadBufferSize:  1024,
+	//	WriteBufferSize: 1024,
+	//})
+
 	log.Println("路由初始化调用")
 	r := gin.New()
 	//r.Use(cors.Default()) //官方推荐跨域
@@ -30,9 +38,10 @@ func InitRoute() *gin.Engine {
 	r.Use(middleWare.Recover)            //错误捕捉
 	r.NoRoute(HandleNotFound)            //路由未找到
 	r.NoMethod(HandleNotAllowed)         //方法未找到
+	//r.Handler(ws.Ws())
 	for _, ii := range options {
 		ii(r)
-	}
+	} //挂载模块
 	return r
 
 }
@@ -40,19 +49,14 @@ func InitRoute() *gin.Engine {
 //404
 func HandleNotFound(c *gin.Context) {
 	res := global.NewResult(c)
-	//res.Error(http.StatusNotFound, util.RESOURCE_NOT_FOUND_ERROR)
 	res.DiyErr(http.StatusNotFound, util.RESOURCE_NOT_FOUND_ERROR)
 	return
-
-	//c.JSON(http.StatusNotFound, util.RESOURCE_NOT_FOUND_ERROR)
 }
 
 func HandleNotAllowed(c *gin.Context) {
 	res := global.NewResult(c)
-	//res.Error(http.StatusMethodNotAllowed, util.REQUEST_METHOD_NOT_ALLOWED_ERROE)
 	res.DiyErr(http.StatusMethodNotAllowed, util.REQUEST_METHOD_NOT_ALLOWED_ERROE)
 	return
-	//c.JSON(http.StatusMethodNotAllowed, util.REQUEST_METHOD_NOT_ALLOWED_ERROE)
 }
 
 //500
@@ -63,14 +67,7 @@ func Errorrecover(c *gin.Context) {
 			//log.Printf("panic: %v\n", r)
 			debug.PrintStack()
 			c.JSON(http.StatusInternalServerError, util.INTERNAL_ERROR)
-
-			//c.HTML(200, "500.html", gin.H{
-			//	"title": "500",
-			//})
 		}
-		//else {
-		//
-		//}
 	}()
 	//加载完 defer recover，继续后续接口调用
 	c.Next()
@@ -94,19 +91,3 @@ func Cors() gin.HandlerFunc {
 		c.Next()
 	}
 }
-
-//func Cors() gin.HandlerFunc {
-//	return func(context *gin.Context) {
-//		method := context.Request.Method
-//
-//		context.Header("Access-Control-Allow-Origin", "*")
-//		context.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token, x-token")
-//		context.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PATCH, PUT")
-//		context.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
-//		context.Header("Access-Control-Allow-Credentials", "true")
-//
-//		if method == "OPTIONS" {
-//			context.AbortWithStatus(http.StatusNoContent)
-//		}
-//	}
-//}

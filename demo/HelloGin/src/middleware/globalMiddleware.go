@@ -33,16 +33,24 @@ func AuthMiddleWare() gin.HandlerFunc {
 		fmt.Println("身份认证开始执行")
 		t := time.Now()
 		requestUrl := c.Request.URL.String()
-		reqUrl := strings.Split(requestUrl, "/api/")
-		paths := global.ReuqestPaths
-		pathIsExist := util.ExistIn(reqUrl[1], paths)
-		if !pathIsExist {
-			fmt.Println("身份验证")
-			user := util.AnalysyToken(c)
-			c.Set("user", user)
+		//fmt.Println(requestUrl)
+		if strings.Contains(requestUrl, "/ws/") {
+			//ts := time.Since(t)
+			//fmt.Println(requestUrl)
+			fmt.Println("ws身份认证执行结束")
+		} else {
+			reqUrl := strings.Split(requestUrl, "/api/")
+			paths := global.ReuqestPaths
+			pathIsExist := util.ExistIn(reqUrl[1], paths)
+			if !pathIsExist {
+				fmt.Println("身份验证")
+				user := util.AnalysyToken(c)
+				c.Set("user", user)
+			}
+			ts := time.Since(t)
+			fmt.Println("time", ts)
+			fmt.Println("身份认证执行结束")
 		}
-		ts := time.Since(t)
-		fmt.Println("time", ts)
-		fmt.Println("身份认证执行结束")
+
 	}
 }
