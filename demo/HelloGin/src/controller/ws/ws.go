@@ -8,8 +8,8 @@ import (
 	"net/http"
 )
 
-//设置websocket
-//CheckOrigin防止跨站点的请求伪造
+// 设置websocket
+// CheckOrigin防止跨站点的请求伪造
 var upGrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool {
 		return true
@@ -32,7 +32,7 @@ func Routers(e *gin.Engine) {
 
 }
 
-//websocket实现
+// websocket实现
 func ws(c *gin.Context) {
 	fmt.Print("进入ws连接")
 	result := global.NewResult(c)
@@ -45,7 +45,7 @@ func ws(c *gin.Context) {
 		return
 	}
 	//fmt.Println(ws)
-	//defer ws.Close() //返回前关闭
+	defer ws.Close() //返回前关闭
 	for {
 		//读取ws中的数据
 
@@ -58,10 +58,29 @@ func ws(c *gin.Context) {
 		}
 		//fmt.Print(string(message), "message")
 		//写入ws数据
-		err = ws.WriteMessage(1, []byte("welcome to ws"))
+		err = ws.WriteMessage(mt, []byte("welcome to ws"))
 		if err != nil {
 			result.Err("连接错误3")
 			return
 		}
 	}
+	fmt.Println("我们结束聊天啦")
 }
+
+// func WSCONNECT() {
+//	defer c.Close()
+//	defer close(done)
+//	 upGrader.Upgrade(c.Writer, c.Request, nil)
+//	for {
+//		c.SetReadDeadline(time.Now().Add(timeoutDuration))
+//		_, message, err := c.ReadMessage()
+//		if err != nil {
+//			log.Println("read:", err)
+//			return
+//		}
+//		if len(message) >= 2 {
+//			message = message[2:]
+//		}
+//		log.Printf("recv: %s", message)
+//	}
+//}()
