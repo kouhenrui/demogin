@@ -30,5 +30,5 @@ const (
 	FILE_SUFFIX_ERROR                = "文件后缀类型不符"
 	INSUFFICIENT_PERMISSION_ERROR    = "权限不足"
 	METHOD_NOT_FILLED_ERROR          = "方法未填写"
-	INSET_USER_ERROR                 = "方法未填写"
+	INSET_USER_ERROR                 = "写入用户错误"
 )
