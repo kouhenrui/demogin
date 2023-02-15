@@ -38,7 +38,7 @@ func InitRoute() *gin.Engine {
 	r.Use(middleWare.Recover)            //错误捕捉
 	r.NoRoute(HandleNotFound)            //路由未找到
 	r.NoMethod(HandleNotAllowed)         //方法未找到
-	//r.Handler(ws.Ws())
+	r.MaxMultipartMemory = 64 << 20      //64Mb
 	for _, ii := range options {
 		ii(r)
 	} //挂载模块

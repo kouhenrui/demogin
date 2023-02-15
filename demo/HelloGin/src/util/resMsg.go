@@ -26,9 +26,17 @@ const (
 	ACCOUT_NOT_EXIST_ERROR           = "账号不存在"
 	ADD_ERROR                        = "添加错误"
 	NO_AUTHORIZATION                 = "token不能为空"
-	FILE_TYPE_ERROR                  = "文件类型错误"
-	FILE_SUFFIX_ERROR                = "文件后缀类型不符"
-	INSUFFICIENT_PERMISSION_ERROR    = "权限不足"
-	METHOD_NOT_FILLED_ERROR          = "方法未填写"
-	INSET_USER_ERROR                 = "写入用户错误"
+
+	INSUFFICIENT_PERMISSION_ERROR = "权限不足"
+	METHOD_NOT_FILLED_ERROR       = "方法未填写"
+	INSET_USER_ERROR              = "写入用户错误"
+
+	//上传接口返回值
+	FILE_TYPE_ERROR   = "文件类型错误"
+	FILE_SUFFIX_ERROR = "文件后缀类型不符"
+	FILE_TOO_LARGE    = "上传文件太大"
+
+	//websocket错误
+
+	WEBSOCKET_CONNECT_ERROR = "websocket连接错误"
 )
