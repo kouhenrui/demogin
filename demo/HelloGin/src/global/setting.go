@@ -35,7 +35,6 @@ const (
 
 const (
 	PORT               = ":8888"
-	WSADDRESS          = "8889"
 	JWTKEY             = "jefnuhUKEWFKU@#$%^2546546"
 	LANGUAGE           = "zh"
 	JWTEXPTIME         = 7 * DayTime
