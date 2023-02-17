@@ -30,7 +30,7 @@ func AdminServiceImpl() AdminDao {
 	return AdminDao{}
 }
 
-//分页,模糊查询用户
+// 分页,模糊查询用户
 func (a *AdminDao) AdminList(list reqDto.AdminList) resDto.CommonList {
 	query := db.Model(&admin)
 	if list.Name != "" {
@@ -41,6 +41,8 @@ func (a *AdminDao) AdminList(list reqDto.AdminList) resDto.CommonList {
 	reslist.List = resAdminList
 	return reslist
 }
+
+// 查询账号
 func (a *AdminDao) CheckByAccount(account string) (pojo.Admin, bool) {
 	res := db.Model(&admin).First(&admin).Where("account =?", account)
 	if res.RowsAffected <= 0 {
@@ -49,6 +51,7 @@ func (a *AdminDao) CheckByAccount(account string) (pojo.Admin, bool) {
 	return admin, true
 }
 
+// 查询名称
 func (a *AdminDao) CheckByName(name string) (pojo.Admin, bool) {
 	res := db.Model(&admin).First(&admin).Where("name =?", name)
 	if res.RowsAffected <= 0 {
@@ -57,9 +60,19 @@ func (a *AdminDao) CheckByName(name string) (pojo.Admin, bool) {
 	return admin, true
 }
 
+// 更新token数据
 func (a *AdminDao) UpdateToken(access_token string, id uint) bool {
 	admin.ID = id
 	res := db.Model(&admin).Update("access_token", access_token)
+	if res.RowsAffected != 1 {
+		return false
+	}
+	return true
+}
+
+// 增加用户
+func (a *AdminDao) AddAdmin(admin2 reqDto.AddAdmin) bool {
+	res := db.Model(&admin).Create(admin2)
 	if res.RowsAffected != 1 {
 		return false
 	}

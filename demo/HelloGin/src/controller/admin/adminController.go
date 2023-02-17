@@ -10,15 +10,12 @@ import (
 	"net/http"
 )
 
-var judje bool
-
 func Routers(e *gin.Engine) {
-
 	adminGroup := e.Group("/api/admin")
 	{
 		adminGroup.POST("/login", adminLogin)
 		adminGroup.GET("/info", getAdminInfo)
-		//adminGroup.POST("/register", registerAdmin)
+		adminGroup.POST("/register", registerAdmin)
 		adminGroup.POST("/list", adminList)
 		adminGroup.POST("/users/list", userList)
 	}
@@ -46,7 +43,7 @@ func adminLogin(c *gin.Context) {
 	return
 }
 
-//获取详情接口
+// 获取详情接口
 func getAdminInfo(c *gin.Context) {
 	res := global.NewResult(c)
 	user, _ := c.Get("user")
@@ -59,32 +56,34 @@ func getAdminInfo(c *gin.Context) {
 	return
 }
 
-//增加管理员接口
-//func registerAdmin(c *gin.Context) {
-//	fmt.Println("进入控制层")
-//	res := global.NewResult(c)
-//	var re reqDto.AddAdmin
-//	fmt.Println(&re, "打印请求书数据")
-//	if err := c.BindJSON(&re); err != nil {
-//		errs, ok := err.(validator.ValidationErrors)
-//		if !ok {
-//			res.Error(http.StatusBadRequest, err.Error())
-//			return
-//		}
-//		res.DiyErr(http.StatusBadRequest, global.Translate(errs))
-//		return
-//	}
-//	result := adminService.AdminAdd(re)
-//	fmt.Println(result)
-//	res.Success(result)
-//	return
-//}
+// 增加管理员接口
+func registerAdmin(c *gin.Context) {
+	fmt.Println("进入控制层")
+	res := global.NewResult(c)
+	var re reqDto.AddAdmin
+	if err := c.BindJSON(&re); err != nil {
+		errs, ok := err.(validator.ValidationErrors)
+		if !ok {
+			res.Error(http.StatusBadRequest, err.Error())
+			return
+		}
+		res.Error(http.StatusBadRequest, global.Translate(errs))
+		return
+	}
+	judje, result := adminService.AdminAdd(re)
+	if judje {
+		res.Success(result)
+		return
+	} else {
+		res.Err(result)
+		return
+	}
+}
 
-//管理员列表
+// 管理员列表
 func adminList(c *gin.Context) {
 	res := global.NewResult(c)
 	var ls reqDto.AdminList
-	//fmt.Println(ls, "请求参数")
 	if err := c.BindJSON(&ls); err != nil {
 		errs, ok := err.(validator.ValidationErrors)
 		if !ok {
@@ -94,14 +93,13 @@ func adminList(c *gin.Context) {
 		res.Error(http.StatusBadRequest, global.Translate(errs))
 		return
 	}
-	//fmt.Println(ls)
 	list := adminService.AdminList(ls)
-
 	res.Success(list)
 	return
 
 }
 
+// 用户列表
 func userList(c *gin.Context) {
 	res := global.NewResult(c)
 	var ls reqDto.UserList

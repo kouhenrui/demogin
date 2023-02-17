@@ -5,10 +5,9 @@ import (
 	"HelloGin/src/dto/resDto"
 	"HelloGin/src/global"
 	adminDao "HelloGin/src/interface/admin"
-	userDao "HelloGin/src/interface/user"
 	"HelloGin/src/pojo"
+	"HelloGin/src/service/userService"
 	"HelloGin/src/util"
-	"errors"
 	"fmt"
 )
 
@@ -18,9 +17,9 @@ type AdminService struct {
 var admin pojo.Admin
 var judge bool
 
-//var b bool
-//var admins []pojo.Admin
-var userServiceImpl = userDao.UserServiceImpl()
+// var b bool
+// var admins []pojo.Admin
+
 var adminServiceImpl = adminDao.AdminServiceImpl()
 
 //var userDao UserDao
@@ -66,7 +65,8 @@ var adminServiceImpl = adminDao.AdminServiceImpl()
 //	return admin, true
 //}
 
-/**
+/*
+*
 反射控制层登录参数，查询数据库账号是否相同，
 比对密码一致性，将用户信息存入jwt令牌中，签发令牌和过期时间
 */
@@ -87,8 +87,8 @@ func AdminLogin(list reqDto.AdminLogin) (a bool, tokenAndExp interface{}) {
 	pwd, deerr := util.DePwdCode(enpwd, salt)
 	if deerr != nil {
 		fmt.Println(deerr, "加密方法")
-		errors.New(util.PASSWORD_RESOLUTION_ERROR)
-		//return false, util.PASSWORD_RESOLUTION_ERROR
+		//errors.New(util.PASSWORD_RESOLUTION_ERROR)
+		return false, util.PASSWORD_RESOLUTION_ERROR
 	}
 	fmt.Println(pwd, list.Password, "比对密码")
 	if pwd != list.Password {
@@ -146,64 +146,53 @@ func AdminLogin(list reqDto.AdminLogin) (a bool, tokenAndExp interface{}) {
 	return true, tokenAndExp
 }
 
-//func AdminInfo(id uint) pojo.Admin {
-//	db.Select("id,name,account,access_token,role").Where("id=?", id).First(&admin)
-//	return admin
-//}
-//func AdminAdd(req interface{}) interface{} {
-//	lp := reflect.ValueOf(req)
-//	name := lp.FieldByName("Name").String()
-//	account := lp.FieldByName("Account").String()
-//	password := lp.FieldByName("Password").String()
-//	salt := util.RandAllString()
-//	if password == "" {
-//		password = string(123456)
+//	func AdminInfo(id uint) pojo.Admin {
+//		db.Select("id,name,account,access_token,role").Where("id=?", id).First(&admin)
+//		return admin
 //	}
-//	fmt.Println(password)
-//	enPwd, _ := util.EnPwdCode(password, salt)
-//	fmt.Println(name)
-//	if name != "" {
-//		_, tName := FindByName(name)
-//		if tName {
-//			return util.NAME_EXIST_ERROR
-//		}
-//	}
-//	if name == "" {
-//		name = "暂未命名"
-//	}
-//	_, tAccount := FindByAccount(account)
-//	if tAccount {
-//		return util.ACCOUNT_EXIST_ERROR
-//	}
-//	addAdmin := reqDto.AddAdmin{
-//		Name:     name,
-//		Account:  account,
-//		Password: enPwd,
-//		Salt:     salt,
-//	}
-//	result, tAdmin := registerAdmin(addAdmin)
-//	if tAdmin {
-//		return result
-//	} else {
-//		return util.ADD_ERROR
-//	}
-//
-//}
+
+// 分页模糊查询管理员
 func AdminList(list reqDto.AdminList) interface{} {
-	//lp := reflect.ValueOf(list)
-	//take := lp.FieldByName("Take").Int()
-	//skip := lp.FieldByName("Skip").Uint()
-	//name := lp.FieldByName("Name").String()
-	//t1 := lp.FieldByName("Name")
-	//fmt.Println(name)
-	//fmt.Println(lp.FieldByName("Name").IsValid(), t1, "判断是否合法") //判断值是否有效
 	res := adminServiceImpl.AdminList(list)
 	return res
 }
 
+// 增加admin
+func AdminAdd(add reqDto.AddAdmin) (bool, interface{}) {
+	salt := util.RandAllString()
+	var pwd string
+	//校验是否有密码，没有则为123456
+	if add.Password == "" {
+		pwd = string(123456)
+	}
+	//调用加密方法
+	enPwd, _ := util.EnPwdCode(pwd, salt)
+	//加密密码
+	add.Password = enPwd
+	//检查名称是否重复
+	if add.Name != "" {
+		_, judge = adminServiceImpl.CheckByName(add.Name)
+		if judge {
+			return false, util.NAME_EXIST_ERROR
+		}
+	}
+	if add.Name == "" {
+		add.Name = "暂未命名"
+	}
+	_, judge = adminServiceImpl.CheckByAccount(add.Account)
+	if judge {
+		return false, util.ACCOUNT_EXIST_ERROR
+	}
+	judge = adminServiceImpl.AddAdmin(add)
+	if judge {
+		return true, util.ADD_SUCCESS
+	} else {
+		return false, util.ADD_ERROR
+	}
+}
+
+// 调用userservice服务层的服务
 func UserList(list reqDto.UserList) interface{} {
-	//fmt.Println(list)
-	res := userServiceImpl.UserList(list)
-	fmt.Println(res, "service返回的结果")
+	res := userService.UserList(list)
 	return res
 }
