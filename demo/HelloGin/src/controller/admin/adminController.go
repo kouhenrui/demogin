@@ -34,7 +34,7 @@ func adminLogin(c *gin.Context) {
 			res.Error(http.StatusBadRequest, err.Error())
 			return
 		}
-		res.DiyErr(http.StatusBadRequest, global.Translate(errs))
+		res.Error(http.StatusBadRequest, global.Translate(errs))
 		return
 	}
 	jude, result := adminService.AdminLogin(js)
@@ -91,7 +91,7 @@ func adminList(c *gin.Context) {
 			res.Error(http.StatusBadRequest, err.Error())
 			return
 		}
-		res.DiyErr(http.StatusBadRequest, global.Translate(errs))
+		res.Error(http.StatusBadRequest, global.Translate(errs))
 		return
 	}
 	//fmt.Println(ls)
@@ -111,7 +111,7 @@ func userList(c *gin.Context) {
 			res.Error(http.StatusBadRequest, err.Error())
 			return
 		}
-		res.DiyErr(http.StatusBadRequest, global.Translate(errs))
+		res.Error(http.StatusBadRequest, global.Translate(errs))
 		return
 	}
 	list := adminService.UserList(ls)

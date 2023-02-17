@@ -37,14 +37,14 @@ func upload(c *gin.Context) {
 		return
 	}
 	if c.Request.ContentLength > fileMax {
-		res.DiyErr(http.StatusBadRequest, util.FILE_TOO_LARGE)
+		res.Error(http.StatusBadRequest, util.FILE_TOO_LARGE)
 		return
 	}
 	//获取上传文件的类型
 	filetype := file.Header.Get("Content-Type")
 	types := strings.Split(filetype, "/")
 	if types[0] != "image" {
-		res.DiyErr(http.StatusBadRequest, util.FILE_TYPE_ERROR)
+		res.Error(http.StatusBadRequest, util.FILE_TYPE_ERROR)
 		return
 	}
 	name := time.Now().Unix()
@@ -53,7 +53,7 @@ func upload(c *gin.Context) {
 	nameSuffix := suffix[1]
 	t := util.ExistIn(nameSuffix, global.PictureType)
 	if !t {
-		res.DiyErr(http.StatusBadRequest, util.FILE_SUFFIX_ERROR)
+		res.Error(http.StatusBadRequest, util.FILE_SUFFIX_ERROR)
 		return
 	}
 	file.Filename = strconv.FormatInt(name, 10) + "." + nameSuffix
@@ -77,7 +77,7 @@ func uploadVideo(c *gin.Context) {
 		return
 	}
 	if c.Request.ContentLength > videoMax {
-		res.DiyErr(http.StatusBadRequest, util.FILE_TOO_LARGE)
+		res.Error(http.StatusBadRequest, util.FILE_TOO_LARGE)
 		return
 
 	}
@@ -86,7 +86,7 @@ func uploadVideo(c *gin.Context) {
 	types := strings.Split(filetype, "/")
 	fmt.Println(types, "文件类型")
 	if types[0] != "video" {
-		res.DiyErr(http.StatusBadRequest, util.FILE_TYPE_ERROR)
+		res.Error(http.StatusBadRequest, util.FILE_TYPE_ERROR)
 		return
 	}
 	name := time.Now().Unix()
@@ -95,7 +95,7 @@ func uploadVideo(c *gin.Context) {
 	nameSuffix := suffix[1]
 	t := util.ExistIn(nameSuffix, global.VideoType)
 	if !t {
-		res.DiyErr(http.StatusBadRequest, util.FILE_SUFFIX_ERROR)
+		res.Error(http.StatusBadRequest, util.FILE_SUFFIX_ERROR)
 		return
 	}
 	file.Filename = strconv.FormatInt(name, 10) + "." + nameSuffix

@@ -45,20 +45,16 @@ func (r *Result) Err(msg interface{}) {
 	res.Code = 700
 	res.Msg = msg
 	res.Data = gin.H{}
-	r.Ctx.JSON(http.StatusOK, res)
+	r.Ctx.JSON(res.Code, res)
 }
 
-//func (r *Result) IntErr()  {
-//
+//func (r *Result) DiyErr(code int, msg interface{}) {
+//	if msg == nil {
+//		msg = gin.H{}
+//	}
+//	res := ResultCont{}
+//	res.Code = code
+//	res.Msg = msg
+//	res.Data = ""
+//	r.Ctx.JSON(code, res)
 //}
-
-func (r *Result) DiyErr(code int, msg interface{}) {
-	if msg == nil {
-		msg = gin.H{}
-	}
-	res := ResultCont{}
-	res.Code = code
-	res.Msg = msg
-	res.Data = ""
-	r.Ctx.JSON(code, res)
-}

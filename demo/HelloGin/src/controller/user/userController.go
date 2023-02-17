@@ -94,7 +94,7 @@ func rejisterUser(c *gin.Context) {
 			res.Error(http.StatusInternalServerError, err.Error())
 			return
 		}
-		res.DiyErr(http.StatusBadRequest, global.Translate(errs))
+		res.Error(http.StatusBadRequest, global.Translate(errs))
 		return
 	}
 	salt := util.RandAllString()
@@ -103,7 +103,7 @@ func rejisterUser(c *gin.Context) {
 	a.Salt = salt
 	bol, msg := userservice.AddUser(a.Name, a.Account, a.Password, a.Salt)
 	if !bol {
-		res.DiyErr(http.StatusBadRequest, msg)
+		res.Error(http.StatusBadRequest, msg)
 		return
 	}
 	res.Success(util.SUCCESS)
@@ -118,12 +118,12 @@ func userLogin(c *gin.Context) {
 			res.Error(http.StatusBadRequest, err.Error())
 			return
 		}
-		res.DiyErr(http.StatusBadRequest, global.Translate(errs))
+		res.Error(http.StatusBadRequest, global.Translate(errs))
 		return
 	}
 	bol, msg := login.UserLogin(js)
 	if !bol {
-		res.DiyErr(http.StatusBadRequest, msg)
+		res.Error(http.StatusBadRequest, msg)
 		return
 	}
 	tokenDate := reflect.ValueOf(msg)
@@ -146,7 +146,7 @@ func userLogin(c *gin.Context) {
 		} //强制删除现存登陆信息
 		ok := userservice.UpdateUserToken(access_token, uint(id))
 		if !ok {
-			res.DiyErr(http.StatusInternalServerError, util.AUTH_LOGIN_ERROR)
+			res.Error(http.StatusInternalServerError, util.AUTH_LOGIN_ERROR)
 			return
 		}
 		token, exptime = util.SignToken(stringTokenData, global.UserLoginTime*global.DayTime)
@@ -171,7 +171,7 @@ func userLogin(c *gin.Context) {
 		} else {
 			ok := userservice.UpdateUserToken(access_token, uint(id))
 			if !ok {
-				res.DiyErr(http.StatusInternalServerError, util.AUTH_LOGIN_ERROR)
+				res.Error(http.StatusInternalServerError, util.AUTH_LOGIN_ERROR)
 				return
 			}
 			token, exptime = util.SignToken(stringTokenData, global.UserLoginTime*global.DayTime)

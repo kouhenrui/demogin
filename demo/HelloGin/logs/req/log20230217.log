@@ -18,3 +18,6 @@ time="2023-02-17 16:02:16" level=info Ip=127.0.0.1 Method=POST SpendTime="576 ms
 time="2023-02-17 16:03:09" level=info Ip=127.0.0.1 Method=POST SpendTime="485 ms" body= param="[]" path=/api/admin/login query= status=200
 time="2023-02-17 16:04:01" level=info Ip=127.0.0.1 Method=POST SpendTime="425 ms" body= param="[]" path=/api/admin/login query= status=200
 time="2023-02-17 16:06:14" level=info Ip=127.0.0.1 Method=POST SpendTime="6245 ms" body= param="[]" path=/api/admin/login query= status=200
+time="2023-02-17 17:01:18" level=info Ip=127.0.0.1 Method=POST SpendTime="90 ms" body= param="[]" path=/api/admin/login query= status=200
+time="2023-02-17 17:04:25" level=info Ip=127.0.0.1 Method=POST SpendTime="1578 ms" body= param="[]" path=/api/admin/login query= status=200
+time="2023-02-17 17:04:30" level=info Ip=127.0.0.1 Method=POST SpendTime="135 ms" body= param="[]" path=/api/admin/login query= status=200
