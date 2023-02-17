@@ -58,7 +58,7 @@ func UserList(list reqDto.UserList) interface{} {
 	return res
 }
 
-func AdminLogin(list reqDto.UserLogin) (a bool, tokenAndExp interface{}) {
+func UserLogin(list reqDto.UserLogin) (a bool, tokenAndExp interface{}) {
 	switch list.Method {
 	case "name":
 		user, judge = userServiceImpl.CheckByName(list.Name)
