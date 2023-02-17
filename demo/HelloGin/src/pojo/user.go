@@ -17,24 +17,24 @@ type User struct {
 	gorm.Model
 }
 
-type UserInterface interface {
-	FindByAccount(string) (User, error)
-	FindByName(string) (User, error)
-}
-
-//var use User
-
-func (u User) FindByAccount(account string) (User, error) {
-
-	u.Account = account
-	db.Select("id,name,account,password,salt").Where("account=?", account).First(&u)
-	return u, nil
-}
-func (u User) FindByName(name string) (User, error) {
-	u.Name = name
-	db.Select("id,name,account,password,salt").Where("name=?", name).First(&u)
-	return u, nil
-}
+//type UserInterface interface {
+//	FindByAccount(string) (User, error)
+//	FindByName(string) (User, error)
+//}
+//
+////var use User
+//
+//func (u User) FindByAccount(account string) (User, error) {
+//
+//	u.Account = account
+//	db.Select("id,name,account,password,salt").Where("account=?", account).First(&u)
+//	return u, nil
+//}
+//func (u User) FindByName(name string) (User, error) {
+//	u.Name = name
+//	db.Select("id,name,account,password,salt").Where("name=?", name).First(&u)
+//	return u, nil
+//}
 
 //func (u User) LoginByAccountPws(account string, password string) (s chan bool) {
 //	db.Select("id,name,account,password,salt").Where("account =?", account).First(User{})

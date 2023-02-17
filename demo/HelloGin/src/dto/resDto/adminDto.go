@@ -16,3 +16,10 @@ type AdminList struct {
 	Role    int    `json:"role,omitempty"`
 	//Count   uint   `json:"count"`
 }
+
+type UserList struct {
+	Id      uint   `json:"id"`
+	Name    string `json:"name" `
+	Account string `json:"account"`
+	Role    int    `json:"role"`
+}

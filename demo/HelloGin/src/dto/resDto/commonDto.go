@@ -13,3 +13,8 @@ type CommonList struct {
 	Count uint        `json:"count,omitempty"`
 	List  interface{} `json:"list,omitempty"`
 }
+
+type TokenAndExp struct {
+	Token   string `json:"token,omitempty"`
+	Exptime string `json:"exptime"`
+}

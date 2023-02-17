@@ -2,8 +2,8 @@ package reqDto
 
 type UserLogin struct {
 	Account  string `json:"account" `
-	Name     string `  json:"name"  `
-	Password string `  json:"password" binding:"required" `
+	Name     string `json:"name"  `
+	Password string `json:"password" binding:"required" `
 	Method   string `json:"method" binding:"required" gorm:"default:false;one of account,name"`
 	Revoke   bool   `json:"revoke" validate:"required"`
 }
@@ -18,4 +18,9 @@ type AddUser struct {
 	Password string `json:"password,omitempty"  binding:"required" validate:"required"`
 	Account  string `json:"account,omitempty"  binding:"required" validate:"omitempty"`
 	Salt     string `json:"salt,omitempty"`
+}
+type UserList struct {
+	Take int    `json:"take,omitempty" binding:"required"`
+	Skip uint   `json:"skip,omitempty"`
+	Name string `json:"name,omitempty"`
 }

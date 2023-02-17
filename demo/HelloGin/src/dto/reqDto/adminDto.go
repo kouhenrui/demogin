@@ -2,7 +2,9 @@ package reqDto
 
 type AdminLogin struct {
 	Account  string `json:"account" `
+	Name     string `json:"name"  `
 	Password string `json:"password" binding:"required"`
+	Method   string `json:"method" binding:"required" gorm:"default:false;one of account,name"`
 	Revoke   bool   `json:"revoke" validate:"required"`
 }
 type UpdateAdmin struct {
