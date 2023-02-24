@@ -13,20 +13,16 @@ var (
 	Redis = global.Redis
 )
 
+//json格式化数据
 func Marshal(user interface{}) []byte {
 	ub, _ := json.Marshal(user)
 	return ub
 }
-func UnMarshal(r []byte, res struct{}) (bool, interface{}) {
-
-	fmt.Println("%T", res)
-	fmt.Println(res, "实体u类")
-	//fmt.Println(reflect.TypeOf(res))
+func UnMarshal(r []byte, res interface{}) (bool, interface{}) {
 	err := json.Unmarshal(r, &res)
 	if err != nil {
 		return false, REDIS_INFORMATION_ERROR
 	}
-	//fmt.Println(res, "但因的数值")
 	return true, res
 }
 

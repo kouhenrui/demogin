@@ -6,29 +6,24 @@ import (
 	"HelloGin/src/controller/upload"
 	"HelloGin/src/controller/user"
 	"HelloGin/src/controller/ws"
-	"HelloGin/src/global"
 	"HelloGin/src/routers"
 	"fmt"
+	"gopkg.in/ini.v1"
+	"os"
 )
-
-//var (
-//	upgrade = websocket.Upgrader{
-//		//允许跨域
-//		CheckOrigin: func(r *http.Request) bool {
-//			//可以添加用户认证，错误返回false
-//
-//			return true
-//		},
-//	}
-//)
 
 func main() {
 	routers.Include(user.Routers, upload.Routers, async.Routers, admin.Routers, ws.Routers)
 	r := routers.InitRoute()
-
-	//http.HandleFunc("/ws", ws.Myws)
-	//http.ListenAndServe(global.PORT, nil)
-	if err := r.Run(global.PORT); err != nil {
+	//读取配置文件
+	Cfg, inierr := ini.Load("conf/conf.ini")
+	if inierr != nil {
+		fmt.Printf("Fail to read file: %v", inierr)
+		os.Exit(1)
+	}
+	//fmt.Println(cfg.EdctConf.Address)
+	port := Cfg.Section("server").Key("http_port").String()
+	if err := r.Run(port); err != nil {
 		fmt.Errorf("端口占用,err:%v\n", err)
 	}
 }

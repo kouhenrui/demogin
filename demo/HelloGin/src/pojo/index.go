@@ -10,14 +10,17 @@ import (
 //数据库生成表
 var db = global.Db
 var (
-	user   = &User{}
-	admins = &Admin{}
-	t      = &Test{}
-	e      = &Examp{}
+	user      = &User{}
+	admins    = &Admin{}
+	t         = &Test{}
+	e         = &Examp{}
+	rbac_rule = &Rule{}
+	rbac_per  = &Permission{}
+	//rbac_res  = &Resource{}
 )
 
 func init() {
-	//db.AutoMigrate(user, admins, t)
+	//db.AutoMigrate(rbac_rule, rbac_per)
 	//db.AutoMigrate(e)
 	fmt.Println("数据库创建")
 }

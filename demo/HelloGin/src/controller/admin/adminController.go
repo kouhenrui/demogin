@@ -46,13 +46,13 @@ func adminLogin(c *gin.Context) {
 // 获取详情接口
 func getAdminInfo(c *gin.Context) {
 	res := global.NewResult(c)
+
+	//var u=&util.UserClaims{}
 	user, _ := c.Get("user")
-	//info:=adminService.AdminInfo()
 	fmt.Println("request", user)
-	res.Success(gin.H{
-		"message": "hello gin",
-		"request": user,
-	})
+	res.Success(user)
+	//result := adminService.AdminInfo()
+	//res.Success(result)
 	return
 }
 

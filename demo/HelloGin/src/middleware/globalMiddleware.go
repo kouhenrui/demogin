@@ -10,7 +10,7 @@ import (
 )
 
 var (
-//user = &pojo.User{}
+	userInfo = &util.UserClaims{}
 )
 
 func GolbalMiddleWare() gin.HandlerFunc {
@@ -45,6 +45,7 @@ func AuthMiddleWare() gin.HandlerFunc {
 			if !pathIsExist {
 				fmt.Println("身份验证")
 				user := util.AnalysyToken(c)
+				//fmt.Println("userInfo", user)
 				c.Set("user", user)
 			}
 			ts := time.Since(t)

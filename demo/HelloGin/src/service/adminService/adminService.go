@@ -79,15 +79,13 @@ func AdminLogin(list reqDto.AdminLogin) (a bool, tokenAndExp interface{}) {
 	default:
 		return false, util.METHOD_NOT_FILLED_ERROR
 	}
-	if judge {
+	if !judge {
 		return false, util.ACCOUT_NOT_EXIST_ERROR
 	}
 	enpwd := admin.Password
 	salt := admin.Salt
 	pwd, deerr := util.DePwdCode(enpwd, salt)
 	if deerr != nil {
-		fmt.Println(deerr, "加密方法")
-		//errors.New(util.PASSWORD_RESOLUTION_ERROR)
 		return false, util.PASSWORD_RESOLUTION_ERROR
 	}
 	fmt.Println(pwd, list.Password, "比对密码")
@@ -109,7 +107,7 @@ func AdminLogin(list reqDto.AdminLogin) (a bool, tokenAndExp interface{}) {
 		if existOldToken {
 			util.DelRedis(admin.AccessToken) //清除token
 		}
-		token, exptime = util.SignToken(stringTokenData, global.UserLoginTime*global.DayTime)
+		token, exptime = util.SignToken(stringTokenData, global.AdminLoginTime*global.DayTime)
 		ok := adminServiceImpl.UpdateToken(tokenKey, admin.ID)
 		if !ok {
 			return false, util.AUTH_LOGIN_ERROR
@@ -118,7 +116,7 @@ func AdminLogin(list reqDto.AdminLogin) (a bool, tokenAndExp interface{}) {
 			Token: token,
 			Time:  exptime,
 		}
-		util.SetRedis(tokenKey, util.Marshal(redisDate), global.UserLoginTime)
+		util.SetRedis(tokenKey, util.Marshal(redisDate), global.AdminLoginTime)
 		tokenAndExp = resDto.TokenAndExp{
 			token,
 			exptime,
@@ -126,9 +124,12 @@ func AdminLogin(list reqDto.AdminLogin) (a bool, tokenAndExp interface{}) {
 	case false:
 		if existOldToken {
 			tokenValue := util.GetRedis(admin.AccessToken)
-			tokenAndExp = tokenValue
+			mp := make(map[string]interface{})
+			_, cs := util.UnMarshal([]byte(tokenValue), &mp)
+			return true, cs
 		}
-		token, exptime = util.SignToken(stringTokenData, global.UserLoginTime*global.DayTime)
+		//token过期时
+		token, exptime = util.SignToken(stringTokenData, global.AdminLoginTime*global.DayTime)
 		ok := adminServiceImpl.UpdateToken(tokenKey, admin.ID)
 		if !ok {
 			return false, util.AUTH_LOGIN_ERROR
@@ -137,19 +138,20 @@ func AdminLogin(list reqDto.AdminLogin) (a bool, tokenAndExp interface{}) {
 			Token: token,
 			Time:  exptime,
 		}
-		util.SetRedis(tokenKey, util.Marshal(redisDate), global.UserLoginTime)
+		util.SetRedis(tokenKey, util.Marshal(redisDate), global.AdminLoginTime)
 		tokenAndExp = resDto.TokenAndExp{
 			token,
 			exptime,
 		}
+		break
 	}
 	return true, tokenAndExp
 }
 
-//	func AdminInfo(id uint) pojo.Admin {
-//		db.Select("id,name,account,access_token,role").Where("id=?", id).First(&admin)
-//		return admin
-//	}
+func AdminInfo(id uint) pojo.Admin {
+	//db.Select("id,name,account,access_token,role").Where("id=?", id).First(&admin)
+	return admin
+}
 
 // 分页模糊查询管理员
 func AdminList(list reqDto.AdminList) interface{} {

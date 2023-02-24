@@ -69,7 +69,7 @@ func ParseToken(tokenString string) *AllClaims {
 	token, _ := jwt.ParseWithClaims(tokenString, &AllClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return jwtkey, nil
 	})
-	user := token.Claims.(*AllClaims)
-	//fmt.Println(user.User)
+	user, _ := token.Claims.(*AllClaims)
+	fmt.Println(user, "打印")
 	return user
 }

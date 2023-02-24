@@ -113,7 +113,9 @@ func UserLogin(list reqDto.UserLogin) (a bool, tokenAndExp interface{}) {
 	case false:
 		if existOldToken {
 			tokenValue := util.GetRedis(user.AccessToken)
-			tokenAndExp = tokenValue
+			mp := make(map[string]interface{})
+			_, cs := util.UnMarshal([]byte(tokenValue), &mp)
+			return true, cs
 		}
 		token, exptime = util.SignToken(stringTokenData, global.UserLoginTime*global.DayTime)
 		ok := userServiceImpl.UpdateToken(tokenKey, user.ID)

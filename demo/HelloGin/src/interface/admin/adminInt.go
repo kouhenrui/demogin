@@ -45,7 +45,7 @@ func (a *AdminDao) AdminList(list reqDto.AdminList) resDto.CommonList {
 // 查询账号
 func (a *AdminDao) CheckByAccount(account string) (pojo.Admin, bool) {
 	res := db.Model(&admin).First(&admin).Where("account =?", account)
-	if res.RowsAffected <= 0 {
+	if res.RowsAffected < 1 {
 		return admin, false
 	}
 	return admin, true
@@ -54,7 +54,7 @@ func (a *AdminDao) CheckByAccount(account string) (pojo.Admin, bool) {
 // 查询名称
 func (a *AdminDao) CheckByName(name string) (pojo.Admin, bool) {
 	res := db.Model(&admin).First(&admin).Where("name =?", name)
-	if res.RowsAffected <= 0 {
+	if res.RowsAffected < 1 {
 		return admin, false
 	}
 	return admin, true

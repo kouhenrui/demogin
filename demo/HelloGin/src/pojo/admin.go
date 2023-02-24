@@ -8,12 +8,12 @@ type Admin struct {
 	gorm.Model
 	//Base        Base   `gorm:"embedded"`
 	Name        string `json:"name" gorm:"default:admin;unique:true"`
-	Password    string `json:"password" gorm:"default:123456""`
+	Password    string `json:"password" `
 	Salt        string `json:"salt"`
 	Account     string `json:"account" gorm:"unique:true"`
 	AccessToken string `json:"access_token"`
 	Revoke      bool   `json:"revoke" gorm:"default:false"`
-	Role        int    `json:"role" `
+	Role        int    `json:"role" gorm:"type:not null" `
 }
 
 type AdminInterface interface {
