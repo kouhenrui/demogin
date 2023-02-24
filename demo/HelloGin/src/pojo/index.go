@@ -20,9 +20,14 @@ var (
 )
 
 func init() {
-	//db.AutoMigrate(rbac_rule, rbac_per)
+	db.AutoMigrate(
+		user,
+		admins,
+		rbac_rule,
+
+		rbac_per)
 	//db.AutoMigrate(e)
-	fmt.Println("数据库创建")
+	fmt.Println("表创建")
 }
 
 type Base struct {
