@@ -153,19 +153,25 @@ func EnPwdCode(Pwd string, pwdKey string) (string, error) {
 
 //解密
 func DePwdCode(pwd string, pwdKey string) (string, error) {
+	//fmt.Println("密码", pwd)
 	PwdKey := []byte(pwdKey)
+
 	//解密base64字符串
 	pwdByte, err := base64.StdEncoding.DecodeString(pwd)
 	if err != nil {
 		//errors.New(INTERNAL_ERROR)
 		return INTERNAL_ERROR, err
 	}
+	//fmt.Println("密码字符", pwdByte)
 	//执行AES解密
 
 	ecpwsd, erro := AesDeCrypt(pwdByte, PwdKey)
-	//if erro != nil {
-	//	errors.New(INTERNAL_ERROR)
-	//}
+
+	//fmt.Println("字符格式密码", ecpwsd)
+	//fmt.Println("密码：", string(ecpwsd))
+	if erro != nil {
+		return PASSWORD_RESOLUTION_ERROR, erro
+	}
 	return string(ecpwsd), erro
 
 }

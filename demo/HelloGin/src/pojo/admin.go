@@ -6,14 +6,13 @@ import "gorm.io/gorm"
 
 type Admin struct {
 	gorm.Model
-	//Base        Base   `gorm:"embedded"`
-	Name        string `json:"name" gorm:"default:admin;unique:true"`
+	Name        string `json:"name" gorm:"not null"`
 	Password    string `json:"password" `
 	Salt        string `json:"salt"`
 	Account     string `json:"account" gorm:"unique:true"`
 	AccessToken string `json:"access_token"`
 	Revoke      bool   `json:"revoke" gorm:"default:false"`
-	Role        int    `json:"role" gorm:"type:not null" `
+	Role        int    `json:"role"`
 }
 
 type AdminInterface interface {

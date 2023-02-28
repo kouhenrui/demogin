@@ -135,6 +135,45 @@ func UserLogin(list reqDto.UserLogin) (a bool, tokenAndExp interface{}) {
 	return true, tokenAndExp
 }
 
+func UserRejist(list reqDto.AddUser) (bool, interface{}) {
+	list.Salt = util.RandAllString()
+	var pwd = list.Password
+	//校验是否有密码，没有则为123456
+	if list.Password == "" {
+		pwd = string(123456)
+	}
+	//调用加密方法
+	enPwd, _ := util.EnPwdCode(pwd, list.Salt)
+	//加密密码
+	list.Password = enPwd
+	//检查名称是否重复
+	//if list.Name != "" {
+	//	_, judge = adminServiceImpl.CheckByName(add.Name)
+	//	if judge {
+	//		return false, util.NAME_EXIST_ERROR
+	//	}
+	//}
+	//if list.Name == "" {
+	//	add.Name = "暂未命名"
+	//}
+	//_, judge = adminServiceImpl.CheckByAccount(add.Account)
+	//if judge {
+	//	return false, util.ACCOUNT_EXIST_ERROR
+	//}
+	//ad := pojo.Admin{
+	//	Salt:     add.Salt,
+	//	Password: add.Password,
+	//	Name:     add.Name,
+	//	Account:  add.Account,
+	//	Role:     add.Role}
+	//judge = adminServiceImpl.AddAdmin(ad)
+	//if judge {
+	//	return true, util.ADD_SUCCESS
+	//} else {
+	//	return false, util.ADD_ERROR
+	//}
+}
+
 //func UserByNameAndAccount(query string) bool {
 //	result := db.Where(query).Take(&u)
 //	if result.Error != nil {

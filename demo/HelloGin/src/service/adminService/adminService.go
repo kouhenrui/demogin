@@ -82,13 +82,20 @@ func AdminLogin(list reqDto.AdminLogin) (a bool, tokenAndExp interface{}) {
 	if !judge {
 		return false, util.ACCOUT_NOT_EXIST_ERROR
 	}
-	enpwd := admin.Password
-	salt := admin.Salt
-	pwd, deerr := util.DePwdCode(enpwd, salt)
+
+	fmt.Println(admin.Password, admin.Salt, "加密密码he加密盐")
+	pwd, deerr := util.DePwdCode(admin.Password, admin.Salt)
+
+	//testpwd, _ := util.EnPwdCode("123456", admin.Salt)
+	//fmt.Println("现场加密：", testpwd)
+	//testdepwd, _ := util.DePwdCode(testpwd, admin.Salt)
+	//fmt.Println("现场揭秘：", testdepwd)
 	if deerr != nil {
 		return false, util.PASSWORD_RESOLUTION_ERROR
 	}
-	fmt.Println(pwd, list.Password, "比对密码")
+	if pwd == "" {
+		return false, util.PASSWORD_RESOLUTION_ERROR
+	}
 	if pwd != list.Password {
 		return false, util.AUTH_LOGIN_PASSWORD_ERROR
 	}
@@ -161,14 +168,14 @@ func AdminList(list reqDto.AdminList) interface{} {
 
 // 增加admin
 func AdminAdd(add reqDto.AddAdmin) (bool, interface{}) {
-	salt := util.RandAllString()
-	var pwd string
+	add.Salt = util.RandAllString()
+	var pwd = add.Password
 	//校验是否有密码，没有则为123456
 	if add.Password == "" {
 		pwd = string(123456)
 	}
 	//调用加密方法
-	enPwd, _ := util.EnPwdCode(pwd, salt)
+	enPwd, _ := util.EnPwdCode(pwd, add.Salt)
 	//加密密码
 	add.Password = enPwd
 	//检查名称是否重复
@@ -185,7 +192,13 @@ func AdminAdd(add reqDto.AddAdmin) (bool, interface{}) {
 	if judge {
 		return false, util.ACCOUNT_EXIST_ERROR
 	}
-	judge = adminServiceImpl.AddAdmin(add)
+	ad := pojo.Admin{
+		Salt:     add.Salt,
+		Password: add.Password,
+		Name:     add.Name,
+		Account:  add.Account,
+		Role:     add.Role}
+	judge = adminServiceImpl.AddAdmin(ad)
 	if judge {
 		return true, util.ADD_SUCCESS
 	} else {

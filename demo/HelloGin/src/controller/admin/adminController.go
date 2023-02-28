@@ -35,7 +35,7 @@ func adminLogin(c *gin.Context) {
 		return
 	}
 	jude, result := adminService.AdminLogin(js)
-	if jude {
+	if !jude {
 		res.Err(result)
 		return
 	}

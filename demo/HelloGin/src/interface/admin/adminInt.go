@@ -5,6 +5,7 @@ import (
 	"HelloGin/src/dto/resDto"
 	"HelloGin/src/global"
 	"HelloGin/src/pojo"
+	"fmt"
 )
 
 /**
@@ -44,8 +45,8 @@ func (a *AdminDao) AdminList(list reqDto.AdminList) resDto.CommonList {
 
 // 查询账号
 func (a *AdminDao) CheckByAccount(account string) (pojo.Admin, bool) {
-	res := db.Model(&admin).First(&admin).Where("account =?", account)
-	if res.RowsAffected < 1 {
+	res := db.Where("account =?", account).Find(&admin)
+	if res.RowsAffected != 1 {
 		return admin, false
 	}
 	return admin, true
@@ -53,8 +54,8 @@ func (a *AdminDao) CheckByAccount(account string) (pojo.Admin, bool) {
 
 // 查询名称
 func (a *AdminDao) CheckByName(name string) (pojo.Admin, bool) {
-	res := db.Model(&admin).First(&admin).Where("name =?", name)
-	if res.RowsAffected < 1 {
+	res := db.Where("name =?", name).Find(&admin)
+	if res.RowsAffected != 1 {
 		return admin, false
 	}
 	return admin, true
@@ -71,8 +72,9 @@ func (a *AdminDao) UpdateToken(access_token string, id uint) bool {
 }
 
 // 增加用户
-func (a *AdminDao) AddAdmin(admin2 reqDto.AddAdmin) bool {
-	res := db.Model(&admin).Create(admin2)
+func (a *AdminDao) AddAdmin(admin pojo.Admin) bool {
+	fmt.Println(admin)
+	res := db.Create(&admin)
 	if res.RowsAffected != 1 {
 		return false
 	}

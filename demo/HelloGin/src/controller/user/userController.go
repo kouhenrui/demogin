@@ -23,7 +23,7 @@ func Routers(e *gin.Engine) {
 		userGroup.GET("/info", getUserInfo)
 		userGroup.POST("/post/message", postMessage)
 		userGroup.PUT("/put/user", updateUser)
-		//userGroup.POST("/register/user", rejisterUser)
+		userGroup.POST("/register/user", rejisterUser)
 	}
 
 }
@@ -34,7 +34,7 @@ var trans ut.Translator
 var login = interf.LoginService()
 var use pojo.User
 
-//	func addUser(c *gin.Context) {
+//	func rejisterUser(c *gin.Context) {
 //		result := global.NewResult(c)
 //		var add reqDto.AddUser
 //		if err := c.ShouldBindJSON(&add); err != nil {
@@ -82,31 +82,26 @@ var use pojo.User
 //		return
 //	}
 //
-//	func rejisterUser(c *gin.Context) {
-//		log.Println("注册请求接收到")
-//		res := global.NewResult(c)
-//		var a reqDto.AddUser
-//		if err := c.BindJSON(&a); err != nil {
-//			errs, ok := err.(validator.ValidationErrors)
-//			if !ok {
-//				res.Error(http.StatusInternalServerError, err.Error())
-//				return
-//			}
-//			res.Error(http.StatusBadRequest, global.Translate(errs))
-//			return
-//		}
-//		salt := util.RandAllString()
-//		sa, _ := util.EnPwdCode(a.Password, salt)
-//		a.Password = sa
-//		a.Salt = salt
-//		bol, msg := userservice.AddUser(a.Name, a.Account, a.Password, a.Salt)
-//		if !bol {
-//			res.Error(http.StatusBadRequest, msg)
-//			return
-//		}
-//		res.Success(util.SUCCESS)
-//		return
-//	}
+func rejisterUser(c *gin.Context) {
+	res := global.NewResult(c)
+	var add reqDto.AddUser
+	if err := c.BindJSON(&add); err != nil {
+		errs, ok := err.(validator.ValidationErrors)
+		if !ok {
+			res.Error(http.StatusInternalServerError, err.Error())
+			return
+		}
+		res.Error(http.StatusBadRequest, global.Translate(errs))
+		return
+	}
+	bol, msg := userService.UserRejist(add)
+	if !bol {
+		res.Err(msg)
+		return
+	}
+	res.Success(msg)
+	return
+}
 func userLogin(c *gin.Context) {
 	res := global.NewResult(c)
 	var js reqDto.UserLogin

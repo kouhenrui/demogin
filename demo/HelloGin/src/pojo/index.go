@@ -24,8 +24,8 @@ func init() {
 		user,
 		admins,
 		rbac_rule,
-
-		rbac_per)
+		rbac_per,
+	)
 	//db.AutoMigrate(e)
 	fmt.Println("表创建")
 }
