@@ -41,7 +41,7 @@ type Data struct {
 var user_list = []string{}
 
 func Routers(e *gin.Engine) {
-	wsGroup := e.Group("/ws")
+	wsGroup := e.Group("/api/ws")
 	{
 		wsGroup.GET("/connect", ws)
 	}
@@ -70,10 +70,14 @@ func ws(c *gin.Context) {
 		fmt.Println("websocket连接错误")
 		result.Err(util.WEBSOCKET_CONNECT_ERROR)
 	}
+	fmt.Println("将get请求转换为ws请求")
 	con := &connection{ws: ws, data: &Data{}, sc: make(chan []byte, 1024)}
-	h.r <- con
-	go con.writer()
-	go con.reader()
+	fmt.Println("开始决定进入那个线程", con)
+	//h.r <- con
+	//fmt.Println("读取连接：", <-h.r)
+
+	go con.Writer()
+	con.Reader()
 	//defer func() {
 	//	count := len(user_list)
 	//	if count == 0 {
@@ -102,20 +106,24 @@ func ws(c *gin.Context) {
 	//}
 	fmt.Println("我们结束聊天啦")
 }
-func (c *connection) writer() {
+func (c *connection) Writer() {
+	fmt.Println("进入编写信息携程")
 	for message := range c.sc {
 		c.ws.WriteMessage(websocket.TextMessage, message)
 	}
 	c.ws.Close()
 }
 
-func (c *connection) reader() {
+func (c *connection) Reader() {
+	fmt.Println("进入读取信息携程")
 	for {
 		_, message, err := c.ws.ReadMessage()
 		if err != nil {
 			h.r <- c
 			break
 		}
+		fmt.Println(string(message), "读取inxi")
+		fmt.Println(c.data.Type, "读取inxi")
 		json.Unmarshal(message, &c.data)
 		switch c.data.Type {
 		case "login":
@@ -123,9 +131,11 @@ func (c *connection) reader() {
 		case "user":
 			c.data.Type = "user"
 			data_b, _ := json.Marshal(c.data)
-			fmt.Println(data_b)
+			fmt.Println(string(data_b), "读取的信息")
 			h.b <- data_b
+			fmt.Println(string(<-h.b))
 		case "logout":
+			fmt.Println("用户推出")
 			c.del()
 		default:
 			fmt.Print("========default================")

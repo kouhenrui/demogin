@@ -1,6 +1,9 @@
 package util
 
 const (
+	//权限错误
+	NO_AUTH_ERROR = "请登录"
+
 	SUCCESS               = "成功"
 	MODIFICATION_SUCCESSE = "修改成功"
 	ADD_SUCCESS           = "增加成功"
@@ -10,6 +13,7 @@ const (
 	ACCOUNT_EXIST_ERROR          = "账号已存在"
 	AUTH_LOGIN_PASSWORD_ERROR    = "密码验证错误"
 	AUTH_LOGIN_COUNT_ERROR       = "账号输入错误"
+	METHOD_NOT_FOUND             = "方法未找到"
 
 	AUTH_LOGIN_ERROR                 = "登陆错误"
 	NO_PERMMISSION_ERROR             = "权限不足"
@@ -39,4 +43,7 @@ const (
 	//websocket错误
 
 	WEBSOCKET_CONNECT_ERROR = "websocket连接错误"
+
+	//权限错误
+	INSUFFICENT_PERMISSION = "权限不足"
 )

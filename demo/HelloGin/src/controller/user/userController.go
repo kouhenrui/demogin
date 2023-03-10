@@ -1,11 +1,8 @@
 package user
 
-import "C"
 import (
 	"HelloGin/src/dto/reqDto"
 	"HelloGin/src/global"
-	interf "HelloGin/src/interface"
-	"HelloGin/src/pojo"
 	"HelloGin/src/service/userService"
 	"HelloGin/src/util"
 	"fmt"
@@ -31,8 +28,8 @@ func Routers(e *gin.Engine) {
 var trans ut.Translator
 
 // var userservice = userService.NewUserService()
-var login = interf.LoginService()
-var use pojo.User
+//var login = interf.LoginService()
+//var use pojo.User
 
 //	func rejisterUser(c *gin.Context) {
 //		result := global.NewResult(c)
@@ -81,7 +78,6 @@ var use pojo.User
 //		result.Success(gin.H{"token": token})
 //		return
 //	}
-//
 func rejisterUser(c *gin.Context) {
 	res := global.NewResult(c)
 	var add reqDto.AddUser

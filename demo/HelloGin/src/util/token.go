@@ -5,19 +5,19 @@ import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"net/http"
 	"time"
 )
 
 var jwtkey = []byte(global.JWTKEY)
 var str string
 
-//var userInfo pojo.User
+// var userInfo pojo.User
 type UserClaims struct {
-	Name    string `json:"name"`
-	Role    int    `json:"role"`
-	Account string `json:"account"`
-	Id      uint   `json:"id"`
+	Name     string `json:"name"`
+	Role     int    `json:"role"`
+	Account  string `json:"account"`
+	Id       uint   `json:"id"`
+	RoleName string `json:"role_name""`
 }
 
 type AllClaims struct {
@@ -25,7 +25,7 @@ type AllClaims struct {
 	User UserClaims
 }
 
-//颁发token
+// 颁发token
 func SignToken(infoClaims UserClaims, day time.Duration) (string, string) {
 	expireTime := time.Now().Add(day) //7天过期时间
 	claims := &AllClaims{
@@ -48,28 +48,24 @@ func SignToken(infoClaims UserClaims, day time.Duration) (string, string) {
 	return tokenString, tFStr
 }
 
-//验证token
-func AnalysyToken(c *gin.Context) interface{} {
-	result := global.NewResult(c)
+// 验证token
+func AnalysyToken(c *gin.Context) bool {
+	fmt.Println("进入token验证")
 	tokenString := c.GetHeader("Authorization")
 	if tokenString == "" {
-		result.Success(gin.H{"code": http.StatusUnauthorized, "msg": NO_AUTHORIZATION})
-		c.Abort()
-		return result
+		return false
 	}
-
-	user := ParseToken(tokenString)
-	return user.User
+	return true
 }
 
 // 解析Token
-func ParseToken(tokenString string) *AllClaims {
+func ParseToken(tokenString string) UserClaims {
 	//claims := &Claims{}
 	//解析token
 	token, _ := jwt.ParseWithClaims(tokenString, &AllClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return jwtkey, nil
 	})
 	user, _ := token.Claims.(*AllClaims)
-	fmt.Println(user, "打印")
-	return user
+	//fmt.Println(user.User, "打印")
+	return user.User
 }

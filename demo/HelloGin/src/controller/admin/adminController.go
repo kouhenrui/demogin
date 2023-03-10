@@ -13,11 +13,17 @@ import (
 func Routers(e *gin.Engine) {
 	adminGroup := e.Group("/api/admin")
 	{
+		adminGroup.POST("/register", registerAdmin)
 		adminGroup.POST("/login", adminLogin)
 		adminGroup.GET("/info", getAdminInfo)
-		adminGroup.POST("/register", registerAdmin)
+		adminGroup.GET("/logout", logout)
 		adminGroup.POST("/list", adminList)
 		adminGroup.POST("/users/list", userList)
+		adminGroup.POST("/permission/list", permissionList)
+		adminGroup.POST("/permission/add", permissionAdd)
+		adminGroup.PUT("/permission/update", permissionUpdate)
+		//adminGroup.DELETE("/permission/update", permissionDelete)
+		//adminGroup.GET("/permission/update", permissionInfo)
 	}
 }
 
@@ -41,6 +47,13 @@ func adminLogin(c *gin.Context) {
 	}
 	res.Success(result)
 	return
+}
+
+// 登出
+func logout(c *gin.Context) {
+	res := global.NewResult(c)
+	go adminService.AdminLogout()
+	res.Succ()
 }
 
 // 获取详情接口
@@ -113,6 +126,65 @@ func userList(c *gin.Context) {
 		return
 	}
 	list := adminService.UserList(ls)
+	res.Success(list)
+	return
+}
+
+// 权限列表
+func permissionList(c *gin.Context) {
+	res := global.NewResult(c)
+	var ls reqDto.PermissionList
+	fmt.Println(ls, &ls)
+	if err := c.BindJSON(&ls); err != nil {
+		errs, ok := err.(validator.ValidationErrors)
+		if !ok {
+			res.Error(http.StatusBadRequest, err.Error())
+			return
+		}
+		res.Error(http.StatusBadRequest, global.Translate(errs))
+		return
+	}
+	list := adminService.PermissionList(ls)
+	res.Success(list)
+	return
+}
+
+// 权限增加
+func permissionAdd(c *gin.Context) {
+	res := global.NewResult(c)
+	var ls reqDto.PermissionAdd
+	fmt.Println(ls, &ls)
+	if err := c.BindJSON(&ls); err != nil {
+		errs, ok := err.(validator.ValidationErrors)
+		if !ok {
+			res.Error(http.StatusBadRequest, err.Error())
+			//c.Abort()
+			return
+		}
+		res.Error(http.StatusBadRequest, global.Translate(errs))
+		//c.Abort()
+		return
+	}
+	list := adminService.PermissionAdd(ls)
+	res.Success(list)
+	return
+}
+
+/* 权限修改*/
+func permissionUpdate(c *gin.Context) {
+	res := global.NewResult(c)
+	var ls reqDto.PermissionUpdate
+	fmt.Println(ls, &ls)
+	if err := c.BindJSON(&ls); err != nil {
+		errs, ok := err.(validator.ValidationErrors)
+		if !ok {
+			res.Error(http.StatusBadRequest, err.Error())
+			return
+		}
+		res.Error(http.StatusBadRequest, global.Translate(errs))
+		return
+	}
+	list := adminService.PermissionUpdate(ls)
 	res.Success(list)
 	return
 }

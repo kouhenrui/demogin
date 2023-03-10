@@ -1,6 +1,11 @@
 package pojo
 
-import "gorm.io/gorm"
+import (
+	"HelloGin/src/dto/reqDto"
+	"HelloGin/src/dto/resDto"
+	"fmt"
+	"gorm.io/gorm"
+)
 
 /**
 * @program: work_space
@@ -55,4 +60,185 @@ type Group struct {
 	Name         string `json:"name"`
 	RoleId       string `json:"role_id"`
 	PermissionId string `json:"permission_id"`
+}
+
+var (
+	groups          = []Group{}
+	rules           = []Rule{}
+	permissions     = []Permission{}
+	rolesList       = []resDto.RoleList{}
+	groupsList      = []resDto.GroupList{}
+	permissionsList = []resDto.PermissonList{}
+)
+
+func RbacRule() Rule {
+	return Rule{}
+}
+
+func RbacGroup() Group {
+	return Group{}
+}
+func RbacPermission() Permission {
+	return Permission{}
+}
+
+// 角色查询
+func (r *Rule) FindRoleName(id uint) (bool, *Rule) {
+	r.ID = id
+	res := db.Find(&r)
+	if res.RowsAffected != 1 {
+		return false, r
+	}
+	return true, r
+}
+
+// 增加，修改角色
+func (r *Rule) AddRole(rule Rule) bool {
+	res := db.Save(&rule)
+	if res.RowsAffected != 1 {
+		return false
+	}
+	return true
+}
+
+// 角色列表
+func (r *Rule) FindRoleList(list reqDto.RbacList) resDto.CommonList {
+	query := db.Model(&r)
+	if list.Name != "" {
+		query.Where("name like ?", "%"+list.Name+"%")
+	}
+	query.Limit(list.Take).Offset(int(list.Skip)).Find(&rolesList)
+	reslist.Count = uint(query.RowsAffected)
+	reslist.List = rolesList
+	return reslist
+}
+
+//// 修改角色
+//func (r *Rule) SaveRole(rule Rule) bool {
+//	res := db.Save(&rule)
+//	if res.RowsAffected != 1 {
+//		return false
+//	}
+//	return true
+//}
+
+// 删除角色
+func (r *Rule) DelRole(id int) bool {
+	r.ID = uint(id)
+	res := db.Delete(&r)
+	if res.RowsAffected != 1 {
+		return false
+	}
+	return true
+}
+
+// 查看组
+func (g *Group) FindGroupName(id uint) (bool, *Group) {
+	g.ID = id
+	res := db.Find(&g)
+	if res.RowsAffected != 1 {
+		return false, g
+	}
+	return true, g
+}
+
+// 增加，修改组
+func (g *Group) AddGroup(group Group) bool {
+	res := db.Save(&group)
+	if res.RowsAffected != 1 {
+		return false
+	}
+	return true
+}
+
+// 组列表
+func (g *Group) FindGroupList(list reqDto.RbacList) resDto.CommonList {
+	query := db.Model(&g)
+	if list.Name != "" {
+		query.Where("name like ?", "%"+list.Name+"%")
+	}
+	query.Limit(list.Take).Offset(int(list.Skip)).Find(&groupsList)
+	reslist.Count = uint(query.RowsAffected)
+	reslist.List = groupsList
+	return reslist
+}
+
+// 修改组
+func (g *Group) SaveGroup(grop Group) bool {
+	res := db.Updates(grop)
+	if res.RowsAffected != 1 {
+		return false
+	}
+	return true
+}
+
+// 删除组
+func (g *Group) DelGroup(id int) bool {
+	g.ID = uint(id)
+	res := db.Delete(&g)
+	if res.RowsAffected != 1 {
+		return false
+	}
+	return true
+}
+
+// 通过id查看权限
+func (p *Permission) FindPermissionName(id uint) (bool, *Permission) {
+	p.ID = id
+	res := db.Find(&p)
+	if res.RowsAffected != 1 {
+		return false, p
+	}
+	return true, p
+}
+
+// 通过请求路径查看权限
+func (p *Permission) FindPermissionByPath(path string) (bool, *Permission) {
+	p.Path = path
+	res := db.Find(&p).Where("path like ?", "%"+path+"%")
+	if res.RowsAffected != 1 {
+		return false, p
+	}
+	return true, p
+}
+
+// 增加,修改权限
+func (p *Permission) AddPermission(permission Permission) bool {
+	fmt.Println(permission)
+	res := db.Save(&permission)
+	if res.RowsAffected != 1 {
+		return false
+	}
+	return true
+}
+
+// 权限列表
+func (p *Permission) FindPermissionList(list reqDto.PermissionList) resDto.CommonList {
+	query := db.Model(&p)
+	if list.Path != "" {
+		query.Where("path like ?", "%"+list.Path+"%")
+	}
+	query.Limit(list.Take).Offset(int(list.Skip)).Find(&permissionsList)
+	reslist.Count = uint(query.RowsAffected)
+	reslist.List = permissionsList
+	return reslist
+}
+
+// 修改权限
+func (p *Permission) SavePermission(permission Permission) bool {
+	res := db.Save(&permission)
+	if res.RowsAffected != 1 {
+		return false
+	}
+	return true
+}
+
+// 删除权限
+func (p *Permission) DelPermission(id int) bool {
+	p.ID = uint(id)
+	res := db.Delete(&p)
+	if res.RowsAffected != 1 {
+		return false
+	}
+	return true
 }

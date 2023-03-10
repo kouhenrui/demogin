@@ -18,6 +18,7 @@ type AddUser struct {
 	Password string `json:"password,omitempty"  binding:"required" validate:"required"`
 	Account  string `json:"account,omitempty"  binding:"required" validate:"omitempty"`
 	Salt     string `json:"salt,omitempty"`
+	Role     int    `json:"role,omitempty"`
 }
 type UserList struct {
 	Take int    `json:"take,omitempty" binding:"required"`

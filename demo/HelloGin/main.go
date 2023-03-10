@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	routers.Include(user.Routers, upload.Routers, async.Routers, admin.Routers, ws.Routers)
+	routers.Include(upload.Routers, async.Routers, admin.Routers, ws.Routers, user.Routers)
 	r := routers.InitRoute()
 	//读取配置文件
 	Cfg, inierr := ini.Load("conf/conf.ini")

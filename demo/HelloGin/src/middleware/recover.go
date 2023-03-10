@@ -2,27 +2,35 @@ package middleWare
 
 import (
 	"HelloGin/src/global"
+	"fmt"
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
 	"runtime/debug"
 )
 
-//返回的结果：
+// 返回的结果：
 type Result struct {
 	Code int         `json:"code"` //提示代码
 	Msg  string      `json:"msg"`  //提示信息
 	Data interface{} `json:"data"` //数据
 }
+type AuthErr struct {
+	Message string `json:"message,omitempty"`
+	Code    int    `json:"code,omitempty"`
+}
+
+func (a *AuthErr) AuthErr() *AuthErr {
+	return a
+}
 
 func Recover(c *gin.Context) {
 	defer func() {
-		r := recover()
+
 		result := global.NewResult(c)
-		if r != nil {
-			log.Println("打印错误信息")
+		if r := recover(); r != nil {
+			fmt.Println("打印错误信息:", r)
 			//打印错误堆栈信息
-			log.Printf("panic: %v\n", r)
+			fmt.Printf("panic: %v\n", r)
 
 			debug.PrintStack()
 			result.Error(http.StatusInternalServerError, errorToString(r))
@@ -37,9 +45,14 @@ func Recover(c *gin.Context) {
 
 // recover错误，转string
 func errorToString(r interface{}) string {
+	fmt.Println(r)
 	switch v := r.(type) {
+	//fmt.Println("错误类型：",v)
 	case error:
 		return v.Error()
+
+	case *AuthErr:
+		return r.(string)
 	default:
 		return r.(string)
 	}

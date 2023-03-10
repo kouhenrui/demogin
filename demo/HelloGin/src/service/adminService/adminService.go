@@ -4,24 +4,26 @@ import (
 	"HelloGin/src/dto/reqDto"
 	"HelloGin/src/dto/resDto"
 	"HelloGin/src/global"
-	adminDao "HelloGin/src/interface/admin"
 	"HelloGin/src/pojo"
 	"HelloGin/src/service/userService"
 	"HelloGin/src/util"
-	"fmt"
 )
 
-type AdminService struct {
-}
+//type AdminService struct {
+//}
 
 var admin pojo.Admin
 var judge bool
 
-// var b bool
-// var admins []pojo.Admin
+// 引入dao层
+var (
+	permissionServiceImpl = pojo.RbacPermission()
+	roleServiceImpl       = pojo.RbacRule()
+	adminServiceImpl      = pojo.AdminServiceImpl()
+)
 
-var adminServiceImpl = adminDao.AdminServiceImpl()
-
+//var rbac=pojo.RbacServiceImpl()
+//var rbac=pojo.Rbac.
 //var userDao UserDao
 //func FindByAccount(account string) (pojo.Admin, bool) {
 //	r := db.Select("id,name,account,password,salt,access_token,role").Where("account=?", account).First(&admin)
@@ -82,14 +84,7 @@ func AdminLogin(list reqDto.AdminLogin) (a bool, tokenAndExp interface{}) {
 	if !judge {
 		return false, util.ACCOUT_NOT_EXIST_ERROR
 	}
-
-	fmt.Println(admin.Password, admin.Salt, "加密密码he加密盐")
 	pwd, deerr := util.DePwdCode(admin.Password, admin.Salt)
-
-	//testpwd, _ := util.EnPwdCode("123456", admin.Salt)
-	//fmt.Println("现场加密：", testpwd)
-	//testdepwd, _ := util.DePwdCode(testpwd, admin.Salt)
-	//fmt.Println("现场揭秘：", testdepwd)
 	if deerr != nil {
 		return false, util.PASSWORD_RESOLUTION_ERROR
 	}
@@ -99,15 +94,17 @@ func AdminLogin(list reqDto.AdminLogin) (a bool, tokenAndExp interface{}) {
 	if pwd != list.Password {
 		return false, util.AUTH_LOGIN_PASSWORD_ERROR
 	}
+	_, role_name := roleServiceImpl.FindRoleName(uint(admin.Role))
 	existOldToken := util.ExistRedis(admin.AccessToken)
 	tokenKey := util.Rand6String6()
 	var token string
 	var exptime string
 	stringTokenData := util.UserClaims{
-		Id:      admin.ID,
-		Name:    admin.Name,
-		Account: admin.Account,
-		Role:    admin.Role,
+		Id:       admin.ID,
+		Name:     admin.Name,
+		Account:  admin.Account,
+		Role:     admin.Role,
+		RoleName: role_name.Name,
 	}
 	switch list.Revoke {
 	case true:
@@ -210,4 +207,42 @@ func AdminAdd(add reqDto.AddAdmin) (bool, interface{}) {
 func UserList(list reqDto.UserList) interface{} {
 	res := userService.UserList(list)
 	return res
+}
+
+// 登出
+func AdminLogout() {
+	util.DelRedis(admin.AccessToken)
+}
+
+// 权限列表
+func PermissionList(list reqDto.PermissionList) interface{} {
+	res := permissionServiceImpl.FindPermissionList(list)
+	return res
+}
+
+/*权限增加*/
+func PermissionAdd(permission reqDto.PermissionAdd) bool {
+	per := pojo.Permission{
+		Host:            permission.Host,
+		Path:            permission.Path,
+		AuthorizedRoles: permission.AuthorizedRoles,
+		ForbiddenRoles:  permission.ForbiddenRoles,
+		Method:          permission.Method,
+		AllowAnyone:     permission.AllowAnyone,
+	}
+	return permissionServiceImpl.AddPermission(per)
+}
+
+/*权限修改*/
+func PermissionUpdate(permission reqDto.PermissionUpdate) bool {
+	per := pojo.Permission{
+		Host:            permission.Host,
+		Path:            permission.Path,
+		AuthorizedRoles: permission.AuthorizedRoles,
+		ForbiddenRoles:  permission.ForbiddenRoles,
+		Method:          permission.Method,
+		AllowAnyone:     permission.AllowAnyone,
+	}
+	per.ID = permission.ID
+	return permissionServiceImpl.SavePermission(per)
 }

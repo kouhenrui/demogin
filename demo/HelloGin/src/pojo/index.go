@@ -1,32 +1,32 @@
 package pojo
 
 import (
+	"HelloGin/src/dto/resDto"
 	"HelloGin/src/global"
 	"fmt"
 	"gorm.io/gorm"
 	"time"
 )
 
-//数据库生成表
+// 数据库生成表
 var db = global.Db
+var reslist = resDto.CommonList{}
 var (
-	user      = &User{}
-	admins    = &Admin{}
-	t         = &Test{}
-	e         = &Examp{}
+	userpojo  = &User{}
+	adminpojo = &Admin{}
 	rbac_rule = &Rule{}
 	rbac_per  = &Permission{}
-	//rbac_res  = &Resource{}
+	group     = &Group{}
 )
 
 func init() {
 	db.AutoMigrate(
-		user,
-		admins,
-		rbac_rule,
-		rbac_per,
+	//user,
+	//admins,
+	//rbac_rule,
+	//rbac_per,
+	//group,
 	)
-	//db.AutoMigrate(e)
 	fmt.Println("表创建")
 }
 

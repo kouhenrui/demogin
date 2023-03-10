@@ -5,8 +5,6 @@ import (
 	middleWare "HelloGin/src/middleware"
 	"HelloGin/src/util"
 	"github.com/gin-gonic/gin"
-	//"websockTest/websocket"
-	//"golang.org/x/net/websocket"
 	"log"
 	"net/http"
 )
@@ -21,12 +19,12 @@ func Include(opts ...Option) {
 func InitRoute() *gin.Engine {
 	log.Println("路由初始化调用")
 	r := gin.New()
+	r.Use(Cors())                               //民间跨域
 	r.StaticFS("/img", http.Dir("./static"))    //加载静态资源，一般是上传的资源，例如用户上传的图片
 	r.StaticFS("/dynamic", http.Dir("./video")) //加载静态资源，一般是上传的资源，例如用户上传的图片
 	r.Use(middleWare.LoggerMiddleWare())        //日志中间件
 	r.Use(middleWare.GolbalMiddleWare())        //全局中间件
 	r.Use(middleWare.AuthMiddleWare())          //身份认证
-	r.Use(Cors())                               //民间跨域
 	r.Use(middleWare.Recover)                   //错误捕捉
 	r.NoRoute(HandleNotFound)                   //路由未找到
 	r.NoMethod(HandleNotAllowed)                //方法未找到
@@ -38,7 +36,7 @@ func InitRoute() *gin.Engine {
 
 }
 
-//404
+// 404
 func HandleNotFound(c *gin.Context) {
 	res := global.NewResult(c)
 	res.Error(http.StatusNotFound, util.RESOURCE_NOT_FOUND_ERROR)

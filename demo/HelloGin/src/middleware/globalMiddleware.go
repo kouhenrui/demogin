@@ -2,6 +2,7 @@ package middleWare
 
 import (
 	"HelloGin/src/global"
+	"HelloGin/src/pojo"
 	"HelloGin/src/util"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -9,49 +10,85 @@ import (
 	"time"
 )
 
-var (
-	userInfo = &util.UserClaims{}
-)
+var userInfo util.UserClaims
+var permissionServiceImpl = pojo.RbacPermission()
 
 func GolbalMiddleWare() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		//t := time.Now()
-		//fmt.Println("全局中间件开始执行")
-		//requestUrl := c.Request.URL.String()
-		//reqUrl := strings.Split(requestUrl, "/api/")
-		//
-		//paths := global.ReuqestPaths
-		//pathIsExist := existIn(reqUrl[1], paths)
-		//ts := time.Since(t)
-		//fmt.Println("time", ts)
-		//fmt.Println("全局中间件执行结束")
+		res := global.NewResult(c)
+		fmt.Println("身份认证开始执行")
+		t := time.Now()
+		requestUrl := c.Request.URL.String()
+		reqUrl := strings.Split(requestUrl, "/api/")
+		paths := global.ReuqestPaths
+		pathIsExist := util.ExistIn(reqUrl[1], paths)
+		if !pathIsExist {
+			fmt.Println("身份验证")
+			judge := util.AnalysyToken(c)
+			if !judge {
+				res.Err(util.NO_AUTHORIZATION)
+				c.Abort()
+				return
+
+			}
+			userInfo = util.ParseToken(c.GetHeader("Authorization"))
+			c.Set("id", userInfo.Id)
+			c.Set("name", userInfo.Name)
+			c.Set("role", userInfo.Role)
+			c.Set("account", userInfo.Account)
+			c.Set("role_name", userInfo.RoleName)
+			c.Next()
+		}
+		ts := time.Since(t)
+		fmt.Println("time", ts)
+		fmt.Println("身份认证执行结束")
 
 	}
 }
 func AuthMiddleWare() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		fmt.Println("身份认证开始执行")
-		t := time.Now()
+		res := global.NewResult(c)
+
 		requestUrl := c.Request.URL.String()
-		//fmt.Println(requestUrl)
-		if strings.Contains(requestUrl, "/ws/") {
-			//ts := time.Since(t)
-			//fmt.Println(requestUrl)
-			fmt.Println("ws身份认证执行结束")
+		reqUrl := strings.Split(requestUrl, "/api/")
+		paths := global.ReuqestPaths
+		pathIsExist := util.ExistIn(reqUrl[1], paths)
+		if !pathIsExist {
+			res.Err(util.NO_AUTH_ERROR)
 		} else {
-			reqUrl := strings.Split(requestUrl, "/api/")
-			paths := global.ReuqestPaths
-			pathIsExist := util.ExistIn(reqUrl[1], paths)
-			if !pathIsExist {
-				fmt.Println("身份验证")
-				user := util.AnalysyToken(c)
-				//fmt.Println("userInfo", user)
-				c.Set("user", user)
+			role_name, ok := c.Get("role_name")
+			role, _ := c.Get("role")
+			fmt.Println(role_name, "用户数据")
+			fmt.Println(ok, "ok")
+			if ok {
+				if role_name == "admin" {
+					c.Next()
+				}
+				//访问权限
+				requestUrl := c.Request.URL.String()
+				reqUrl := strings.Split(requestUrl, "/api/")
+				fmt.Println(reqUrl[1])
+				t, permission := permissionServiceImpl.FindPermissionByPath(reqUrl[1])
+				fmt.Println(t)
+				//if !t {
+				//	res.Err(util.INSUFFICIENT_PERMISSION_ERROR)
+				//	c.Abort()
+				//	return
+				//}
+
+				allowRole := permission.AuthorizedRoles
+				//roleList := strings.Split(allowRole, ",")
+				fmt.Println("allowRole:", allowRole)
+				//fmt.Fprintf("allowrole is %T",allowRole)
+				fmt.Println("role:", role)
+				//if allowRole != role {
+				//	res.Err(util.INSUFFICENT_PERMISSION)
+				//	c.Abort()
+				//	return
+				//}
 			}
-			ts := time.Since(t)
-			fmt.Println("time", ts)
-			fmt.Println("身份认证执行结束")
 		}
 
+		//fmt.Println("身份认证执行结束")
 	}
 }
