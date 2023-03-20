@@ -1,0 +1,6 @@
+time="2023-03-10 10:54:31" level=info Ip=127.0.0.1 Method=POST SpendTime="2 ms" body="{\n    \"take\":10,\"skip\":0\n}" param="[]" path=/api/api/admin/list query= status=200
+time="2023-03-10 13:35:47" level=info Ip=127.0.0.1 Method=POST SpendTime="0 ms" body="{\n    \"take\":10,\"skip\":0\n}" param="[]" path=/api/admin/list query= status=200
+time="2023-03-10 13:36:41" level=info Ip=127.0.0.1 Method=POST SpendTime="0 ms" body="{\n    \"take\":10,\"skip\":0\n}" param="[]" path=/api/admin/list query= status=200
+time="2023-03-10 13:37:24" level=info Ip=127.0.0.1 Method=POST SpendTime="0 ms" body="{\n    \"take\":10,\"skip\":0\n}" param="[]" path=/api/admin/list query= status=200
+time="2023-03-10 13:42:04" level=info Ip=127.0.0.1 Method=POST SpendTime="151 ms" body= param="[]" path=/api/admin/list query= status=200
+time="2023-03-10 13:50:55" level=info Ip=127.0.0.1 Method=POST SpendTime="269 ms" body= param="[]" path=/api/admin/list query= status=200

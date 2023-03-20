@@ -1,6 +1,8 @@
-time="2023-03-09T15:23:18+08:00" level=info Ip=127.0.0.1 Method=POST SpendTime="249 ms" body= param="[]" path=/api/admin/permission/add query= status=200
-ime="2023-03-09T14:57:09+08:00" level=info Ip=127.0.0.1 Method=POST SpendTime="1 ms" body= param="[]" path=/api/admin/permission/add query= status=200
-time="2023-03-09T14:57:56+08:00" level=error Ip=127.0.0.1 Method=POST SpendTime="0 ms" body= param="[]" path=/api/admin/permission/add query= status=200
+time="2023-03-10T13:50:55+08:00" level=info Ip=127.0.0.1 Method=POST SpendTime="269 ms" body= param="[]" path=/api/admin/list query= status=200
+pi/admin/list query= status=200
+us=404
+time="2023-03-10T13:35:47+08:00" level=info Ip=127.0.0.1 Method=POST SpendTime="0 ms" body="{\n    \"take\":10,\"skip\":0\n}" param="[]" path=/api/admin/list query= status=200
+0.1 Method=POST SpendTime="0 ms" body= param="[]" path=/api/admin/permission/add query= status=200
 time="2023-03-09T14:57:56+08:00" level=info Ip=127.0.0.1 Method=POST SpendTime="0 ms" body= param="[]" path=/api/admin/permission/add query= status=200
 time="2023-03-09T14:58:07+08:00" level=info Ip=127.0.0.1 Method=POST SpendTime="0 ms" body= param="[]" path=/api/admin/permission/add query= status=200
 00

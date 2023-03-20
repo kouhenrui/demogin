@@ -7,6 +7,7 @@ import (
 	"HelloGin/src/pojo"
 	"HelloGin/src/service/userService"
 	"HelloGin/src/util"
+	"fmt"
 )
 
 //type AdminService struct {
@@ -160,6 +161,7 @@ func AdminInfo(id uint) pojo.Admin {
 // 分页模糊查询管理员
 func AdminList(list reqDto.AdminList) interface{} {
 	res := adminServiceImpl.AdminList(list)
+	fmt.Println("adminlist:", res)
 	return res
 }
 

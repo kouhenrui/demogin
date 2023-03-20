@@ -4,6 +4,7 @@ import (
 	"HelloGin/src/global"
 	"HelloGin/src/pojo"
 	"HelloGin/src/util"
+	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"strings"
@@ -15,7 +16,7 @@ var permissionServiceImpl = pojo.RbacPermission()
 
 func GolbalMiddleWare() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		res := global.NewResult(c)
+		//res := global.NewResult(c)
 		fmt.Println("身份认证开始执行")
 		t := time.Now()
 		requestUrl := c.Request.URL.String()
@@ -26,9 +27,9 @@ func GolbalMiddleWare() gin.HandlerFunc {
 			fmt.Println("身份验证")
 			judge := util.AnalysyToken(c)
 			if !judge {
-				res.Err(util.NO_AUTHORIZATION)
+				//res.Err(util.NO_AUTHORIZATION)
 				c.Abort()
-				return
+				//return
 
 			}
 			userInfo = util.ParseToken(c.GetHeader("Authorization"))
@@ -37,6 +38,7 @@ func GolbalMiddleWare() gin.HandlerFunc {
 			c.Set("role", userInfo.Role)
 			c.Set("account", userInfo.Account)
 			c.Set("role_name", userInfo.RoleName)
+			c.Set("ok", true)
 			c.Next()
 		}
 		ts := time.Since(t)
@@ -47,14 +49,19 @@ func GolbalMiddleWare() gin.HandlerFunc {
 }
 func AuthMiddleWare() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		res := global.NewResult(c)
+		//res := global.NewResult(c)
 
 		requestUrl := c.Request.URL.String()
 		reqUrl := strings.Split(requestUrl, "/api/")
-		paths := global.ReuqestPaths
-		pathIsExist := util.ExistIn(reqUrl[1], paths)
-		if !pathIsExist {
-			res.Err(util.NO_AUTH_ERROR)
+		k, y := c.Get("ok")
+		fmt.Println(k, y)
+		//tokrn:=c.GetHeader("Authorization")
+		//paths := global.ReuqestPaths
+		//pathIsExist := util.ExistIn(reqUrl[1], paths)
+		if !y {
+			errors.New(util.NO_AUTH_ERROR)
+			c.Abort()
+			//res.Err(util.NO_AUTH_ERROR)
 		} else {
 			role_name, ok := c.Get("role_name")
 			role, _ := c.Get("role")
@@ -64,21 +71,17 @@ func AuthMiddleWare() gin.HandlerFunc {
 				if role_name == "admin" {
 					c.Next()
 				}
-				//访问权限
-				requestUrl := c.Request.URL.String()
-				reqUrl := strings.Split(requestUrl, "/api/")
-				fmt.Println(reqUrl[1])
 				t, permission := permissionServiceImpl.FindPermissionByPath(reqUrl[1])
 				fmt.Println(t)
-				//if !t {
-				//	res.Err(util.INSUFFICIENT_PERMISSION_ERROR)
-				//	c.Abort()
-				//	return
-				//}
+				if !t {
+					//res.Err(util.INSUFFICIENT_PERMISSION_ERROR)
+					c.Abort()
+					//return
+				}
 
 				allowRole := permission.AuthorizedRoles
-				//roleList := strings.Split(allowRole, ",")
-				fmt.Println("allowRole:", allowRole)
+				roleList := strings.Split(allowRole, ",")
+				fmt.Println("allowRole:", roleList[1])
 				//fmt.Fprintf("allowrole is %T",allowRole)
 				fmt.Println("role:", role)
 				//if allowRole != role {

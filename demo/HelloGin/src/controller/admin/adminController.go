@@ -97,6 +97,7 @@ func registerAdmin(c *gin.Context) {
 func adminList(c *gin.Context) {
 	res := global.NewResult(c)
 	var ls reqDto.AdminList
+	fmt.Println("请求参数：", ls)
 	if err := c.BindJSON(&ls); err != nil {
 		errs, ok := err.(validator.ValidationErrors)
 		if !ok {
