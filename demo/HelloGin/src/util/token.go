@@ -50,7 +50,7 @@ func SignToken(infoClaims UserClaims, day time.Duration) (string, string) {
 
 // 验证token
 func AnalysyToken(c *gin.Context) bool {
-	fmt.Println("进入token验证")
+	//fmt.Println("进入token验证")
 	tokenString := c.GetHeader("Authorization")
 	if tokenString == "" {
 		return false

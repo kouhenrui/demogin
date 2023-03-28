@@ -59,13 +59,14 @@ func logout(c *gin.Context) {
 // 获取详情接口
 func getAdminInfo(c *gin.Context) {
 	res := global.NewResult(c)
-
-	//var u=&util.UserClaims{}
-	user, _ := c.Get("user")
-	fmt.Println("request", user)
-	res.Success(user)
-	//result := adminService.AdminInfo()
-	//res.Success(result)
+	id := c.GetInt("id")
+	name := c.GetString("name")
+	p, info := adminService.AdminInfo(id, name)
+	if p {
+		res.Success(info)
+		return
+	}
+	res.Err(info)
 	return
 }
 
@@ -108,6 +109,7 @@ func adminList(c *gin.Context) {
 		return
 	}
 	list := adminService.AdminList(ls)
+	fmt.Println("list:", list)
 	res.Success(list)
 	return
 

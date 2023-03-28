@@ -153,9 +153,14 @@ func AdminLogin(list reqDto.AdminLogin) (a bool, tokenAndExp interface{}) {
 	return true, tokenAndExp
 }
 
-func AdminInfo(id uint) pojo.Admin {
-	//db.Select("id,name,account,access_token,role").Where("id=?", id).First(&admin)
-	return admin
+func AdminInfo(id int, name string) (bool, resDto.AdminInfo) {
+	var adminInfo = resDto.AdminInfo{}
+	var ok bool
+	adminInfo, ok = adminServiceImpl.AdminInfo(id, name)
+	if ok {
+		return true, adminInfo
+	}
+	return false, adminInfo
 }
 
 // 分页模糊查询管理员

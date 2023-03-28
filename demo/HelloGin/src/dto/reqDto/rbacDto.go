@@ -25,7 +25,7 @@ type PermissionAdd struct {
 	Method          string `json:"method" binding:"required"`
 	AuthorizedRoles string `json:"authorized_roles" binding:"required"`
 	ForbiddenRoles  string `json:"forbidden_roles" binding:"required"`
-	AllowAnyone     bool   `json:"allow_anyone" binding:"required"`
+	AllowAnyone     bool   `json:"allow_anyone"`
 }
 
 type PermissionUpdate struct {

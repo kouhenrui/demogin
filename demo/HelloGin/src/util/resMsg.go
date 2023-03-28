@@ -46,4 +46,5 @@ const (
 
 	//权限错误
 	INSUFFICENT_PERMISSION = "权限不足"
+	AUTHENTICATION_FAILED  = "身份验证未通过"
 )

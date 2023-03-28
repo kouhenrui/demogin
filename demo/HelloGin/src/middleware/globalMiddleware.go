@@ -4,7 +4,6 @@ import (
 	"HelloGin/src/global"
 	"HelloGin/src/pojo"
 	"HelloGin/src/util"
-	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"strings"
@@ -16,7 +15,7 @@ var permissionServiceImpl = pojo.RbacPermission()
 
 func GolbalMiddleWare() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		//res := global.NewResult(c)
+		res := global.NewResult(c)
 		fmt.Println("身份认证开始执行")
 		t := time.Now()
 		requestUrl := c.Request.URL.String()
@@ -24,13 +23,17 @@ func GolbalMiddleWare() gin.HandlerFunc {
 		paths := global.ReuqestPaths
 		pathIsExist := util.ExistIn(reqUrl[1], paths)
 		if !pathIsExist {
-			fmt.Println("身份验证")
+			_, ok := c.Get("ok")
+			fmt.Println("OK", ok)
+			if ok {
+				c.Next()
+			}
 			judge := util.AnalysyToken(c)
 			if !judge {
-				//res.Err(util.NO_AUTHORIZATION)
+				fmt.Println("身份验证未通过，没有token")
 				c.Abort()
-				//return
-
+				res.Err(util.NO_AUTHORIZATION)
+				return
 			}
 			userInfo = util.ParseToken(c.GetHeader("Authorization"))
 			c.Set("id", userInfo.Id)
@@ -49,47 +52,46 @@ func GolbalMiddleWare() gin.HandlerFunc {
 }
 func AuthMiddleWare() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		//res := global.NewResult(c)
-
+		res := global.NewResult(c)
 		requestUrl := c.Request.URL.String()
 		reqUrl := strings.Split(requestUrl, "/api/")
-		k, y := c.Get("ok")
-		fmt.Println(k, y)
-		//tokrn:=c.GetHeader("Authorization")
-		//paths := global.ReuqestPaths
-		//pathIsExist := util.ExistIn(reqUrl[1], paths)
+		rolename := global.RoleName
+		paths := global.ReuqestPaths
+		pathIsExist := util.ExistIn(reqUrl[1], paths)
+		//登录跳过权限验证
+		if pathIsExist {
+			c.Next()
+		}
+		//验证身份
+		_, y := c.Get("ok")
+		//通过身份验证
 		if !y {
-			errors.New(util.NO_AUTH_ERROR)
 			c.Abort()
-			//res.Err(util.NO_AUTH_ERROR)
+			res.Err(util.NO_AUTH_ERROR)
+			return
 		} else {
-			role_name, ok := c.Get("role_name")
-			role, _ := c.Get("role")
-			fmt.Println(role_name, "用户数据")
-			fmt.Println(ok, "ok")
-			if ok {
-				if role_name == "admin" {
-					c.Next()
-				}
+			roleName := c.GetString("role_name")
+			role := c.GetInt("role")
+			if !util.ExistIn(roleName, rolename) {
 				t, permission := permissionServiceImpl.FindPermissionByPath(reqUrl[1])
-				fmt.Println(t)
 				if !t {
-					//res.Err(util.INSUFFICIENT_PERMISSION_ERROR)
 					c.Abort()
-					//return
+					fmt.Println("请求地址权限未找到")
+					res.Err(util.INSUFFICIENT_PERMISSION_ERROR)
+					return
 				}
-
 				allowRole := permission.AuthorizedRoles
 				roleList := strings.Split(allowRole, ",")
-				fmt.Println("allowRole:", roleList[1])
-				//fmt.Fprintf("allowrole is %T",allowRole)
-				fmt.Println("role:", role)
-				//if allowRole != role {
-				//	res.Err(util.INSUFFICENT_PERMISSION)
-				//	c.Abort()
-				//	return
-				//}
+				roleExist := util.ExistIn(string(role), roleList)
+				if !roleExist {
+					c.Abort()
+					fmt.Println("请求地址不包含该权限权限")
+					res.Err(util.INSUFFICENT_PERMISSION)
+					return
+				}
 			}
+			fmt.Println("检测到是超级管理员，可以直接操作，不需要判断")
+			//c.Next()
 		}
 
 		//fmt.Println("身份认证执行结束")

@@ -23,6 +23,7 @@ func AdminServiceImpl() Admin {
 
 var (
 	//admins=[]Admin{}
+	adminInfo    = resDto.AdminInfo{}
 	admin        = Admin{}
 	resAdminList = []resDto.AdminList{} //要查询的字段
 )
@@ -55,6 +56,18 @@ func (a *Admin) CheckByName(name string) (Admin, bool) {
 		return admin, false
 	}
 	return admin, true
+}
+
+// 详情数据
+func (a *Admin) AdminInfo(id int, name string) (resDto.AdminInfo, bool) {
+	a.ID = uint(id)
+	a.Name = name
+	var admininfo = resDto.AdminInfo{}
+	res := db.Model(&a).Select("admin.name, admin.account,admin.role,r.name as role_name").Joins("left join rule as r on r.id = admin.role").Scan(&admininfo)
+	if res.RowsAffected != 1 {
+		return admininfo, false
+	}
+	return admininfo, true
 }
 
 // 更新token数据

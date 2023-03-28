@@ -2,11 +2,9 @@ package middleWare
 
 import (
 	"HelloGin/src/logger"
-	"bytes"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
-	"io/ioutil"
 	"math"
 	"time"
 )
@@ -27,11 +25,13 @@ func LoggerMiddleWare() gin.HandlerFunc {
 		if dataSize < 0 {
 			dataSize = 0
 		}
-		body, _ := ioutil.ReadAll(c.Request.Body)
-		c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(body))
+		//body, _ := ioutil.ReadAll(c.Request.Body)
+		//c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(body))
 		//fmt.Println("---body/--- \r\n" + string(body))
 		//
 		//fmt.Println(c.Request.Proto, "HTTP请求版本")
+
+		fmt.Println("请求提", c.Request.Body)
 		method := c.Request.Method
 		url := c.Request.RequestURI
 		//resBody := c.Writer
@@ -44,9 +44,9 @@ func LoggerMiddleWare() gin.HandlerFunc {
 				"Method":    method,
 				"status":    statusCode,
 				"Ip":        clientIP,
-				"body":      string(body),
-				"param":     param,
-				"query":     query,
+				//"body":      string(body),
+				"param": param,
+				"query": query,
 				////"erroMessage": errorMessage,
 				//
 				//"resBody": resBody,

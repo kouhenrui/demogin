@@ -14,7 +14,6 @@ type AdminList struct {
 	Name    string `json:"name,omitempty"`
 	Account string `json:"account,omitempty"`
 	Role    int    `json:"role,omitempty"`
-	//Count   uint   `json:"count"`
 }
 
 type UserList struct {
@@ -22,4 +21,12 @@ type UserList struct {
 	Name    string `json:"name" `
 	Account string `json:"account"`
 	Role    int    `json:"role"`
+}
+
+// 详情数据
+type AdminInfo struct {
+	Name     string `json:"name"`
+	Account  string `json:"account"`
+	Role     int    `json:"role"`
+	RoleName string `json:"role_name"`
 }

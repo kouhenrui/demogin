@@ -1,0 +1,46 @@
+time="2023-03-22 11:10:23" level=info Ip=127.0.0.1 Method=POST SpendTime="16 ms" body= param="[]" path=/api/admin/register query= status=200
+time="2023-03-22 11:10:45" level=info Ip=127.0.0.1 Method=POST SpendTime="183 ms" body= param="[]" path=/api/admin/login query= status=200
+time="2023-03-22 11:23:29" level=info Ip=127.0.0.1 Method=POST SpendTime="3 ms" body="{\n    \"take\":15,\n    \"skip\":0\n}" param="[]" path=/api/api/admin/users/list query= status=200
+time="2023-03-22 11:24:00" level=info Ip=127.0.0.1 Method=POST SpendTime="4 ms" body= param="[]" path=/api/admin/list query= status=200
+time="2023-03-22 11:26:27" level=info Ip=127.0.0.1 Method=POST SpendTime="4 ms" body= param="[]" path=/api/admin/list query= status=200
+time="2023-03-22 14:03:39" level=info Ip=127.0.0.1 Method=POST SpendTime="6 ms" body= param="[]" path=/api/admin/list query= status=200
+time="2023-03-22 14:06:20" level=info Ip=127.0.0.1 Method=POST SpendTime="7 ms" body= param="[]" path=/api/admin/list query= status=200
+time="2023-03-22 14:09:53" level=info Ip=127.0.0.1 Method=POST SpendTime="4 ms" body= param="[]" path=/api/admin/list query= status=200
+time="2023-03-22 14:11:15" level=info Ip=127.0.0.1 Method=POST SpendTime="5 ms" body= param="[]" path=/api/admin/list query= status=200
+time="2023-03-22 14:12:23" level=info Ip=127.0.0.1 Method=POST SpendTime="4 ms" body= param="[]" path=/api/admin/list query= status=200
+time="2023-03-22 14:13:03" level=info Ip=127.0.0.1 Method=POST SpendTime="4 ms" body= param="[]" path=/api/admin/list query= status=200
+time="2023-03-22 14:14:25" level=info Ip=127.0.0.1 Method=POST SpendTime="4 ms" body= param="[]" path=/api/admin/list query= status=200
+time="2023-03-22 14:15:24" level=info Ip=127.0.0.1 Method=POST SpendTime="5 ms" body= param="[]" path=/api/admin/list query= status=200
+time="2023-03-22 14:15:44" level=info Ip=127.0.0.1 Method=POST SpendTime="4 ms" body= param="[]" path=/api/admin/list query= status=200
+time="2023-03-22 14:17:00" level=error Ip=127.0.0.1 Method=POST SpendTime="0 ms" body="{\"account\":\"88888888\",\"password\":\"88888888\",\"revoke\":true,\"method\":\"account\"}" param="[]" path=/api/admin/login query= status=700
+time="2023-03-22 14:17:18" level=error Ip=127.0.0.1 Method=POST SpendTime="0 ms" body="{\"account\":\"88888888\",\"password\":\"88888888\",\"revoke\":true,\"method\":\"account\"}" param="[]" path=/api/admin/login query= status=700
+time="2023-03-22 14:19:22" level=error Ip=127.0.0.1 Method=POST SpendTime="30 ms" body= param="[]" path=/api/admin/login query= status=700
+time="2023-03-22 14:19:42" level=info Ip=127.0.0.1 Method=POST SpendTime="4 ms" body= param="[]" path=/api/admin/list query= status=200
+time="2023-03-22 14:39:35" level=error Ip=127.0.0.1 Method=POST SpendTime="5 ms" body= param="[]" path=/api/admin/list query= status=700
+time="2023-03-22 14:47:26" level=info Ip=127.0.0.1 Method=POST SpendTime="3 ms" body= param="[]" path=/api/admin/list query= status=200
+time="2023-03-22 15:02:37" level=error Ip=127.0.0.1 Method=POST SpendTime="0 ms" body="{\n    \"take\":10,\"skip\":0\n}" param="[]" path=/api/admin/list query= status=700
+time="2023-03-22 15:04:17" level=error Ip=127.0.0.1 Method=POST SpendTime="0 ms" body="{\n    \"take\":10,\"skip\":0\n}" param="[]" path=/api/admin/list query= status=700
+time="2023-03-22 15:04:45" level=error Ip=127.0.0.1 Method=POST SpendTime="0 ms" body="{\n    \"take\":10,\"skip\":0\n}" param="[]" path=/api/admin/list query= status=700
+time="2023-03-22 15:05:01" level=info Ip=127.0.0.1 Method=POST SpendTime="2 ms" body= param="[]" path=/api/admin/list query= status=200
+time="2023-03-22 15:05:46" level=error Ip=127.0.0.1 Method=POST SpendTime="22 ms" body= param="[]" path=/api/admin/login query= status=700
+time="2023-03-22 15:06:20" level=error Ip=127.0.0.1 Method=POST SpendTime="0 ms" body="{\n    \"take\":10,\"skip\":0\n}" param="[]" path=/api/admin/list query= status=700
+time="2023-03-22 15:07:01" level=info Ip=127.0.0.1 Method=POST SpendTime="3 ms" body= param="[]" path=/api/admin/list query= status=200
+time="2023-03-22 15:22:29" level=info Ip=127.0.0.1 Method=GET SpendTime="0 ms" body="{}" param="[]" path=/api/admin/info query= status=200
+time="2023-03-22 15:23:44" level=info Ip=127.0.0.1 Method=GET SpendTime="0 ms" body="{}" param="[]" path=/api/admin/info query= status=200
+time="2023-03-22 15:32:48" level=error Ip=127.0.0.1 Method=GET SpendTime="4 ms" body="{}" param="[]" path=/api/admin/info query= status=700
+time="2023-03-22 15:48:05" level=error Ip=127.0.0.1 Method=GET SpendTime="2 ms" body="{}" param="[]" path=/api/admin/info query= status=700
+time="2023-03-22 16:37:25" level=info Ip=127.0.0.1 Method=GET SpendTime="2 ms" body="{}" param="[]" path=/api/admin/info query= status=200
+time="2023-03-22 16:55:49" level=info Ip=127.0.0.1 Method=GET SpendTime="6 ms" body="{}" param="[]" path=/api/admin/info query= status=200
+time="2023-03-22 17:11:56" level=error Ip=127.0.0.1 Method=GET SpendTime="3 ms" body="{}" param="[]" path=/api/admin/info query= status=700
+time="2023-03-22 17:12:34" level=error Ip=127.0.0.1 Method=GET SpendTime="5 ms" body="{}" param="[]" path=/api/admin/info query= status=700
+time="2023-03-22 17:13:12" level=error Ip=127.0.0.1 Method=GET SpendTime="2 ms" body="{}" param="[]" path=/api/admin/info query= status=700
+time="2023-03-22 17:14:45" level=error Ip=127.0.0.1 Method=GET SpendTime="2 ms" body="{}" param="[]" path=/api/admin/info query= status=700
+time="2023-03-22 17:15:25" level=error Ip=127.0.0.1 Method=GET SpendTime="3 ms" body="{}" param="[]" path=/api/admin/info query= status=700
+time="2023-03-22 17:18:21" level=info Ip=127.0.0.1 Method=GET SpendTime="2 ms" body="{}" param="[]" path=/api/admin/info query= status=200
+time="2023-03-22 17:19:04" level=info Ip=127.0.0.1 Method=GET SpendTime="2 ms" body="{}" param="[]" path=/api/admin/info query= status=200
+time="2023-03-22 17:20:07" level=info Ip=127.0.0.1 Method=GET SpendTime="3 ms" body="{}" param="[]" path=/api/admin/info query= status=200
+time="2023-03-22 17:21:09" level=info Ip=127.0.0.1 Method=GET SpendTime="2 ms" body="{}" param="[]" path=/api/admin/info query= status=200
+time="2023-03-22 17:22:12" level=info Ip=127.0.0.1 Method=GET SpendTime="4 ms" body="{}" param="[]" path=/api/admin/info query= status=200
+time="2023-03-22 17:22:51" level=info Ip=127.0.0.1 Method=GET SpendTime="3 ms" body="{}" param="[]" path=/api/admin/info query= status=200
+time="2023-03-22 17:26:15" level=info Ip=127.0.0.1 Method=GET SpendTime="2 ms" body="{}" param="[]" path=/api/admin/info query= status=200
+time="2023-03-22 17:29:06" level=info Ip=127.0.0.1 Method=GET SpendTime="5 ms" body="{}" param="[]" path=/api/admin/info query= status=200

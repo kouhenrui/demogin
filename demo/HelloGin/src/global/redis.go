@@ -20,7 +20,7 @@ func init() {
 	Cfg, _ := ini.Load("conf/conf.ini")
 	var (
 		reAddr = Cfg.Section("redis").Key("address").String()
-		rePwd  = Cfg.Section("mysql").Key("passWord").String()
+		//rePwd  = Cfg.Section("mysql").Key("passWord").String()
 		//reName          = Cfg.Section("mysql").Key("username").String()
 		reDb, _         = Cfg.Section("mysql").Key("db").Int()
 		rePool, _       = Cfg.Section("mysql").Key("poolSize").Int()
@@ -29,7 +29,7 @@ func init() {
 	Redis = redis.NewClient(&redis.Options{
 		Addr: reAddr,
 		//Username:   reName,
-		Password:   rePwd,
+		//Password:   rePwd,
 		DB:         reDb,
 		PoolSize:   rePool,
 		MaxRetries: reMaxRetries,

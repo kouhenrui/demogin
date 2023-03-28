@@ -35,8 +35,8 @@ func (r *Result) Success(data interface{}) {
 func (r *Result) Succ() {
 	res := ResultCont{}
 	res.Code = http.StatusOK
-	res.Msg = ""
-	res.Data = "success"
+	res.Msg = "success"
+	res.Data = ""
 	r.Ctx.JSON(http.StatusOK, res)
 }
 

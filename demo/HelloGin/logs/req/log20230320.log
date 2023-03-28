@@ -1,0 +1,5 @@
+time="2023-03-20 15:25:36" level=info Ip=127.0.0.1 Method=POST SpendTime="0 ms" body="{\"name\":\"\",\"account\":\"\",\"password\":\"\",\"role\":0}" param="[]" path=/api/admin/register query= status=200
+time="2023-03-20 15:28:16" level=error Ip=127.0.0.1 Method=POST SpendTime="0 ms" body= param="[]" path=/api/admin/register query= status=200
+time="2023-03-20 15:28:16" level=info Ip=127.0.0.1 Method=POST SpendTime="0 ms" body= param="[]" path=/api/admin/register query= status=200
+time="2023-03-20 15:28:35" level=info Ip=127.0.0.1 Method=POST SpendTime="282 ms" body= param="[]" path=/api/admin/register query= status=200
+time="2023-03-20 15:28:51" level=error Ip=127.0.0.1 Method=POST SpendTime="112 ms" body= param="[]" path=/api/admin/login query= status=700

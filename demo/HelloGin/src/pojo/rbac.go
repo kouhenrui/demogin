@@ -52,7 +52,7 @@ type Permission struct {
 	// AllowAnyone的优先级高于 ForbiddenRoles、AuthorizedRoles
 	// 如果设置为true，任何人都可以通过验证。
 	// 请注意，这将包括“没有角色的人”。
-	AllowAnyone bool `json:"allow_anyone"gorm:"default:false;not bull"`
+	AllowAnyone bool `json:"allow_anyone"gorm:"default:false"`
 }
 
 type Group struct {

@@ -21,11 +21,11 @@ var (
 
 func init() {
 	db.AutoMigrate(
-	//user,
-	//admins,
-	//rbac_rule,
-	//rbac_per,
-	//group,
+		user,
+		adminpojo,
+		rbac_rule,
+		rbac_per,
+		group,
 	)
 	fmt.Println("表创建")
 }
