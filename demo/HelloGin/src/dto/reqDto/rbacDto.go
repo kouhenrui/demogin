@@ -9,13 +9,13 @@ type AddRbac struct {
 }
 type RbacList struct {
 	Take int    `json:"take,omitempty" binding:"required"`
-	Skip int    `json:"skip,omitempty" binding:"required"`
+	Skip int    `json:"skip,omitempty" binding:""`
 	Name string `json:"name,omitempty"`
 }
 
 type PermissionList struct {
 	Take int    `json:"take" binding:"required"`
-	Skip int    `json:"skip" binding:"required"`
+	Skip int    `json:"skip"binding:"" `
 	Path string `json:"path,omitempty"`
 }
 
@@ -30,7 +30,7 @@ type PermissionAdd struct {
 
 type PermissionUpdate struct {
 	ID              uint   `json:"id" binding:"required"`
-	Host            string `json:"host"`
+	Host            string `json:"host" sql:"host"`
 	Path            string `json:"path"`
 	Method          string `json:"method"`
 	AuthorizedRoles string `json:"authorized_roles"`

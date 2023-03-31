@@ -23,57 +23,13 @@ var (
 	adminServiceImpl      = pojo.AdminServiceImpl()
 )
 
-//var rbac=pojo.RbacServiceImpl()
-//var rbac=pojo.Rbac.
-//var userDao UserDao
-//func FindByAccount(account string) (pojo.Admin, bool) {
-//	r := db.Select("id,name,account,password,salt,access_token,role").Where("account=?", account).First(&admin)
-//	fmt.Println(admin, "影响行数")
-//	if r.RowsAffected != 1 {
-//		return admin, false
-//	}
-//	return admin, true
-//}
-//func FindByName(name string) (pojo.Admin, bool) {
-//	s := db.Where("name = ?", name).Find(&admin)
-//	if s.RowsAffected != 1 {
-//		return admin, false
-//	}
-//	return admin, true
-//}
-//func UpdateAdminToken(token string, id uint) bool {
-//	admin.ID = id
-//	res := db.Model(&admin).Update("access_token", token)
-//	if res.RowsAffected != 1 {
-//		return false
-//	}
-//	return true
-//}
-//func registerAdmin(addAdmin reqDto.AddAdmin) (pojo.Admin, bool) {
-//	admin.Name = addAdmin.Name
-//	admin.Password = addAdmin.Password
-//	admin.Salt = addAdmin.Salt
-//	admin.Account = addAdmin.Account
-//	admin.Role = 4
-//	fmt.Println(admin, "打印插入数据")
-//	res := db.Create(&admin)
-//	fmt.Println(admin)
-//	if res.RowsAffected != 1 {
-//		errors.New(util.ACCOUNT_EXIST_ERROR)
-//		//error()
-//
-//		return admin, false
-//	}
-//
-//	return admin, true
-//}
-
 /*
 *
 反射控制层登录参数，查询数据库账号是否相同，
 比对密码一致性，将用户信息存入jwt令牌中，签发令牌和过期时间
 */
 func AdminLogin(list reqDto.AdminLogin) (a bool, tokenAndExp interface{}) {
+	//var ad=pojo.Admin{}
 	switch list.Method {
 	case "name":
 		admin, judge = adminServiceImpl.CheckByName(list.Name)
@@ -242,14 +198,27 @@ func PermissionAdd(permission reqDto.PermissionAdd) bool {
 
 /*权限修改*/
 func PermissionUpdate(permission reqDto.PermissionUpdate) bool {
-	per := pojo.Permission{
-		Host:            permission.Host,
-		Path:            permission.Path,
-		AuthorizedRoles: permission.AuthorizedRoles,
-		ForbiddenRoles:  permission.ForbiddenRoles,
-		Method:          permission.Method,
-		AllowAnyone:     permission.AllowAnyone,
+	permissionServiceImpl.SavePermission(permission)
+	return true
+}
+
+// 权限删除
+func Permissiondel(id int) (bool, string) {
+	err, _ := permissionServiceImpl.FindPermissionById(id)
+	if err == nil {
+		if o := permissionServiceImpl.DelPermission(id); o {
+			return true, util.DELETE_SUCCESS
+		}
+		return false, util.PERMISSION_NOT_FOUND_ERROR
 	}
-	per.ID = permission.ID
-	return permissionServiceImpl.SavePermission(per)
+	return false, util.PERMISSION_NOT_FOUND_ERROR
+}
+
+/*权限详情*/
+func PermissionIndo(id int) (bool, interface{}) {
+	err, info := permissionServiceImpl.FindPermissionById(id)
+	if err != nil {
+		return false, err
+	}
+	return true, info
 }

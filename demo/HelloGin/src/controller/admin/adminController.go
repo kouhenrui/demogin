@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"net/http"
+	"strconv"
 )
 
 func Routers(e *gin.Engine) {
@@ -22,8 +23,8 @@ func Routers(e *gin.Engine) {
 		adminGroup.POST("/permission/list", permissionList)
 		adminGroup.POST("/permission/add", permissionAdd)
 		adminGroup.PUT("/permission/update", permissionUpdate)
-		//adminGroup.DELETE("/permission/update", permissionDelete)
-		//adminGroup.GET("/permission/update", permissionInfo)
+		adminGroup.DELETE("/permission/del", permissionDelete) //permission/del?id=8
+		adminGroup.GET("/permission/info", permissionInfo)     //permission/info?id=
 	}
 }
 
@@ -137,9 +138,10 @@ func userList(c *gin.Context) {
 func permissionList(c *gin.Context) {
 	res := global.NewResult(c)
 	var ls reqDto.PermissionList
-	fmt.Println(ls, &ls)
-	if err := c.BindJSON(&ls); err != nil {
+	fmt.Println("请求体：", ls.Take, ls.Skip)
+	if err := c.ShouldBindJSON(&ls); err != nil {
 		errs, ok := err.(validator.ValidationErrors)
+		fmt.Println("参数验证出错：", errs)
 		if !ok {
 			res.Error(http.StatusBadRequest, err.Error())
 			return
@@ -177,7 +179,8 @@ func permissionAdd(c *gin.Context) {
 func permissionUpdate(c *gin.Context) {
 	res := global.NewResult(c)
 	var ls reqDto.PermissionUpdate
-	fmt.Println(ls, &ls)
+	//id := c.Query("id")
+	//i, _ := strconv.Atoi(id)
 	if err := c.BindJSON(&ls); err != nil {
 		errs, ok := err.(validator.ValidationErrors)
 		if !ok {
@@ -189,5 +192,33 @@ func permissionUpdate(c *gin.Context) {
 	}
 	list := adminService.PermissionUpdate(ls)
 	res.Success(list)
+	return
+}
+
+// 权限删除
+func permissionDelete(c *gin.Context) {
+	res := global.NewResult(c)
+	id := c.Query("id")
+	i, _ := strconv.Atoi(id)
+	ok, result := adminService.Permissiondel(i)
+	if ok {
+		res.Success(result)
+		return
+	}
+	res.Err(result)
+	return
+}
+
+/*权限详情*/
+func permissionInfo(c *gin.Context) {
+	res := global.NewResult(c)
+	id := c.Query("id")
+	i, _ := strconv.Atoi(id) //string转int
+	ok, result := adminService.PermissionIndo(i)
+	if ok {
+		res.Success(result)
+		return
+	}
+	res.Err(result)
 	return
 }

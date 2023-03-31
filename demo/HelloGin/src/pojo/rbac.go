@@ -107,8 +107,8 @@ func (r *Rule) FindRoleList(list reqDto.RbacList) resDto.CommonList {
 	if list.Name != "" {
 		query.Where("name like ?", "%"+list.Name+"%")
 	}
-	query.Limit(list.Take).Offset(int(list.Skip)).Find(&rolesList)
-	reslist.Count = uint(query.RowsAffected)
+	query.Limit(list.Take).Offset(list.Skip).Find(&rolesList).Count(&count)
+	reslist.Count = uint(count)
 	reslist.List = rolesList
 	return reslist
 }
@@ -157,8 +157,8 @@ func (g *Group) FindGroupList(list reqDto.RbacList) resDto.CommonList {
 	if list.Name != "" {
 		query.Where("name like ?", "%"+list.Name+"%")
 	}
-	query.Limit(list.Take).Offset(int(list.Skip)).Find(&groupsList)
-	reslist.Count = uint(query.RowsAffected)
+	query.Limit(list.Take).Offset(list.Skip).Find(&groupsList).Count(&count)
+	reslist.Count = uint(count)
 	reslist.List = groupsList
 	return reslist
 }
@@ -183,13 +183,25 @@ func (g *Group) DelGroup(id int) bool {
 }
 
 // 通过id查看权限
-func (p *Permission) FindPermissionName(id uint) (bool, *Permission) {
-	p.ID = id
-	res := db.Find(&p)
-	if res.RowsAffected != 1 {
-		return false, p
+func (p *Permission) FindPermissionById(id int) (error, *resDto.PermissionInfo) {
+	var info = resDto.PermissionInfo{}
+	err := db.Model(&p).Where("id = ?", id).First(&info).Error
+	if err != nil {
+		return err, nil
 	}
-	return true, p
+	return nil, &info
+	//switch {
+	//case res.RowsAffected == 1:
+	//	a = true
+	//	b = info
+	//case res.RowsAffected > 1:
+	//	a = false
+	//	b = util.REQUEST_NOT_ONLY_ERROR
+	//case res.RowsAffected < 1:
+	//	a = false
+	//	b = util.REQUEST_NOT_EXIST
+	//}
+	//return a, b
 }
 
 // 通过请求路径查看权限
@@ -218,15 +230,25 @@ func (p *Permission) FindPermissionList(list reqDto.PermissionList) resDto.Commo
 	if list.Path != "" {
 		query.Where("path like ?", "%"+list.Path+"%")
 	}
-	query.Limit(list.Take).Offset(int(list.Skip)).Find(&permissionsList)
-	reslist.Count = uint(query.RowsAffected)
+
+	query.Limit(list.Take).Offset(list.Skip).Find(&permissionsList).Count(&count)
 	reslist.List = permissionsList
+	reslist.Count = uint(count)
 	return reslist
 }
 
 // 修改权限
-func (p *Permission) SavePermission(permission Permission) bool {
-	res := db.Save(&permission)
+func (p *Permission) SavePermission(permission reqDto.PermissionUpdate) bool {
+	per := Permission{
+		Host:            permission.Host,
+		Path:            permission.Path,
+		AuthorizedRoles: permission.AuthorizedRoles,
+		ForbiddenRoles:  permission.ForbiddenRoles,
+		Method:          permission.Method,
+		AllowAnyone:     permission.AllowAnyone,
+	}
+	p.ID = permission.ID
+	res := db.Model(&p).Updates(per)
 	if res.RowsAffected != 1 {
 		return false
 	}

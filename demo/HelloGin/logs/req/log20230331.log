@@ -1,0 +1,3 @@
+time="2023-03-31 09:34:11" level=error Ip=127.0.0.1 Method=GET SpendTime="6 ms" body="{}" erroMessage="<nil>" param="[]" path="/api/admin/permission/info?id=8" proto=HTTP/1.1 query="id=8" resBody= status=700
+time="2023-03-31 10:00:40" level=error Ip=127.0.0.1 Method=GET SpendTime="4 ms" body="{}" erroMessage="<nil>" param="[]" path="/api/admin/permission/info?id=8" proto=HTTP/1.1 query="id=8" resBody= status=700
+time="2023-03-31 10:00:47" level=info Ip=127.0.0.1 Method=GET SpendTime="3 ms" body="{}" erroMessage="<nil>" param="[]" path="/api/admin/permission/info?id=3" proto=HTTP/1.1 query="id=3" resBody= status=200

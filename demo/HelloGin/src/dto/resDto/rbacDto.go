@@ -21,3 +21,13 @@ type PermissonList struct {
 	ForbiddenRoles  string `json:"forbidden_roles"`
 	AllowAnyone     bool   `json:"allow_anyone"`
 }
+
+type PermissionInfo struct {
+	Id              uint   `json:"id"`
+	Host            string `json:"host"`
+	Path            string `json:"path"`
+	Method          string `json:"method"`
+	AuthorizedRoles string `json:"authorized_roles"`
+	ForbiddenRoles  string `json:"forbidden_roles"`
+	AllowAnyone     bool   `json:"allow_anyone"`
+}

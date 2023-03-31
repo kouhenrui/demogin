@@ -11,6 +11,7 @@ import (
 // 数据库生成表
 var db = global.Db
 var reslist = resDto.CommonList{}
+var count int64
 var (
 	userpojo  = &User{}
 	adminpojo = &Admin{}

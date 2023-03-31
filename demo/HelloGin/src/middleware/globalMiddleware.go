@@ -27,8 +27,12 @@ func GolbalMiddleWare() gin.HandlerFunc {
 			fmt.Println("OK", ok)
 			if ok {
 				c.Next()
+				//c.Abort()
+				//res.Err(util.AUTHENTICATION_FAILED)
+				//return
 			}
 			judge := util.AnalysyToken(c)
+			//fmt.Println("验证token是否存在，", judge)
 			if !judge {
 				fmt.Println("身份验证未通过，没有token")
 				c.Abort()
@@ -59,41 +63,51 @@ func AuthMiddleWare() gin.HandlerFunc {
 		paths := global.ReuqestPaths
 		pathIsExist := util.ExistIn(reqUrl[1], paths)
 		//登录跳过权限验证
-		if pathIsExist {
-			c.Next()
-		}
-		//验证身份
-		_, y := c.Get("ok")
-		//通过身份验证
-		if !y {
-			c.Abort()
-			res.Err(util.NO_AUTH_ERROR)
-			return
-		} else {
-			roleName := c.GetString("role_name")
-			role := c.GetInt("role")
-			if !util.ExistIn(roleName, rolename) {
-				t, permission := permissionServiceImpl.FindPermissionByPath(reqUrl[1])
-				if !t {
-					c.Abort()
-					fmt.Println("请求地址权限未找到")
-					res.Err(util.INSUFFICIENT_PERMISSION_ERROR)
-					return
+		if !pathIsExist {
+			//验证身份
+			_, y := c.Get("ok")
+			//通过身份验证
+			if !y {
+				c.Abort()
+				res.Err(util.NO_AUTH_ERROR)
+				return
+			} else {
+				//if y {
+				roleName := c.GetString("role_name")
+				role := c.GetInt("role")
+				if !util.ExistIn(roleName, rolename) {
+					t, permission := permissionServiceImpl.FindPermissionByPath(reqUrl[1])
+					if !t {
+						c.Abort()
+						fmt.Println("请求地址权限未找到")
+						res.Err(util.INSUFFICIENT_PERMISSION_ERROR)
+						return
+					}
+					allowRole := permission.AuthorizedRoles
+					roleList := strings.Split(allowRole, ",")
+					roleExist := util.ExistIn(string(role), roleList)
+					if !roleExist {
+						c.Abort()
+						fmt.Println("请求地址不包含该权限权限")
+						res.Err(util.INSUFFICENT_PERMISSION)
+						return
+					}
 				}
-				allowRole := permission.AuthorizedRoles
-				roleList := strings.Split(allowRole, ",")
-				roleExist := util.ExistIn(string(role), roleList)
-				if !roleExist {
-					c.Abort()
-					fmt.Println("请求地址不包含该权限权限")
-					res.Err(util.INSUFFICENT_PERMISSION)
-					return
-				}
+				fmt.Println("检测到是超级管理员，可以直接操作，不需要判断")
+				//c.Next()
 			}
-			fmt.Println("检测到是超级管理员，可以直接操作，不需要判断")
-			//c.Next()
-		}
 
-		//fmt.Println("身份认证执行结束")
+			//fmt.Println("身份认证执行结束")
+		}
+		//if pathIsExist {
+		//	c.Next()
+		//	//c.Errors.Errors(util.NO_AUTHORIZATION)
+		//	//c.Abort()
+		//	//res.Err(util.NO_AUTHORIZATION)
+		//	//return
+		//}else {
+		//
+		//}
+
 	}
 }

@@ -42,7 +42,8 @@ func (a *Admin) AdminList(list reqDto.AdminList) resDto.CommonList {
 
 // 查询账号
 func (a *Admin) CheckByAccount(account string) (Admin, bool) {
-	res := db.Where("account =?", account).Find(&admin)
+	admin.Account = account
+	res := db.Find(&admin)
 	if res.RowsAffected != 1 {
 		return admin, false
 	}
