@@ -3,7 +3,6 @@ package pojo
 import (
 	"HelloGin/src/dto/reqDto"
 	"HelloGin/src/dto/resDto"
-	"fmt"
 	"gorm.io/gorm"
 )
 
@@ -29,7 +28,7 @@ var (
 )
 
 // 分页,模糊查询用户
-func (u *User) UserList(list reqDto.UserList) resDto.CommonList {
+func (u *User) UserList(list reqDto.UserList) *resDto.CommonList {
 	query := db.Model(user)
 	if list.Name != "" {
 		query.Where("name like ?", "%"+list.Name+"%")
@@ -37,43 +36,39 @@ func (u *User) UserList(list reqDto.UserList) resDto.CommonList {
 	query.Limit(list.Take).Offset(int(list.Skip)).Find(&resUsersList)
 	reslist.Count = uint(query.RowsAffected)
 	reslist.List = resUsersList
-	return reslist
+	return &reslist
 }
 
 // 查询账号
-func (u *User) CheckByAccount(account string) (User, bool) {
-	res := db.Model(&u).First(&user).Where("account =?", account)
-	if res.RowsAffected <= 0 {
-		return user, false
+func (u *User) CheckByAccount(account string) (error, *resDto.UserInfo) {
+	var userInfo resDto.UserInfo
+	userInfo.Account = account
+	err := db.Model(&u).First(&user).Error
+	if err != nil {
+		return err, nil
 	}
-	return user, true
+	return nil, &userInfo
 }
 
 // 查询名称
-func (u *User) CheckByName(name string) (User, bool) {
-	res := db.Model(&user).First(&user).Where("name =?", name)
-	if res.RowsAffected <= 0 {
-		return user, false
+func (u *User) CheckByName(name string) (error, *resDto.UserInfo) {
+	var userInfo resDto.UserInfo
+	userInfo.Name = name
+	err := db.Model(&user).First(&userInfo).Error
+	if err != nil {
+		return err, nil
 	}
-	return user, true
+	return nil, &userInfo
 }
 
 // 更新token数据
-func (u *User) UpdateToken(access_token string, id uint) bool {
-	user.ID = id
-	res := db.Model(&user).Update("access_token", access_token)
-	if res.RowsAffected != 1 {
-		return false
-	}
-	return true
+func (u *User) UpdateToken(access_token string, id uint) error {
+
+	u.ID = id
+	return db.Model(&u).Update("access_token", access_token).Error
 }
 
 // 增加用户
-func (u *User) AddUser(user User) bool {
-	fmt.Println(user)
-	res := db.Create(&user)
-	if res.RowsAffected != 1 {
-		return false
-	}
-	return true
+func (u *User) AddUser(user User) error {
+	return db.Create(&user).Error
 }

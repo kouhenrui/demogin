@@ -3,7 +3,6 @@ package pojo
 import (
 	"HelloGin/src/dto/reqDto"
 	"HelloGin/src/dto/resDto"
-	"fmt"
 	"gorm.io/gorm"
 )
 
@@ -83,184 +82,141 @@ func RbacPermission() Permission {
 }
 
 // 角色查询
-func (r *Rule) FindRoleName(id uint) (bool, *Rule) {
+func (r *Rule) FindRoleName(id uint) (error, *Rule) {
 	r.ID = id
-	res := db.Find(&r)
-	if res.RowsAffected != 1 {
-		return false, r
+	err := db.Find(&r).Error
+	if err != nil {
+		return err, nil
 	}
-	return true, r
+	return nil, r
 }
 
 // 增加，修改角色
-func (r *Rule) AddRole(rule Rule) bool {
-	res := db.Save(&rule)
-	if res.RowsAffected != 1 {
-		return false
-	}
-	return true
+func (r *Rule) AddRole(rule *Rule) error {
+	return db.Save(&rule).Error
 }
 
 // 角色列表
-func (r *Rule) FindRoleList(list reqDto.RbacList) resDto.CommonList {
+func (r *Rule) FindRoleList(list reqDto.RuleList) (error, *resDto.CommonList) {
 	query := db.Model(&r)
 	if list.Name != "" {
 		query.Where("name like ?", "%"+list.Name+"%")
 	}
-	query.Limit(list.Take).Offset(list.Skip).Find(&rolesList).Count(&count)
+	err := query.Limit(list.Take).Offset(list.Skip).Find(&rolesList).Count(&count).Error
+	if err != nil {
+		return err, nil
+	}
 	reslist.Count = uint(count)
 	reslist.List = rolesList
-	return reslist
+	return nil, &reslist
 }
 
-//// 修改角色
-//func (r *Rule) SaveRole(rule Rule) bool {
-//	res := db.Save(&rule)
-//	if res.RowsAffected != 1 {
-//		return false
-//	}
-//	return true
-//}
+// 修改角色
+func (r *Rule) UpdateRole(rule *Rule) error {
+	return db.Save(&rule).Error
+}
 
 // 删除角色
-func (r *Rule) DelRole(id int) bool {
+func (r *Rule) DelRole(id int) error {
 	r.ID = uint(id)
-	res := db.Delete(&r)
-	if res.RowsAffected != 1 {
-		return false
-	}
-	return true
+	return db.Delete(&r).Error
 }
 
 // 查看组
-func (g *Group) FindGroupName(id uint) (bool, *Group) {
+func (g *Group) FindGroupName(id uint) (error, *resDto.GroupInfo) {
 	g.ID = id
-	res := db.Find(&g)
-	if res.RowsAffected != 1 {
-		return false, g
+	groupInfo := &resDto.GroupInfo{}
+	err := db.Model(&g).Find(&groupInfo).Error
+	if err != nil {
+		return err, nil
 	}
-	return true, g
+	return nil, groupInfo
 }
 
 // 增加，修改组
-func (g *Group) AddGroup(group Group) bool {
-	res := db.Save(&group)
-	if res.RowsAffected != 1 {
-		return false
-	}
-	return true
+func (g *Group) AddGroup(group *Group) error {
+	return db.Save(&group).Error
 }
 
 // 组列表
-func (g *Group) FindGroupList(list reqDto.RbacList) resDto.CommonList {
+func (g *Group) FindGroupList(list *reqDto.GroupList) (error, *resDto.CommonList) {
 	query := db.Model(&g)
 	if list.Name != "" {
 		query.Where("name like ?", "%"+list.Name+"%")
 	}
-	query.Limit(list.Take).Offset(list.Skip).Find(&groupsList).Count(&count)
+	err := query.Limit(list.Take).Offset(list.Skip).Find(&groupsList).Count(&count).Error
+	if err != nil {
+		return err, nil
+	}
 	reslist.Count = uint(count)
 	reslist.List = groupsList
-	return reslist
+	return nil, &reslist
 }
 
 // 修改组
-func (g *Group) SaveGroup(grop Group) bool {
-	res := db.Updates(grop)
-	if res.RowsAffected != 1 {
-		return false
-	}
-	return true
+func (g *Group) SaveGroup(group *Group) error {
+	return db.Updates(&group).Error
+
 }
 
 // 删除组
-func (g *Group) DelGroup(id int) bool {
+func (g *Group) DelGroup(id int) error {
 	g.ID = uint(id)
-	res := db.Delete(&g)
-	if res.RowsAffected != 1 {
-		return false
-	}
-	return true
+	return db.Delete(&g).Error
+
 }
 
 // 通过id查看权限
 func (p *Permission) FindPermissionById(id int) (error, *resDto.PermissionInfo) {
+	p.ID = uint(id)
 	var info = resDto.PermissionInfo{}
-	err := db.Model(&p).Where("id = ?", id).First(&info).Error
+	err := db.Model(&p).First(&info).Error
 	if err != nil {
 		return err, nil
 	}
 	return nil, &info
-	//switch {
-	//case res.RowsAffected == 1:
-	//	a = true
-	//	b = info
-	//case res.RowsAffected > 1:
-	//	a = false
-	//	b = util.REQUEST_NOT_ONLY_ERROR
-	//case res.RowsAffected < 1:
-	//	a = false
-	//	b = util.REQUEST_NOT_EXIST
-	//}
-	//return a, b
 }
 
 // 通过请求路径查看权限
-func (p *Permission) FindPermissionByPath(path string) (bool, *Permission) {
+func (p *Permission) FindPermissionByPath(path string) (error, *resDto.PermissionInfo) {
 	p.Path = path
-	res := db.Find(&p).Where("path like ?", "%"+path+"%")
-	if res.RowsAffected != 1 {
-		return false, p
+	var permissionInfo resDto.PermissionInfo
+	err := db.Model(&p).Find(&permissionInfo).Where("path like ?", "%"+path+"%").Error
+	if err != nil {
+		return err, nil
 	}
-	return true, p
+	return nil, &permissionInfo
 }
 
 // 增加,修改权限
-func (p *Permission) AddPermission(permission Permission) bool {
-	fmt.Println(permission)
-	res := db.Save(&permission)
-	if res.RowsAffected != 1 {
-		return false
-	}
-	return true
+func (p *Permission) AddPermission(permission Permission) error {
+	return db.Save(&permission).Error
 }
 
 // 权限列表
-func (p *Permission) FindPermissionList(list reqDto.PermissionList) resDto.CommonList {
+func (p *Permission) FindPermissionList(list reqDto.PermissionList) (error, *resDto.CommonList) {
 	query := db.Model(&p)
 	if list.Path != "" {
 		query.Where("path like ?", "%"+list.Path+"%")
 	}
-
-	query.Limit(list.Take).Offset(list.Skip).Find(&permissionsList).Count(&count)
+	err := query.Limit(list.Take).Offset(list.Skip).Find(&permissionsList).Count(&count).Error
+	if err != nil {
+		return err, nil
+	}
 	reslist.List = permissionsList
 	reslist.Count = uint(count)
-	return reslist
+	return nil, &reslist
 }
 
 // 修改权限
-func (p *Permission) SavePermission(permission reqDto.PermissionUpdate) bool {
-	per := Permission{
-		Host:            permission.Host,
-		Path:            permission.Path,
-		AuthorizedRoles: permission.AuthorizedRoles,
-		ForbiddenRoles:  permission.ForbiddenRoles,
-		Method:          permission.Method,
-		AllowAnyone:     permission.AllowAnyone,
-	}
-	p.ID = permission.ID
-	res := db.Model(&p).Updates(per)
-	if res.RowsAffected != 1 {
-		return false
-	}
-	return true
+func (p *Permission) SavePermission(permission Permission) error {
+	return db.Model(&p).Updates(permission).Error
+
 }
 
 // 删除权限
-func (p *Permission) DelPermission(id int) bool {
+func (p *Permission) DelPermission(id int) error {
 	p.ID = uint(id)
-	res := db.Delete(&p)
-	if res.RowsAffected != 1 {
-		return false
-	}
-	return true
+	return db.Delete(&p).Error
+
 }

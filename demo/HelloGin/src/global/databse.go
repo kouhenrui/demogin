@@ -7,6 +7,8 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
+	"log"
+	"time"
 )
 
 // 定义db全局变量
@@ -15,7 +17,7 @@ var ()
 
 // 初始化链接
 func init() {
-	Cfg, _ := ini.Load("conf/conf.ini")
+	Cfg, _ := ini.Load("conf.ini")
 	var (
 		dbName     = Cfg.Section("mysql").Key("username").String()
 		dbPwd      = Cfg.Section("mysql").Key("passWord").String()
@@ -44,9 +46,23 @@ func init() {
 	}
 	sqlDB, _ := Db.DB()
 	//设置数据库连接池参数
-	sqlDB.SetMaxOpenConns(100) //设置数据库连接池最大连接数
-	sqlDB.SetMaxIdleConns(20)  //连接池最大允许的空闲连接数，如果没有sql任务需要执行的连接数大于20，超过的连接会被连接池关闭。
+	sqlDB.SetMaxOpenConns(100)                 //设置数据库连接池最大连接数
+	sqlDB.SetMaxIdleConns(20)                  //连接池最大允许的空闲连接数，如果没有sql任务需要执行的连接数大于20，超过的连接会被连接池关闭。
+	sqlDB.SetConnMaxIdleTime(30 * time.Minute) //设置30秒重连
+
+	log.Printf("数据库初始化连接成功")
 	//自动生成表
-	Db.AutoMigrate()
+	//Db.AutoMigrate()
+	// 设置重试逻辑
+	//retryCount := 5
+	//Db.WithContext(context.Background()).Retry(retryCount, time.Second, func() error {
+	//	// 尝试连接数据库
+	//	dbSQL, erro := Db.DB()
+	//	if erro != nil {
+	//		return erro
+	//	}
+	//
+	//	return dbSQL.Ping()
+	//})
 
 }

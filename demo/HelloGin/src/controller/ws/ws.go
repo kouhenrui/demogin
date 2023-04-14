@@ -3,7 +3,6 @@ package ws
 import (
 	"HelloGin/src/global"
 	"HelloGin/src/util"
-	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
@@ -43,7 +42,7 @@ var user_list = []string{}
 func Routers(e *gin.Engine) {
 	wsGroup := e.Group("/api/ws")
 	{
-		wsGroup.GET("/connect", ws)
+		wsGroup.GET("/connect", wsconnect)
 	}
 }
 
@@ -61,7 +60,7 @@ var upGrader = &websocket.Upgrader{
 }
 
 // websocket实现
-func ws(c *gin.Context) {
+func wsconnect(c *gin.Context) {
 	fmt.Print("进入ws连接")
 	result := global.NewResult(c)
 	//升级get请求为webSocket协议
@@ -69,15 +68,16 @@ func ws(c *gin.Context) {
 	if wserr != nil {
 		fmt.Println("websocket连接错误")
 		result.Err(util.WEBSOCKET_CONNECT_ERROR)
+		return
 	}
-	fmt.Println("将get请求转换为ws请求")
-	con := &connection{ws: ws, data: &Data{}, sc: make(chan []byte, 1024)}
-	fmt.Println("开始决定进入那个线程", con)
-	//h.r <- con
-	//fmt.Println("读取连接：", <-h.r)
-
-	go con.Writer()
-	con.Reader()
+	//fmt.Println("将get请求转换为ws请求")
+	conn := &connection{ws: ws, data: &Data{}, sc: make(chan []byte, 1024)}
+	fmt.Println("开始决定进入那个线程", conn)
+	// 异步处理 Websocket 消息
+	go handleConnection(ws)
+	//defer ws.Close()
+	//go con.Writer()
+	//go con.Reader()
 	//defer func() {
 	//	count := len(user_list)
 	//	if count == 0 {
@@ -104,73 +104,164 @@ func ws(c *gin.Context) {
 	//		return
 	//	}
 	//}
-	fmt.Println("我们结束聊天啦")
+	//fmt.Println("我们结束聊天啦")
 }
-func (c *connection) Writer() {
-	fmt.Println("进入编写信息携程")
-	for message := range c.sc {
-		c.ws.WriteMessage(websocket.TextMessage, message)
-	}
-	c.ws.Close()
-}
+func handleConnection(conn *websocket.Conn) {
+	// 创建异步读取和发送消息的 channel
+	readCh := make(chan []byte)
+	writeCh := make(chan []byte)
 
-func (c *connection) Reader() {
-	fmt.Println("进入读取信息携程")
+	// 启动异步读取和发送消息的 goroutine
+	go readMessages(conn, readCh)
+	go writeMessages(conn, writeCh, writeCh)
+
+	// 处理 Websocket 消息
 	for {
-		_, message, err := c.ws.ReadMessage()
+		select {
+		case message := <-readCh:
+			if string(message) == "out" {
+				conn.Close()
+			}
+			// 处理来自客户端的消息
+			HandleMessage(string(message), conn)
+
+		case message := <-writeCh:
+			// 发送消息给客户端
+			if err := conn.WriteMessage(websocket.TextMessage, message); err != nil {
+				// 发送消息失败
+				// 处理错误
+				HandleErrorMessage(err, conn)
+			}
+		}
+	}
+}
+
+/*
+ * @MethodName readMessages
+ * @Description 协程读取信道
+ * @Author khr
+ * @Date 2023/4/12 11:08
+ */
+
+func readMessages(conn *websocket.Conn, ch chan<- []byte) {
+	for {
+		// 读取客户端发送的消息
+		_, message, err := conn.ReadMessage()
 		if err != nil {
-			h.r <- c
-			break
+			// 发生错误
+			close(ch)
+			return
 		}
-		fmt.Println(string(message), "读取inxi")
-		fmt.Println(c.data.Type, "读取inxi")
-		json.Unmarshal(message, &c.data)
-		switch c.data.Type {
-		case "login":
-			c.register()
-		case "user":
-			c.data.Type = "user"
-			data_b, _ := json.Marshal(c.data)
-			fmt.Println(string(data_b), "读取的信息")
-			h.b <- data_b
-			fmt.Println(string(<-h.b))
-		case "logout":
-			fmt.Println("用户推出")
-			c.del()
-		default:
-			fmt.Print("========default================")
-		}
+
+		// 将消息发送给处理函数
+		ch <- message
 	}
 }
 
-func (c *connection) del() {
+/*
+ * @MethodName writeMessages
+ * @Description 协程写入信道
+ * @Author khr
+ * @Date 2023/4/12 11:09
+ */
 
-	count := len(user_list)
-	var n_slice = []string{}
-	for i := range user_list {
-		if user_list[i] == c.data.User && i == count {
-			n_slice = user_list[:count]
-		} else if user_list[i] == c.data.User {
-			n_slice = append(user_list[:i], user_list[i+1:]...)
-			break
-		}
+func writeMessages(conn *websocket.Conn, in <-chan []byte, out chan<- []byte) {
+	for message := range in {
+		// 将消息发送给客户端
+		out <- message
 	}
+}
 
-	if len(n_slice) <= 0 {
-		c.ws.Close()
-	}
-	data_b, _ := json.Marshal(c.data)
-	h.b <- data_b
-	h.r <- c
+/*
+ * @MethodName HandleMessage
+ * @Description 处理发送过来的信息，并返回
+ * @Author khr
+ * @Date 2023/4/12 11:05
+ */
+
+func HandleMessage(message string, conn *websocket.Conn) {
+	fmt.Println(message)
+	conn.WriteMessage(websocket.TextMessage, []byte("Hello, client!"))
 }
-func (c *connection) register() {
-	c.data.User = c.data.Content
-	c.data.From = c.data.User
-	user_list = append(user_list, c.data.User)
-	c.data.UserList = user_list
-	data_b, _ := json.Marshal(c.data)
-	h.b <- data_b
+
+/*
+ * @MethodName HandleErrorMessage
+ * @Description 发送消息失败,处理错误
+ * @Author khr
+ * @Date 2023/4/12 11:08
+ */
+
+func HandleErrorMessage(err error, conn *websocket.Conn) {
+	fmt.Println("error:", err)
+	conn.WriteMessage(websocket.TextMessage, []byte("Connection file!n"))
+	conn.Close()
 }
+
+//func (c *connection) Writer() {
+//	fmt.Println("进入编写信息携程")
+//	for message := range c.sc {
+//		c.ws.WriteMessage(websocket.TextMessage, message)
+//	}
+//	c.ws.Close()
+//}
+//
+//func (c *connection) Reader() {
+//	fmt.Println("进入读取信息携程")
+//	for {
+//		_, message, err := c.ws.ReadMessage()
+//		if err != nil {
+//			h.r <- c
+//			break
+//		}
+//		fmt.Println(string(message), "读取inxi")
+//		fmt.Println(c.data.Type, "读取inxi")
+//		json.Unmarshal(message, &c.data)
+//		switch c.data.Type {
+//		case "login":
+//			c.register()
+//		case "user":
+//			c.data.Type = "user"
+//			data_b, _ := json.Marshal(c.data)
+//			fmt.Println(string(data_b), "读取的信息")
+//			h.b <- data_b
+//			fmt.Println(string(<-h.b))
+//		case "logout":
+//			fmt.Println("用户推出")
+//			c.del()
+//		default:
+//			fmt.Print("========default================")
+//		}
+//	}
+//}
+//
+//func (c *connection) del() {
+//
+//	count := len(user_list)
+//	var n_slice = []string{}
+//	for i := range user_list {
+//		if user_list[i] == c.data.User && i == count {
+//			n_slice = user_list[:count]
+//		} else if user_list[i] == c.data.User {
+//			n_slice = append(user_list[:i], user_list[i+1:]...)
+//			break
+//		}
+//	}
+//
+//	if len(n_slice) <= 0 {
+//		c.ws.Close()
+//	}
+//	data_b, _ := json.Marshal(c.data)
+//	h.b <- data_b
+//	h.r <- c
+//}
+//func (c *connection) register() {
+//	c.data.User = c.data.Content
+//	c.data.From = c.data.User
+//	user_list = append(user_list, c.data.User)
+//	c.data.UserList = user_list
+//	data_b, _ := json.Marshal(c.data)
+//	h.b <- data_b
+//}
 
 //type Connection struct {
 //	wsConn *websocket.Conn

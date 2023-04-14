@@ -46,36 +46,36 @@ func (g *Goods) GoodsAdd(add Goods) error {
 }
 
 // 查名字
-func (g *Goods) GoodsByName(name string) (*resDto.GoodsInfo, error) {
+func (g *Goods) GoodsByName(name string) (error, *resDto.GoodsInfo) {
 	err := db.Model(&g).Where("name = ?", name).Find(&goodsInfo).Error
 	if err != nil {
-		return nil, err
+		return err, nil
 	}
-	return &goodsInfo, nil
+	return nil, &goodsInfo
 }
 
 // 查id
-func (g *Goods) GoodsById(id uint) (*resDto.GoodsInfo, error) {
+func (g *Goods) GoodsById(id uint) (error, *resDto.GoodsInfo) {
 	err := db.Model(&g).Where("id = ?", id).Find(&goodsInfo).Error
 	if err != nil {
-		return nil, err
+		return err, nil
 	}
-	return &goodsInfo, nil
+	return nil, &goodsInfo
 }
 
 // 列表，支持模糊查询
-func (g *Goods) GoodsList(list reqDto.GoodsList) (*resDto.CommonList, error) {
+func (g *Goods) GoodsList(list reqDto.GoodsList) (error, *resDto.CommonList) {
 	query := db.Model(&g)
 	if list.Name != "" {
 		query.Where("name like ?", "%"+list.Name+"%")
 	}
 	err := query.Limit(list.Take).Offset(list.Skip).Find(&resGoodsList).Count(&count).Error
 	if err != nil {
-		return nil, err
+		return err, nil
 	}
 	reslist.List = resGoodsList
 	reslist.Count = uint(count)
-	return &reslist, nil
+	return nil, &reslist
 
 }
 

@@ -3,8 +3,8 @@ package pojo
 import (
 	"HelloGin/src/dto/resDto"
 	"HelloGin/src/global"
-	"fmt"
 	"gorm.io/gorm"
+	"log"
 	"time"
 )
 
@@ -28,7 +28,7 @@ func init() {
 		rbac_per,
 		group,
 	)
-	fmt.Println("表创建")
+	log.Printf("表结构同步成功")
 }
 
 type Base struct {

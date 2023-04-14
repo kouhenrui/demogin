@@ -11,36 +11,8 @@ import (
 
 var user pojo.User
 var userServiceImpl = pojo.UserServiceImpl()
-var judge bool
-
-//func (c *UserService) FindByAccount(account string) (pojo.User, bool) {
-//	db.Select("id,name,account,password,salt,access_token,role").Where("account=?", account).First(&user)
-//	return user, true
-//}
-//func (c *UserService) FindByName(name string) (pojo.User, bool) {
-//	//user.Name = name
-//	db.Select("id,name,account,password,salt,access_token,role").Where("name=?", name).First(&user)
-//	return user, true
-//}
-//func (c *UserService) AddUser(name string, account string, password string, salt string) (bool, string) {
-//	user.Name = name
-//	user.Salt = salt
-//	user.Password = password
-//	user.Account = account
-//	res := db.Create(&user)
-//	if res.RowsAffected == 0 {
-//		return false, util.INSET_USER_ERROR
-//	}
-//	return true, util.SUCCESS
-//}
-//func (c *UserService) UpdateUserToken(accessToken string, id uint) bool {
-//	user.ID = id
-//	res := db.Model(&user).Update("AccessToken", accessToken)
-//	if res.RowsAffected != 1 {
-//		return false
-//	}
-//	return true
-//}
+var userInfo = &resDto.UserInfo{}
+var err error
 
 // 用户列表
 func UserList(list reqDto.UserList) interface{} {
@@ -53,13 +25,13 @@ func UserList(list reqDto.UserList) interface{} {
 func UserLogin(list reqDto.UserLogin) (a bool, tokenAndExp interface{}) {
 	switch list.Method {
 	case "name":
-		user, judge = userServiceImpl.CheckByName(list.Name)
+		err, userInfo = userServiceImpl.CheckByName(list.Name)
 	case "account":
-		user, judge = userServiceImpl.CheckByAccount(list.Account)
+		err, userInfo = userServiceImpl.CheckByAccount(list.Account)
 	default:
 		return false, util.METHOD_NOT_FILLED_ERROR
 	}
-	if judge {
+	if err != nil {
 		return false, util.ACCOUT_NOT_EXIST_ERROR
 	}
 	enpwd := user.Password
@@ -89,8 +61,8 @@ func UserLogin(list reqDto.UserLogin) (a bool, tokenAndExp interface{}) {
 			util.DelRedis(user.AccessToken) //清除token
 		}
 		token, exptime = util.SignToken(stringTokenData, global.UserLoginTime*global.DayTime)
-		ok := userServiceImpl.UpdateToken(tokenKey, user.ID)
-		if !ok {
+		err = userServiceImpl.UpdateToken(tokenKey, user.ID)
+		if err != nil {
 			return false, util.AUTH_LOGIN_ERROR
 		}
 		redisDate := reqDto.LoginRedisDate{
@@ -110,8 +82,8 @@ func UserLogin(list reqDto.UserLogin) (a bool, tokenAndExp interface{}) {
 			return true, cs
 		}
 		token, exptime = util.SignToken(stringTokenData, global.UserLoginTime*global.DayTime)
-		ok := userServiceImpl.UpdateToken(tokenKey, user.ID)
-		if !ok {
+		err = userServiceImpl.UpdateToken(tokenKey, user.ID)
+		if err != nil {
 			return false, util.AUTH_LOGIN_ERROR
 		}
 		redisDate := reqDto.LoginRedisDate{
@@ -142,16 +114,16 @@ func UserRejist(list reqDto.AddUser) (bool, interface{}) {
 	//return true, nil
 	//检查名称是否重复
 	if list.Name != "" {
-		_, judge = userServiceImpl.CheckByName(list.Name)
-		if judge {
+		err, _ := userServiceImpl.CheckByName(list.Name)
+		if err != nil {
 			return false, util.NAME_EXIST_ERROR
 		}
 	}
 	if list.Name == "" {
 		list.Name = "暂未命名"
 	}
-	_, judge = userServiceImpl.CheckByAccount(list.Account)
-	if judge {
+	erro, _ := userServiceImpl.CheckByAccount(list.Account)
+	if erro != nil {
 		return false, util.ACCOUNT_EXIST_ERROR
 	}
 	ad := pojo.User{
@@ -160,8 +132,8 @@ func UserRejist(list reqDto.AddUser) (bool, interface{}) {
 		Name:     list.Name,
 		Account:  list.Account,
 		Role:     list.Role}
-	judge = userServiceImpl.AddUser(ad)
-	if judge {
+	er := userServiceImpl.AddUser(ad)
+	if er != nil {
 		return true, util.ADD_SUCCESS
 	} else {
 		return false, util.ADD_ERROR

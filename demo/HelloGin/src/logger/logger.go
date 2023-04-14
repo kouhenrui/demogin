@@ -5,6 +5,7 @@ import (
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"github.com/rifflock/lfshook"
 	"github.com/sirupsen/logrus"
+	"gopkg.in/ini.v1"
 
 	"os"
 	"time"
@@ -16,10 +17,21 @@ var (
 )
 
 func init() {
+	Cfg, _ := ini.Load("conf.ini")
+	var (
+		logPath  = Cfg.Section("server").Key("LogPath").String()
+		linkName = Cfg.Section("server").Key("LinkName").String()
+	)
 	// 写入日志文件
-	logPath := "logs/req/log"                                     // 日志存放路径
-	linkName := "logs/req/latest.log"                             // 最新日志的软连接路径
-	src, err := os.OpenFile(logPath, os.O_RDWR|os.O_CREATE, 0755) // 初始化日志文件对象
+	//logPath := "logs/req/log"         // 日志存放路径
+	//linkName := "logs/req/latest.log" // 最新日志的软连接路径
+
+	if _, err := os.Stat(logPath); os.IsNotExist(err) {
+		if err = os.MkdirAll(logPath, 755); err != nil {
+			fmt.Println("文件创建错误：", err)
+		}
+	}
+	src, err := os.OpenFile(logPath+"/log", os.O_RDWR|os.O_CREATE, 0755) // 初始化日志文件对象
 	if err != nil {
 		fmt.Println("err: ", err)
 	}

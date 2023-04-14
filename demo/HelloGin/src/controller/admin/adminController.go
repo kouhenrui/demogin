@@ -4,6 +4,8 @@ import (
 	"HelloGin/src/dto/reqDto"
 	"HelloGin/src/global"
 	"HelloGin/src/service/adminService"
+	"HelloGin/src/service/rbacService"
+	"HelloGin/src/service/userService"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -25,6 +27,11 @@ func Routers(e *gin.Engine) {
 		adminGroup.PUT("/permission/update", permissionUpdate)
 		adminGroup.DELETE("/permission/del", permissionDelete) //permission/del?id=8
 		adminGroup.GET("/permission/info", permissionInfo)     //permission/info?id=
+		//adminGroup.POST("/group/list", groupList)
+		//adminGroup.POST("/permission/add", permissionAdd)
+		//adminGroup.PUT("/permission/update", permissionUpdate)
+		//adminGroup.DELETE("/permission/del", permissionDelete) //permission/del?id=8
+		//adminGroup.GET("/permission/info", permissionInfo)     //permission/info?id=
 	}
 }
 
@@ -129,7 +136,8 @@ func userList(c *gin.Context) {
 		res.Error(http.StatusBadRequest, global.Translate(errs))
 		return
 	}
-	list := adminService.UserList(ls)
+	list := userService.UserList(ls)
+	//list := adminService.UserList(ls)
 	res.Success(list)
 	return
 }
@@ -138,7 +146,7 @@ func userList(c *gin.Context) {
 func permissionList(c *gin.Context) {
 	res := global.NewResult(c)
 	var ls reqDto.PermissionList
-	fmt.Println("请求体：", ls.Take, ls.Skip)
+	//fmt.Println("请求体：", ls.Take, ls.Skip)
 	if err := c.ShouldBindJSON(&ls); err != nil {
 		errs, ok := err.(validator.ValidationErrors)
 		fmt.Println("参数验证出错：", errs)
@@ -149,7 +157,11 @@ func permissionList(c *gin.Context) {
 		res.Error(http.StatusBadRequest, global.Translate(errs))
 		return
 	}
-	list := adminService.PermissionList(ls)
+	listerr, list := adminService.PermissionList(ls)
+	if listerr != nil {
+		res.Err(listerr)
+		return
+	}
 	res.Success(list)
 	return
 }
@@ -158,7 +170,6 @@ func permissionList(c *gin.Context) {
 func permissionAdd(c *gin.Context) {
 	res := global.NewResult(c)
 	var ls reqDto.PermissionAdd
-	fmt.Println(ls, &ls)
 	if err := c.BindJSON(&ls); err != nil {
 		errs, ok := err.(validator.ValidationErrors)
 		if !ok {
@@ -170,8 +181,12 @@ func permissionAdd(c *gin.Context) {
 		//c.Abort()
 		return
 	}
-	list := adminService.PermissionAdd(ls)
-	res.Success(list)
+	err := adminService.PermissionAdd(ls)
+	if err != nil {
+		res.Err(err)
+		return
+	}
+	res.Succ()
 	return
 }
 
@@ -179,8 +194,6 @@ func permissionAdd(c *gin.Context) {
 func permissionUpdate(c *gin.Context) {
 	res := global.NewResult(c)
 	var ls reqDto.PermissionUpdate
-	//id := c.Query("id")
-	//i, _ := strconv.Atoi(id)
 	if err := c.BindJSON(&ls); err != nil {
 		errs, ok := err.(validator.ValidationErrors)
 		if !ok {
@@ -190,8 +203,13 @@ func permissionUpdate(c *gin.Context) {
 		res.Error(http.StatusBadRequest, global.Translate(errs))
 		return
 	}
-	list := adminService.PermissionUpdate(ls)
-	res.Success(list)
+
+	err := rbacService.UpdatePermission(ls)
+	if err != nil {
+		res.Err(err)
+		return
+	}
+	res.Succ()
 	return
 }
 
@@ -222,3 +240,33 @@ func permissionInfo(c *gin.Context) {
 	res.Err(result)
 	return
 }
+
+/*
+ * @MethodName roleList
+ * @Description 角色列表
+ * @Author Acer
+ * @Date 2023/4/3 15:52
+ */
+
+func roleList(c *gin.Context) {
+	res := global.NewResult(c)
+	var rulereq reqDto.RuleList
+	if err := c.BindJSON(&rulereq); err != nil {
+		errs, ok := err.(validator.ValidationErrors)
+		if !ok {
+			res.Error(http.StatusBadRequest, err.Error())
+			//c.Abort()
+			return
+		}
+		res.Error(http.StatusBadRequest, global.Translate(errs))
+		//c.Abort()
+		return
+	}
+
+}
+
+/*角色增加*/
+
+/*组列表*/
+
+/*组增加*/

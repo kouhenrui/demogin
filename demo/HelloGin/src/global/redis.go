@@ -17,7 +17,7 @@ var (
 )
 
 func init() {
-	Cfg, _ := ini.Load("conf/conf.ini")
+	Cfg, _ := ini.Load("conf.ini")
 	var (
 		reAddr = Cfg.Section("redis").Key("address").String()
 		//rePwd  = Cfg.Section("mysql").Key("passWord").String()
@@ -40,5 +40,5 @@ func init() {
 		log.Printf("redis connect get failed.%v", err)
 		return
 	}
-	log.Printf("redis init success")
+	log.Printf("redis 初始化连接成功")
 }

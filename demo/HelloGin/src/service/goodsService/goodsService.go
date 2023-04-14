@@ -2,12 +2,16 @@ package goodsService
 
 import (
 	"HelloGin/src/dto/reqDto"
+	"HelloGin/src/dto/resDto"
 	"HelloGin/src/pojo"
 )
 
 // var goods=pojo.Goods{}
 var goodsServiceImpl = pojo.GoodsServiceImpl()
 
+var err error
+
+// 增加
 func GoodsAdd(add reqDto.GoodsAdd) error {
 	goods := pojo.Goods{
 		Name:        add.Name,
@@ -29,22 +33,28 @@ func GoodsAdd(add reqDto.GoodsAdd) error {
 		Status:      add.Status}
 	return goodsServiceImpl.GoodsAdd(goods)
 }
-func GoodsFindById(id int) (interface{}, error) {
-	//var info=resDto.GoodsInfo{}
-	info, err := goodsServiceImpl.GoodsById(uint(id))
+
+// 通过id查询
+func GoodsFindById(id int) (error, *resDto.GoodsInfo) {
+	var info = &resDto.GoodsInfo{}
+	err, info = goodsServiceImpl.GoodsById(uint(id))
 	if err != nil {
-		return nil, err
+		return err, nil
 	}
-	return info, nil
+	return nil, info
 }
 
-func GoodsFindByName(name string) (interface{}, error) {
-	info, err := goodsServiceImpl.GoodsByName(name)
+// 通过名称查询
+func GoodsFindByName(name string) (error, *resDto.GoodsInfo) {
+	var info = &resDto.GoodsInfo{}
+	err, info = goodsServiceImpl.GoodsByName(name)
 	if err != nil {
-		return nil, err
+		return err, nil
 	}
-	return info, nil
+	return nil, info
 }
+
+// 修改商品
 func GoodsUpdate(update reqDto.GoodsUpdate) error {
 	goods := pojo.Goods{
 		Name:        update.Name,
@@ -66,4 +76,14 @@ func GoodsUpdate(update reqDto.GoodsUpdate) error {
 		Status:      update.Status}
 	goods.ID = update.Id
 	return goodsServiceImpl.GoodsUpdate(goods)
+}
+
+// 列表
+func GoodsList(list reqDto.GoodsList) (error, *resDto.CommonList) {
+	var goodsList = &resDto.CommonList{}
+	err, goodsList = goodsServiceImpl.GoodsList(list)
+	if err != nil {
+		return err, nil
+	}
+	return nil, goodsList
 }
