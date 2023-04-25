@@ -9,11 +9,12 @@ import (
 
 func Routers(e *gin.Engine) {
 
-	asyncGroup := e.Group("/ync")
+	asyncGroup := e.Group("/api/ync")
 
 	async := NewAsyncController()
 	asyncGroup.POST("/async", async.asyncTest)
 	asyncGroup.POST("/sync", async.syncTest)
+	asyncGroup.GET("/test", async.test)
 
 }
 
@@ -38,6 +39,11 @@ func (g *AsyncController) asyncTest(c *gin.Context) {
 	//c.JSON(200, gin.H{"message": "success"})
 }
 func (g *AsyncController) syncTest(c *gin.Context) {
+	time.Sleep(3 * time.Second)
+	log.Println("同步执行" + c.Request.URL.Path)
+	c.JSON(200, gin.H{"message": "success"})
+}
+func (g *AsyncController) test(c *gin.Context) {
 	time.Sleep(3 * time.Second)
 	log.Println("同步执行" + c.Request.URL.Path)
 	c.JSON(200, gin.H{"message": "success"})

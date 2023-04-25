@@ -92,14 +92,26 @@ func registerAdmin(c *gin.Context) {
 		res.Error(http.StatusBadRequest, global.Translate(errs))
 		return
 	}
-	judje, result := adminService.AdminAdd(re)
-	if judje {
-		res.Success(result)
-		return
-	} else {
-		res.Err(result)
+	//异步线程操作
+	resErr := make(chan error)
+	resData := make(chan interface{})
+	go adminService.AdminAdd(re, resErr, resData)
+	endErr := <-resErr
+	endData := <-resData
+	if endErr != nil {
+		res.Err(endData)
 		return
 	}
+	res.Success(endData)
+	return
+	//judje, result := adminService.AdminAdd(re)
+	//if judje {
+	//	res.Success(result)
+	//	return
+	//} else {
+	//	res.Err(result)
+	//	return
+	//}
 }
 
 // 管理员列表

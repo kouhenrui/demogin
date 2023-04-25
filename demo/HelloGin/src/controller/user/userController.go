@@ -7,7 +7,6 @@ import (
 	"HelloGin/src/util"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 	"net/http"
 )
@@ -25,59 +24,6 @@ func Routers(e *gin.Engine) {
 
 }
 
-var trans ut.Translator
-
-// var userservice = userService.NewUserService()
-//var login = interf.LoginService()
-//var use pojo.User
-
-//	func rejisterUser(c *gin.Context) {
-//		result := global.NewResult(c)
-//		var add reqDto.AddUser
-//		if err := c.ShouldBindJSON(&add); err != nil {
-//			errs, ok := err.(validator.ValidationErrors)
-//			if !ok {
-//				result.DiyErr(http.StatusBadRequest, err.Error())
-//				return
-//			}
-//			result.DiyErr(http.StatusBadRequest, global.Translate(errs))
-//			return
-//		}
-//		//go func() {
-//		//	log.Println("信道传输开始")
-//		//	s := interf.Login(add.Account, add.Password)
-//		//	//
-//		//	a:=<-s
-//		//	if <-s { //读取信道
-//		//		result.DiyErr(http.StatusGatewayTimeout, util.NAME_AND_ACCOUNT_EXIST)
-//		//		return
-//		//	}
-//		//	log.Println("信道传输结束")
-//		//}()
-//		//log.Println("信道传输未开始")
-//		////生成16位随机字符串
-//		//salt := util.RandAllString()
-//		//pwd, pwderr := util.EnPwdCode(add.Password, salt)
-//		//if pwderr != nil {
-//		//	log.Println(pwderr, "打印错误")
-//		//	result.DiyErr(http.StatusBadRequest, pwderr)
-//		//	return
-//		//}
-//
-//		//go func() {
-//		//	b := userservice.AddUser(user)
-//		//	log.Println(<-b, "传输掺入信道输出参数true false")
-//		//	if <-b {
-//		//		result.DiyErr(http.StatusGatewayTimeout, util.NAME_AND_ACCOUNT_EXIST)
-//		//		return
-//		//	}
-//		//}()
-//
-//		token := util.SignToken()
-//		log.Println(token, "token")
-//		result.Success(gin.H{"token": token})
-//		return
-//	}
 func rejisterUser(c *gin.Context) {
 	res := global.NewResult(c)
 	var add reqDto.AddUser

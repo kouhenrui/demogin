@@ -5,6 +5,7 @@ import (
 	middleWare "HelloGin/src/middleware"
 	"HelloGin/src/util"
 	"github.com/gin-gonic/gin"
+	"github.com/unrolled/secure"
 	"log"
 	"net/http"
 )
@@ -18,17 +19,20 @@ func Include(opts ...Option) {
 }
 func InitRoute() *gin.Engine {
 	log.Println("路由初始化调用")
+	gin.ForceConsoleColor()
 	r := gin.New()
 	r.Use(Cors())                               //民间跨域
 	r.StaticFS("/img", http.Dir("./static"))    //加载静态资源，一般是上传的资源，例如用户上传的图片
 	r.StaticFS("/dynamic", http.Dir("./video")) //加载静态资源，一般是上传的资源，例如用户上传的图片
-	r.Use(middleWare.LoggerMiddleWare())        //日志中间件
-	r.Use(middleWare.GolbalMiddleWare())        //全局中间件
-	r.Use(middleWare.AuthMiddleWare())          //身份认证
-	r.Use(middleWare.Recover)                   //错误捕捉
-	r.NoRoute(HandleNotFound)                   //路由未找到
-	r.NoMethod(HandleNotAllowed)                //方法未找到
-	r.MaxMultipartMemory = 64 << 20             //64Mb
+	//r.Use(TlsHandler())                         //转换为https协议
+	r.Use(middleWare.LoggerMiddleWare()) //日志中间件
+	r.Use(middleWare.GolbalMiddleWare()) //全局中间件
+	r.Use(middleWare.AuthMiddleWare())   //身份认证
+	r.Use(middleWare.Recover)            //错误捕捉
+	r.Use(gin.Recovery())                //系统提供的错误捕捉
+	r.NoRoute(HandleNotFound)            //路由未找到
+	r.NoMethod(HandleNotAllowed)         //方法未找到
+	r.MaxMultipartMemory = 64 << 20      //64Mb
 	for _, ii := range options {
 		ii(r)
 	} //挂载模块
@@ -64,6 +68,23 @@ func Cors() gin.HandlerFunc {
 		if method == "OPTIONS" {
 			c.AbortWithStatus(http.StatusNoContent)
 		}
+		c.Next()
+	}
+}
+
+func TlsHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		secureMiddleware := secure.New(secure.Options{
+			SSLRedirect: true,
+			SSLHost:     "localhost:8080",
+		})
+		err := secureMiddleware.Process(c.Writer, c.Request)
+
+		// If there was an error, do not continue.
+		if err != nil {
+			return
+		}
+
 		c.Next()
 	}
 }

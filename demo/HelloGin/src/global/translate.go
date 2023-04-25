@@ -13,12 +13,19 @@ import (
 	zh_translations "github.com/go-playground/validator/v10/translations/zh"
 )
 
+/*
+ * @MethodName
+ * @Description 转中文错误
+ * @Author khr
+ * @Date 2023/4/23 9:22
+ */
+
 var trans ut.Translator
 var Validate *validator.Validate
 
 var uni *ut.UniversalTranslator
 
-//参数验证，转中文
+// 参数验证，转中文
 func init() {
 	//修改gin框架中的validator
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
@@ -52,7 +59,7 @@ func init() {
 
 }
 
-//Translate 翻译错误信息
+// Translate 翻译错误信息
 func Translate(err error) map[string][]string {
 	var result = make(map[string][]string)
 	errors := err.(validator.ValidationErrors)

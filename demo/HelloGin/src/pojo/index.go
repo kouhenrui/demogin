@@ -20,7 +20,7 @@ var (
 	group     = &Group{}
 )
 
-func init() {
+func AutoMigrateinit() {
 	db.AutoMigrate(
 		user,
 		adminpojo,

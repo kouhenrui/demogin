@@ -130,7 +130,7 @@ func AdminList(list reqDto.AdminList) interface{} {
 }
 
 // 增加admin
-func AdminAdd(add reqDto.AddAdmin) (bool, interface{}) {
+func AdminAdd(add reqDto.AddAdmin, resErr chan error, resData chan interface{}) {
 	add.Salt = util.RandAllString()
 	var pwd = add.Password
 	//校验是否有密码，没有则为123456
@@ -145,7 +145,9 @@ func AdminAdd(add reqDto.AddAdmin) (bool, interface{}) {
 	if add.Name != "" {
 		_, err = adminServiceImpl.CheckByName(add.Name)
 		if err != nil {
-			return false, util.NAME_EXIST_ERROR
+			resErr <- err
+			resData <- util.NAME_EXIST_ERROR
+			//return false, util.NAME_EXIST_ERROR
 		}
 	}
 	if add.Name == "" {
@@ -153,7 +155,9 @@ func AdminAdd(add reqDto.AddAdmin) (bool, interface{}) {
 	}
 	_, err = adminServiceImpl.CheckByAccount(add.Account)
 	if err != nil {
-		return false, util.ACCOUNT_EXIST_ERROR
+		resErr <- err
+		resData <- util.ACCOUNT_EXIST_ERROR
+		//return false, util.ACCOUNT_EXIST_ERROR
 	}
 	ad := pojo.Admin{
 		Salt:     add.Salt,
@@ -163,9 +167,14 @@ func AdminAdd(add reqDto.AddAdmin) (bool, interface{}) {
 		Role:     add.Role}
 	err = adminServiceImpl.AddAdmin(ad)
 	if err != nil {
-		return true, util.ADD_SUCCESS
+
+		resErr <- err
+		resData <- util.ADD_ERROR
+		//return true, util.ADD_SUCCESS
 	} else {
-		return false, util.ADD_ERROR
+		resErr <- nil
+		resData <- util.ADD_SUCCESS
+		//return false, util.ADD_ERROR
 	}
 }
 

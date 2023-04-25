@@ -1,0 +1,13 @@
+time="2023-04-25 09:14:26" level=info Ip=127.0.0.1 Method=GET SpendTime="0 ms" body= message= path=/api/ws/connect proto=HTTP/1.1 query= status=200
+time="2023-04-25 09:58:34" level=info Ip=127.0.0.1 Method=GET SpendTime="0 ms" body= message= path=/api/ync/test proto=HTTP/2.0 query= status=200
+time="2023-04-25 09:59:06" level=info Ip=127.0.0.1 Method=GET SpendTime="3001 ms" body= message= path=/api/ync/test proto=HTTP/2.0 query= status=200
+time="2023-04-25 16:04:11" level=info Ip=127.0.0.1 Method=GET SpendTime="0 ms" body= message= path=/api/ws/connect proto=HTTP/1.1 query= status=200
+time="2023-04-25 16:08:41" level=info Ip=127.0.0.1 Method=GET SpendTime="0 ms" body= message= path=/api/ws/connect proto=HTTP/1.1 query= status=200
+time="2023-04-25 16:14:49" level=info Ip=127.0.0.1 Method=GET SpendTime="0 ms" body= message= path=/api/ws/connect proto=HTTP/1.1 query= status=200
+time="2023-04-25 16:15:33" level=info Ip=127.0.0.1 Method=GET SpendTime="0 ms" body= message= path=/api/ws/connect proto=HTTP/1.1 query= status=200
+time="2023-04-25 16:47:57" level=info Ip=127.0.0.1 Method=GET SpendTime="0 ms" body= message= path=/api/ws/connect proto=HTTP/1.1 query= status=200
+time="2023-04-25 16:48:42" level=info Ip=127.0.0.1 Method=GET SpendTime="0 ms" body= message= path=/api/ws/connect proto=HTTP/1.1 query= status=200
+time="2023-04-25 16:55:22" level=info Ip=127.0.0.1 Method=GET SpendTime="0 ms" body= message= path=/api/ws/connect proto=HTTP/1.1 query= status=200
+time="2023-04-25 16:56:09" level=info Ip=127.0.0.1 Method=GET SpendTime="0 ms" body= message= path=/api/ws/connect proto=HTTP/1.1 query= status=200
+time="2023-04-25 16:56:32" level=info Ip=127.0.0.1 Method=GET SpendTime="0 ms" body= message= path=/api/ws/connect proto=HTTP/1.1 query= status=200
+time="2023-04-25 16:57:43" level=info Ip=127.0.0.1 Method=GET SpendTime="0 ms" body= message= path=/api/ws/connect proto=HTTP/1.1 query= status=200

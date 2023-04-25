@@ -9,19 +9,19 @@ import (
 	"net/http"
 )
 
-type hub struct {
-	c map[*connection]bool
-	b chan []byte
-	r chan *connection
-	u chan *connection
-}
-
-var h = hub{
-	c: make(map[*connection]bool),
-	u: make(chan *connection),
-	b: make(chan []byte),
-	r: make(chan *connection),
-}
+//type hub struct {
+//	c map[*connection]bool
+//	b chan []byte
+//	r chan *connection
+//	u chan *connection
+//}
+//
+//var h = hub{
+//	c: make(map[*connection]bool),
+//	u: make(chan *connection),
+//	b: make(chan []byte),
+//	r: make(chan *connection),
+//}
 
 type connection struct {
 	ws   *websocket.Conn
@@ -38,6 +38,7 @@ type Data struct {
 }
 
 var user_list = []string{}
+var name = "test"
 
 func Routers(e *gin.Engine) {
 	wsGroup := e.Group("/api/ws")
@@ -166,10 +167,12 @@ func readMessages(conn *websocket.Conn, ch chan<- []byte) {
  */
 
 func writeMessages(conn *websocket.Conn, in <-chan []byte, out chan<- []byte) {
-	for message := range in {
-		// 将消息发送给客户端
-		out <- message
-	}
+	//message := global.Consumer(name)
+	//fmt.Println(message, "打印从rabbitmq队取得信息")
+	//for message := range in {
+	//	// 将消息发送给客户端
+	out <- []byte("message")
+	//}
 }
 
 /*
@@ -181,7 +184,8 @@ func writeMessages(conn *websocket.Conn, in <-chan []byte, out chan<- []byte) {
 
 func HandleMessage(message string, conn *websocket.Conn) {
 	fmt.Println(message)
-	conn.WriteMessage(websocket.TextMessage, []byte("Hello, client!"))
+	global.Producer(message, name)
+	conn.WriteMessage(websocket.TextMessage, []byte("websocket已发送信息到rabbitmq"))
 }
 
 /*

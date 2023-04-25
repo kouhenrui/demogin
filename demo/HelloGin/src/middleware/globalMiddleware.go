@@ -2,7 +2,6 @@ package middleWare
 
 import (
 	"HelloGin/src/global"
-	"HelloGin/src/logger"
 	"HelloGin/src/pojo"
 	"HelloGin/src/util"
 	"bytes"
@@ -116,7 +115,7 @@ func LoggerMiddleWare() gin.HandlerFunc {
 		clientIP := c.ClientIP()
 		method := c.Request.Method
 		url := c.Request.RequestURI
-		Log := logger.Logger.WithFields(
+		Log := global.Logger.WithFields(
 			logrus.Fields{
 				"SpendTime": spendTime,       //接口花费时间
 				"path":      url,             //请求路径
