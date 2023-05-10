@@ -3,18 +3,15 @@ package adminService
 import (
 	"HelloGin/src/dto/reqDto"
 	"HelloGin/src/dto/resDto"
-	"HelloGin/src/global"
 	"HelloGin/src/pojo"
 	"HelloGin/src/service/userService"
 	"HelloGin/src/util"
-	"fmt"
 )
 
 //type AdminService struct {
 //}
 
 var admin pojo.Admin
-var judge bool
 var err error
 var adminInfo = &resDto.AdminInfo{}
 var permissionInfo = &resDto.PermissionInfo{}
@@ -31,86 +28,86 @@ var (
 反射控制层登录参数，查询数据库账号是否相同，
 比对密码一致性，将用户信息存入jwt令牌中，签发令牌和过期时间
 */
-func AdminLogin(list reqDto.AdminLogin) (a bool, tokenAndExp interface{}) {
-	var ad = &pojo.Admin{}
-	switch list.Method {
-	case "name":
-		ad, err = adminServiceImpl.CheckByName(list.Name)
-	case "account":
-		ad, err = adminServiceImpl.CheckByAccount(list.Account)
-	default:
-		return false, util.METHOD_NOT_FILLED_ERROR
-	}
-	if err != nil {
-		return false, util.ACCOUT_NOT_EXIST_ERROR
-	}
-	pwd, deerr := util.DePwdCode(ad.Password, ad.Salt)
-	if deerr != nil {
-		return false, util.PASSWORD_RESOLUTION_ERROR
-	}
-	if pwd == "" {
-		return false, util.PASSWORD_RESOLUTION_ERROR
-	}
-	if pwd != list.Password {
-		return false, util.AUTH_LOGIN_PASSWORD_ERROR
-	}
-	_, role_name := roleServiceImpl.FindRoleName(uint(ad.Role))
-	existOldToken := util.ExistRedis(ad.AccessToken)
-	tokenKey := util.Rand6String6()
-	var token string
-	var exptime string
-	stringTokenData := util.UserClaims{
-		Id:       ad.ID,
-		Name:     ad.Name,
-		Account:  ad.Account,
-		Role:     ad.Role,
-		RoleName: role_name.Name,
-	}
-	switch list.Revoke {
-	case true:
-		if existOldToken {
-			util.DelRedis(ad.AccessToken) //清除token
-		}
-		token, exptime = util.SignToken(stringTokenData, global.AdminLoginTime*global.DayTime)
-		err = adminServiceImpl.UpdateToken(tokenKey, ad.ID)
-		if err != nil {
-			return false, util.AUTH_LOGIN_ERROR
-		}
-		redisDate := reqDto.LoginRedisDate{
-			Token: token,
-			Time:  exptime,
-		}
-		util.SetRedis(tokenKey, util.Marshal(redisDate), global.AdminLoginTime)
-		tokenAndExp = resDto.TokenAndExp{
-			token,
-			exptime,
-		}
-	case false:
-		if existOldToken {
-			tokenValue := util.GetRedis(ad.AccessToken)
-			mp := make(map[string]interface{})
-			_, cs := util.UnMarshal([]byte(tokenValue), &mp)
-			return true, cs
-		}
-		//token过期时
-		token, exptime = util.SignToken(stringTokenData, global.AdminLoginTime*global.DayTime)
-		err = adminServiceImpl.UpdateToken(tokenKey, ad.ID)
-		if err != nil {
-			return false, util.AUTH_LOGIN_ERROR
-		}
-		redisDate := reqDto.LoginRedisDate{
-			Token: token,
-			Time:  exptime,
-		}
-		util.SetRedis(tokenKey, util.Marshal(redisDate), global.AdminLoginTime)
-		tokenAndExp = resDto.TokenAndExp{
-			token,
-			exptime,
-		}
-		break
-	}
-	return true, tokenAndExp
-}
+//func AdminLogin(list reqDto.AdminLogin) (a bool, tokenAndExp interface{}) {
+//	var ad = &pojo.Admin{}
+//	switch list.Method {
+//	case "name":
+//		ad, err = adminServiceImpl.CheckByName(list.Name)
+//	case "account":
+//		ad, err = adminServiceImpl.CheckByAccount(list.Account)
+//	default:
+//		return false, util.METHOD_NOT_FILLED_ERROR
+//	}
+//	if err != nil {
+//		return false, util.ACCOUT_NOT_EXIST_ERROR
+//	}
+//	pwd, deerr := util.DePwdCode(ad.Password, ad.Salt)
+//	if deerr != nil {
+//		return false, util.PASSWORD_RESOLUTION_ERROR
+//	}
+//	if pwd == "" {
+//		return false, util.PASSWORD_RESOLUTION_ERROR
+//	}
+//	if pwd != list.Password {
+//		return false, util.AUTH_LOGIN_PASSWORD_ERROR
+//	}
+//	_, role_name := roleServiceImpl.FindRoleName(uint(ad.Role))
+//	existOldToken := util.ExistRedis(ad.AccessToken)
+//	tokenKey := util.Rand6String6()
+//	var token string
+//	var exptime string
+//	stringTokenData := util.UserClaims{
+//		Id:       ad.ID,
+//		Name:     ad.Name,
+//		Account:  ad.Account,
+//		Role:     ad.Role,
+//		RoleName: role_name.Name,
+//	}
+//	switch list.Revoke {
+//	case true:
+//		if existOldToken {
+//			util.DelRedis(ad.AccessToken) //清除token
+//		}
+//		token, exptime = util.SignToken(stringTokenData, global.AdminLoginTime*global.DayTime)
+//		err = adminServiceImpl.UpdateToken(tokenKey, ad.ID)
+//		if err != nil {
+//			return false, util.AUTH_LOGIN_ERROR
+//		}
+//		redisDate := reqDto.LoginRedisDate{
+//			Token:   token,
+//			Exptime: exptime,
+//		}
+//		util.SetRedis(tokenKey, util.Marshal(redisDate), global.AdminLoginTime)
+//		tokenAndExp = resDto.TokenAndExp{
+//			token,
+//			exptime,
+//		}
+//	case false:
+//		if existOldToken {
+//			tokenValue := util.GetRedis(ad.AccessToken)
+//			mp := make(map[string]interface{})
+//			_, cs := util.UnMarshal([]byte(tokenValue), &mp)
+//			return true, cs
+//		}
+//		//token过期时
+//		token, exptime = util.SignToken(stringTokenData, global.AdminLoginTime*global.DayTime)
+//		err = adminServiceImpl.UpdateToken(tokenKey, ad.ID)
+//		if err != nil {
+//			return false, util.AUTH_LOGIN_ERROR
+//		}
+//		redisDate := reqDto.LoginRedisDate{
+//			Token:   token,
+//			Exptime: exptime,
+//		}
+//		util.SetRedis(tokenKey, util.Marshal(redisDate), global.AdminLoginTime)
+//		tokenAndExp = resDto.TokenAndExp{
+//			token,
+//			exptime,
+//		}
+//		break
+//	}
+//	return true, tokenAndExp
+//}
 
 func AdminInfo(id int, name string) (bool, *resDto.AdminInfo) {
 	//var adminInfo = resDto.AdminInfo{}
@@ -123,10 +120,16 @@ func AdminInfo(id int, name string) (bool, *resDto.AdminInfo) {
 }
 
 // 分页模糊查询管理员
-func AdminList(list reqDto.AdminList) interface{} {
+func AdminList(list reqDto.AdminList, resErr chan error, resData chan interface{}) {
+	reslist := &resDto.CommonList{}
+	reslist, err = adminServiceImpl.AdminList(list)
+	if err != nil {
+		resErr <- err
+	}
+	resData <- reslist
 	//res := adminServiceImpl.AdminList(list)
-	fmt.Println("adminlist:", "res")
-	return "res"
+	//fmt.Println("adminlist:", "res")
+	//return "res"
 }
 
 // 增加admin

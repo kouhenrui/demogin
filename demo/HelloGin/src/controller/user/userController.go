@@ -15,56 +15,107 @@ func Routers(e *gin.Engine) {
 
 	userGroup := e.Group("/api/user")
 	{
-		userGroup.POST("/login", userLogin)
+		userGroup.POST("/login", newLogin)
+		userGroup.POST("/sign", signUser)
 		userGroup.GET("/info", getUserInfo)
 		userGroup.POST("/post/message", postMessage)
 		userGroup.PUT("/put/user", updateUser)
-		userGroup.POST("/register/user", rejisterUser)
+		//userGroup.POST("/register", rejisterUser)
 	}
 
 }
 
-func rejisterUser(c *gin.Context) {
-	res := global.NewResult(c)
-	var add reqDto.AddUser
-	if err := c.BindJSON(&add); err != nil {
+/*
+ * @MethodName newLogin
+ * @Description 支持手机号,密码,图形验证码或者手机号,短信验证码
+ * @Author khr
+ * @Date 2023/5/8 9:46
+ */
+
+func newLogin(c *gin.Context) {
+	//res := global.NewResult(c)
+	var loginDto reqDto.NewUserLogin
+	if err := c.BindJSON(&loginDto); err != nil {
 		errs, ok := err.(validator.ValidationErrors)
 		if !ok {
-			res.Error(http.StatusInternalServerError, err.Error())
+			c.Error(err)
 			return
 		}
-		res.Error(http.StatusBadRequest, global.Translate(errs))
+		c.Error(errs)
 		return
 	}
-	bol, msg := userService.UserRejist(add)
-	if !bol {
-		res.Err(msg)
+
+	// 建立WaitGroup
+	//wg := sync.WaitGroup{}
+	//wg.Add(1)
+	//userLoginErr := make(chan error)
+	//userLoginData := make(chan resDto.TokenAndExp)
+	endErr, endData := userService.NewUserLogin(loginDto)
+	fmt.Println(endErr, endData)
+	if endErr != nil {
+		c.Error(endErr)
 		return
 	}
-	res.Success(msg)
-	return
 }
-func userLogin(c *gin.Context) {
-	res := global.NewResult(c)
-	var js reqDto.UserLogin
-	if err := c.BindJSON(&js); err != nil {
+
+/*
+ * @MethodName signUser
+ * @Description 手机号,密码图片验证
+ * @Author khr
+ * @Date 2023/5/8 14:01
+ */
+
+func signUser(c *gin.Context) {
+	var sign reqDto.SignUser
+	if err := c.BindJSON(&sign); err != nil {
 		errs, ok := err.(validator.ValidationErrors)
 		if !ok {
-			res.Error(http.StatusBadRequest, err.Error())
+			c.Error(err)
 			return
 		}
-		res.Error(http.StatusBadRequest, global.Translate(errs))
+		c.Error(errs)
 		return
 	}
-	bol, msg := userService.UserLogin(js)
-	if !bol {
-		res.Err(msg)
+	err, res := userService.UserSin(sign)
+	if err != nil {
+		c.Error(err)
 		return
 	}
-	res.Success(msg)
-	return
-
+	c.Set("res", res)
 }
+
+//func rejisterUser(c *gin.Context) {
+//	res := global.NewResult(c)
+//	var add reqDto.AddUser
+//	if err := c.BindJSON(&add); err != nil {
+//		errs, ok := err.(validator.ValidationErrors)
+//		if !ok {
+//			res.Error(http.StatusInternalServerError, err.Error())
+//			return
+//		}
+//		res.Error(http.StatusBadRequest, global.Translate(errs))
+//		return
+//	}
+//	resErr := make(chan error)
+//	resData := make(chan string)
+//	go userService.UserRejist(add, resErr, resData)
+//	endErr := <-resErr
+//	endData := <-resData
+//	if endErr != nil {
+//		res.Err(endData)
+//		return
+//	}
+//	res.Success(endData)
+//	return
+//	//bol, msg := userService.UserRejist(add)
+//	//if !bol {
+//	//	res.Err(msg)
+//	//	return
+//	//}
+//	//res.Success(msg)
+//	//return
+//}
+
 func postMessage(c *gin.Context) {
 	types := c.DefaultPostForm("type", "post")
 	name := c.PostForm("name")

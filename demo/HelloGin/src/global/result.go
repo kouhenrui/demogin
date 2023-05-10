@@ -1,6 +1,7 @@
 package global
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -53,6 +54,7 @@ func (r *Result) Err(msg interface{}) {
 	res.Code = 700
 	res.Msg = msg
 	res.Data = gin.H{}
+	fmt.Println("mag", res.Msg)
 	r.Ctx.JSON(res.Code, res)
 }
 

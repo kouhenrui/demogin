@@ -4,7 +4,6 @@ import (
 	"HelloGin/src/dto/reqDto"
 	"HelloGin/src/dto/resDto"
 	"HelloGin/src/pojo"
-	"HelloGin/src/util"
 	"fmt"
 )
 
@@ -98,7 +97,7 @@ func UpdatePermission(permission reqDto.PermissionUpdate) error {
 		AllowAnyone:     permission.AllowAnyone,
 	}
 	fmt.Println(":到达转换点")
-	util.DtoToStruct(permission, pojo.Permission{})
+	//util.DtoToStruct(permission, pojo.Permission{})
 	per.ID = permission.ID
 	return permissionServiceImpl.SavePermission(per)
 }

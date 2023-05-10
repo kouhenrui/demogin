@@ -9,6 +9,6 @@ type TokenDate struct {
 	AccessToken string `json:"access_token,omitempty"`
 }
 type LoginRedisDate struct {
-	Token string `json:"token"`
-	Time  string `json:"time"`
+	Token   string `json:"token"`
+	Exptime string `json:"exptime"`
 }

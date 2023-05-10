@@ -3,9 +3,7 @@ package pojo
 import (
 	"HelloGin/src/dto/resDto"
 	"HelloGin/src/global"
-	"gorm.io/gorm"
 	"log"
-	"time"
 )
 
 // 数据库生成表
@@ -20,7 +18,7 @@ var (
 	group     = &Group{}
 )
 
-func AutoMigrateinit() {
+func init() {
 	db.AutoMigrate(
 		user,
 		adminpojo,
@@ -31,9 +29,9 @@ func AutoMigrateinit() {
 	log.Printf("表结构同步成功")
 }
 
-type Base struct {
-	ID        uint           `gorm:"primaryKey;autoIncrement" json:"ID,omitempty"`
-	CreatedAt time.Time      `json:"created_at"`
-	UpdatedAt time.Time      `json:"updated_at"`
-	DeletedAt gorm.DeletedAt `gorm:"index"`
-}
+//type Base struct {
+//	ID        uint           `gorm:"primaryKey;autoIncrement" json:"ID,omitempty"`
+//	CreatedAt time.Time      `json:"created_at"`
+//	UpdatedAt time.Time      `json:"updated_at"`
+//	DeletedAt gorm.DeletedAt `gorm:"index"`
+//}

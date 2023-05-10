@@ -49,7 +49,7 @@ func Dbinit() {
 	sqlDB.SetMaxIdleConns(20)                  //连接池最大允许的空闲连接数，如果没有sql任务需要执行的连接数大于20，超过的连接会被连接池关闭。
 	sqlDB.SetConnMaxIdleTime(30 * time.Minute) //设置30秒重连
 
-	log.Printf("数据库初始化连接成功")
+	log.Printf("mysql初始化连接成功")
 	//自动生成表
 	//Db.AutoMigrate()
 	//pojo.AutoMigrateinit()

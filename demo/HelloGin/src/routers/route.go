@@ -25,14 +25,18 @@ func InitRoute() *gin.Engine {
 	r.StaticFS("/img", http.Dir("./static"))    //加载静态资源，一般是上传的资源，例如用户上传的图片
 	r.StaticFS("/dynamic", http.Dir("./video")) //加载静态资源，一般是上传的资源，例如用户上传的图片
 	//r.Use(TlsHandler())                         //转换为https协议
-	r.Use(middleWare.LoggerMiddleWare()) //日志中间件
 	r.Use(middleWare.GolbalMiddleWare()) //全局中间件
-	r.Use(middleWare.AuthMiddleWare())   //身份认证
-	r.Use(middleWare.Recover)            //错误捕捉
-	r.Use(gin.Recovery())                //系统提供的错误捕捉
-	r.NoRoute(HandleNotFound)            //路由未找到
-	r.NoMethod(HandleNotAllowed)         //方法未找到
-	r.MaxMultipartMemory = 64 << 20      //64Mb
+	r.Use(middleWare.LoggerMiddleWare()) //日志中间件
+	r.Use(middleWare.IPInterceptor())    //请求限制
+
+	//r.Use(middleWare.AuthMiddleWare())   //身份认证
+	//r.Use(middleWare.CasbinMiddleware(global.CasbinDb)) //casbin中间件
+	r.Use(middleWare.FormatResponse()) //统一返回格式
+	r.Use(middleWare.Recover)          //错误捕捉
+	r.Use(gin.Recovery())              //系统提供的错误捕捉
+	r.NoRoute(HandleNotFound)          //路由未找到
+	r.NoMethod(HandleNotAllowed)       //方法未找到
+	r.MaxMultipartMemory = 64 << 20    //64Mb
 	for _, ii := range options {
 		ii(r)
 	} //挂载模块

@@ -37,24 +37,24 @@ func Routers(e *gin.Engine) {
 
 // 登录接口
 func adminLogin(c *gin.Context) {
-	res := global.NewResult(c)
-	var js reqDto.AdminLogin
-	if err := c.BindJSON(&js); err != nil {
-		errs, ok := err.(validator.ValidationErrors)
-		if !ok {
-			res.Error(http.StatusBadRequest, err.Error())
-			return
-		}
-		res.Error(http.StatusBadRequest, global.Translate(errs))
-		return
-	}
-	jude, result := adminService.AdminLogin(js)
-	if !jude {
-		res.Err(result)
-		return
-	}
-	res.Success(result)
-	return
+	//res := global.NewResult(c)
+	//var js reqDto.AdminLogin
+	//if err := c.BindJSON(&js); err != nil {
+	//	errs, ok := err.(validator.ValidationErrors)
+	//	if !ok {
+	//		res.Error(http.StatusBadRequest, err.Error())
+	//		return
+	//	}
+	//	res.Error(http.StatusBadRequest, global.Translate(errs))
+	//	return
+	//}
+	//jude, result := adminService.AdminLogin(js)
+	//if !jude {
+	//	res.Err(result)
+	//	return
+	//}
+	//res.Success(result)
+	//return
 }
 
 // 登出
@@ -128,10 +128,22 @@ func adminList(c *gin.Context) {
 		res.Error(http.StatusBadRequest, global.Translate(errs))
 		return
 	}
-	list := adminService.AdminList(ls)
-	fmt.Println("list:", list)
-	res.Success(list)
+	//异步线程操作
+	resErr := make(chan error)
+	resData := make(chan interface{})
+	go adminService.AdminList(ls, resErr, resData)
+	endErr := <-resErr
+	endData := <-resData
+	if endErr != nil {
+		res.Err(endData)
+		return
+	}
+	res.Success(endData)
 	return
+	//list := adminService.AdminList(ls)
+	//fmt.Println("list:", list)
+	//res.Success(list)
+	//return
 
 }
 

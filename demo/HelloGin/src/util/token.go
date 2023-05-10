@@ -1,6 +1,7 @@
 package util
 
 import (
+	"HelloGin/src/dto/comDto"
 	"HelloGin/src/global"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
@@ -9,7 +10,6 @@ import (
 )
 
 var jwtkey = []byte(global.JWTKEY)
-var str string
 
 // var userInfo pojo.User
 type UserClaims struct {
@@ -22,11 +22,11 @@ type UserClaims struct {
 
 type AllClaims struct {
 	jwt.StandardClaims
-	User UserClaims
+	User comDto.TokenClaims
 }
 
-// 颁发token
-func SignToken(infoClaims UserClaims, day time.Duration) (string, string) {
+// 颁发token admin
+func SignToken(infoClaims comDto.TokenClaims, day time.Duration) (string, string) {
 	expireTime := time.Now().Add(day) //7天过期时间
 	claims := &AllClaims{
 		User: infoClaims,
@@ -37,9 +37,8 @@ func SignToken(infoClaims UserClaims, day time.Duration) (string, string) {
 			Subject:   "sign", //签名主题
 		},
 	}
-	fmt.Println(claims, "封装的信息")
+	//fmt.Println(claims, "封装的信息")
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	fmt.Println(token, "塞入的信息")
 	tokenString, err := token.SignedString(jwtkey)
 	if err != nil {
 		fmt.Println(err, "生成token错误")
@@ -59,7 +58,7 @@ func AnalysyToken(c *gin.Context) bool {
 }
 
 // 解析Token
-func ParseToken(tokenString string) UserClaims {
+func ParseToken(tokenString string) comDto.TokenClaims {
 	//claims := &Claims{}
 	//解析token
 	token, _ := jwt.ParseWithClaims(tokenString, &AllClaims{}, func(token *jwt.Token) (interface{}, error) {

@@ -18,18 +18,10 @@ import (
 var RabbitConn *amqp.Connection
 var RabbitChannel *amqp.Channel
 
-//var ProducerName string
-//var ConsumerName string
-
 func Mqinit() {
-	//fmt.Println(mqCon)
-	//Cfg, _ := ini.Load("conf.ini")
-	//var url = Cfg.Section("rabbitmq").Key("url").String()
-	//ProducerName = Cfg.Section("rabbitmq").Key("producername").String()
-	//ConsumerName = Cfg.Section("rabbitmq").Key("consumername").String()
 
 	var err error
-	RabbitConn, err = amqp.Dial(RabbitMQConfig.Url + "test")
+	RabbitConn, err = amqp.Dial(RabbitMQConfig.Url)
 	if err != nil {
 		log.Println("连接RabbitMQ失败")
 		panic(err)
@@ -43,7 +35,6 @@ func Mqinit() {
 }
 
 // // 0表示channel未关闭，1表示channel已关闭
-
 func CheckRabbitClosed(ch amqp.Channel) int64 {
 	d := reflect.ValueOf(ch)
 	i := d.FieldByName("closed").Int()

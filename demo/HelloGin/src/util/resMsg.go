@@ -48,6 +48,12 @@ const (
 	//权限错误
 	INSUFFICENT_PERMISSION     = "权限不足"
 	PERMISSION_NOT_FOUND_ERROR = "请求删除的权限未找到"
+	PERMISSION_ADD_SUCCESS     = "权限写入成功"
 
 	AUTHENTICATION_FAILED = "身份验证未通过"
+
+	//图片验证码
+	CAPTCHA_ERROR      = "图片验证码已过期"
+	VERIFY_CODE_ERROR  = "图片验证码错误"
+	SQL_NOT_EXIT_ERROR = "查询记录不存在"
 )

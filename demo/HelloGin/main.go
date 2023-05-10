@@ -2,8 +2,7 @@ package main
 
 import (
 	"HelloGin/src/controller/admin"
-	"HelloGin/src/controller/async"
-	"HelloGin/src/controller/upload"
+	"HelloGin/src/controller/com"
 	"HelloGin/src/controller/user"
 	"HelloGin/src/controller/ws"
 	"HelloGin/src/global"
@@ -13,19 +12,13 @@ import (
 )
 
 func main() {
-	routers.Include(upload.Routers, async.Routers, admin.Routers, ws.Routers, user.Routers)
+	//挂载路由
+	routers.Include(admin.Routers, ws.Routers, user.Routers, com.Routers)
+
+	//初始化路由器,加载中间件等
 	r := routers.InitRoute()
-	////读取ini配置文件
-	//Cfg, inierr := ini.Load("conf.ini")
-	//if inierr != nil {
-	//	fmt.Printf("Fail to read file: %v", inierr)
-	//	os.Exit(1)
-	//}
-	//fmt.Println(cfg.EdctConf.Address)
-	//port := Cfg.Section("server").Key("http_port").String()
-	//log.Printf("程序开始运行", port)
-	//serve:=r.
 	log.Printf("程序配置文件加载无误,开始运行")
+
 	var err error
 	if global.HttpVersion {
 		//http服务
