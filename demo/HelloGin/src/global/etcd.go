@@ -11,19 +11,18 @@ import (
 
 /**
  * @ClassName etcd
- * @Description TODO
+ * @Description 共享配置、服务发现、分布式锁
  * @Author khr
  * @Date 2023/4/25 13:56
  * @Version 1.0
  */
 
-var EtcdConn *clientv3.Client
+var EtcdClient *clientv3.Client
 
 // var RabbitChannel *clientv3.
 func EtcdInit() {
 	var err error
-	//url := "http://" + EtcdConfig.Host + ":" + EtcdConfig.Port
-	EtcdConn, err = clientv3.New(clientv3.Config{
+	EtcdClient, err = clientv3.New(clientv3.Config{
 		Endpoints:   EtcdArry,
 		DialTimeout: 5 * time.Second,
 	})
@@ -33,13 +32,13 @@ func EtcdInit() {
 		return
 	}
 	log.Printf("etcd连接成功")
-	defer EtcdConn.Close()
+	defer EtcdClient.Close()
 }
 
 func EtcdPut() {
 	var err error
 	ctx, cancel := c.WithTimeout(c.Background(), time.Second)
-	_, err = EtcdConn.Put(ctx, "lmh", "lmh")
+	_, err = EtcdClient.Put(ctx, "lmh", "lmh")
 	cancel()
 	if err != nil {
 		fmt.Printf("put to etcd failed, err:%v\n", err)
@@ -48,7 +47,7 @@ func EtcdPut() {
 }
 func EtcdGet() {
 	ctx, cancel := c.WithTimeout(c.Background(), time.Second)
-	resp, errWatch := EtcdConn.Get(ctx, "lmh")
+	resp, errWatch := EtcdClient.Get(ctx, "lmh")
 	cancel()
 	if errWatch != nil {
 		fmt.Printf("get from etcd failed, err:%v\n", errWatch)
@@ -62,7 +61,7 @@ func EtcdGet() {
 // watch key:lmh change
 func EtcdWatch() {
 
-	rch := EtcdConn.Watch(context.Background(), "lmh") // <-chan WatchResponse
+	rch := EtcdClient.Watch(context.Background(), "lmh") // <-chan WatchResponse
 	for wresp := range rch {
 		for _, ev := range wresp.Events {
 			fmt.Printf("Type: %s Key:%s Value:%s\n", ev.Type, ev.Kv.Key, ev.Kv.Value)

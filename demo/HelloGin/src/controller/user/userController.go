@@ -32,6 +32,13 @@ func Routers(e *gin.Engine) {
  * @Date 2023/5/8 9:46
  */
 
+// @Summary 登录
+// @Description 登录
+// @Tags 用户信息
+// @Param user body reqDto.NewUserLogin true "用户信息"
+// @Success 200 {Object} UserInfoResponse "返回结果"
+// @Failure 400 {Object} ErrorResponse "请求错误"
+// @Router /api/user/login [post]
 func newLogin(c *gin.Context) {
 	//res := global.NewResult(c)
 	var loginDto reqDto.NewUserLogin
@@ -56,6 +63,7 @@ func newLogin(c *gin.Context) {
 		c.Error(endErr)
 		return
 	}
+	c.Set("res", endData)
 }
 
 /*
@@ -124,6 +132,13 @@ func postMessage(c *gin.Context) {
 	c.String(http.StatusOK, fmt.Sprintf("name:%s ,pwd:%s,type:%s", name, pwd, types))
 }
 
+// @Summary 获取用户信息
+// @Description 获取指定用户的信息
+// @Tags 用户信息
+// @Param id path int true "用户ID"
+// @Success 200 {Object} UserInfoResponse "返回结果"
+// @Failure 400 {Object} ErrorResponse "请求错误"
+// @Router /api/user/{id} [get]
 func getUserInfo(c *gin.Context) {
 	res := global.NewResult(c)
 	user, _ := c.Get("user")

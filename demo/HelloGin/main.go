@@ -27,7 +27,7 @@ func main() {
 		}
 	} else {
 		//https服务
-		if err = r.RunTLS(global.Port, "https/server.crt", "https/server.key"); err != nil {
+		if err = r.RunTLS(global.Port, "https/certificate.crt", "https/private.key"); err != nil {
 			fmt.Errorf("端口占用,err:%v\n", err)
 		}
 	}

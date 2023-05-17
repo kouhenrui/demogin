@@ -1,7 +1,7 @@
 #端口号设置
 port: "8888"
 
-#设置http连接协议，1.0还是2.0 http https 布尔类型
+#设置http连接协议 http https 布尔类型 0为https 1为http
 protocol: 1
 
 #日志存放位置，以及名称限制
@@ -75,9 +75,3 @@ click:
   password: "123456"
 #oracle
 #oracle: ["system/system@192.168.245.22:1521/XE"]
-captcha:
-  height: 80
-  width: 240
-  length: 6
-  maxSkew: 0.7
-  dotCount: 80

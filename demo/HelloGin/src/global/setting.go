@@ -58,13 +58,6 @@ type LogCof struct {
 	LogPath  string `json:"logPath,omitempty" yaml:"logPath"`
 	LinkName string `json:"linkName,omitempty" yaml:"linkName"`
 }
-type aptcha struct {
-	Height   int     `json:"height,omitempty"`
-	Width    int     `json:"width,omitempty"`
-	Length   int     `json:"length,omitempty"`
-	MaxSkew  float64 `json:"maxSkew,omitempty"`
-	DotCount int     `json:"dotCount,omitempty"`
-}
 
 var (
 	Port           string
@@ -74,32 +67,31 @@ var (
 	LogConf        LogCof
 	CasbinConfig   casbinConnect
 	ClickConfig    clickConnect
-	CaptchaConf    aptcha
 	//CaptchaConfig base64Captcha.ConfigCharacter
 	//EtcdConfig     etcdConnect
-	ReuqestPaths = []string{"/api/user/.*", "/api/common/.*", "/api/ync/.*", "/api/ws/.*", "admin/login", "admin/register"}
+	ReuqestPaths = []string{"/api/user/.*", "/api/common/.*", "/api/ync/.*", "/api/ws/.*", "/api/swag/.*", "admin/login", "admin/register"}
 	PictureType  = []string{"jpg", "png", "gif", "bmp", "tif", "pcx", "tga", "exif", "fpx", "svg", "psd", "cdr", "pcd", "dxf", "ufo", "eps", "ai", "raw", "WMF", "webp", "avif", "apng"} //图片类型
 	VideoType    = []string{"avi", "wmv", "mpeg", "mp4", "m4v", "mov", "asf", "flv", "f4v", "rmvb", "rm", "3gp", "vob"}                                                                  // 视频格式
 	IpAccess     = []string{"127.0.0.1"}                                                                                                                                                 //不会被拦截的ip
-	RoleName     = []string{}
-	EtcdArry     = []string{}
-	KafkaArry    = []string{}
+	//RoleName     = []string{}
+	EtcdArry  = []string{}
+	KafkaArry = []string{}
 	//OracleConfig = []string{}
 	HttpVersion bool
 )
 
 const (
-	UserLoginTime         = 5
-	AdminLoginTime        = 7
-	JWTKEY                = "jefnuhUKEWFKU@#$%^2147639820"
-	LANGUAGE              = "zh"
-	DayTime               = 24 * time.Hour
-	FileMax        int64  = 2 << 20  //2Mb
-	VideoMax       int64  = 50 << 20 //50Mb
-	VideoPath      string = "dynamic"
-	FilePath       string = "static"
-	CaptchaTime           = 60
-
+	UserLoginTime           = 5
+	AdminLoginTime          = 7
+	JWTKEY                  = "jefnuhUKEWFKU@#$%^2147639820" //jwt加密密钥
+	LANGUAGE                = "zh"                           //传输语言
+	DayTime                 = 24 * time.Hour
+	FileMax          int64  = 2 << 20           //静态文件上传最大限制2Mb
+	VideoMax         int64  = 50 << 20          //动态文件上传最大限制50Mb
+	VideoPath        string = "dynamic"         //动态传输的地址
+	FilePath         string = "static"          //文件上传的地址
+	RedisReqLimitUrl        = "requestLimitUrl" //redis缓存接口请求超过限制的ip和请求路径名称
+	CaptchaTime             = 60
 	//RedisExp              = time.Hour
 	//JWTEXPTIME            = 7 * DayTime
 	//REDISJWTEXP           = 2
@@ -143,12 +135,11 @@ func viperLoadConf() {
 	logConfig := v.GetStringMap("log")
 
 	//读取mysql,redis,rabbitmq,casbin
-	mysql := v.GetStringMap("mysql")
-	redis := v.GetStringMap("redis")
-	mq := v.GetStringMap("rabbitmq")
-	cn := v.GetStringMap("casbin")
-	ck := v.GetStringMap("click")
-	ca := v.GetStringMap("captcha")
+	mysql := v.GetStringMap("mysql") //读取MySQL配置
+	redis := v.GetStringMap("redis") //读取redis配置
+	mq := v.GetStringMap("rabbitmq") //读取rabbitmq配置
+	cn := v.GetStringMap("casbin")   //读取casbin配置
+	ck := v.GetStringMap("click")    //读取click house配置
 	//map转struct
 	mapstructure.Decode(mysql, &MysqlConfig)
 	mapstructure.Decode(redis, &RedisConfig)
@@ -157,32 +148,19 @@ func viperLoadConf() {
 	mapstructure.Decode(cn, &CasbinConfig)
 	mapstructure.Decode(ck, &ClickConfig)
 
-	mapstructure.Decode(ca, &CaptchaConf)
+	//mapstructure.Decode(ca, &CaptchaConf)
 	etcd := v.GetStringSlice("etcd")
 	kafka := v.GetStringSlice("kafka")
 	//oracle := v.GetStringSlice("oracle")
 	EtcdArry = append(EtcdArry, etcd...)
 	KafkaArry = append(KafkaArry, kafka...)
-	//OracleConfig = append(OracleConfig, oracle...)
-	//设置超管
-	role := v.GetString("superadmin")
-	RoleName = append(RoleName, role)
-	// 创建验证码配置
-	// 设置验证码配置
-
-	//config.Height = 60
-	//config.Width = 240
-	//config.NoiseCount = 0
-	//config.ShowLineOptions = 0
-	//config.Mode = base64Captcha.CaptchaModeNumber
-	//config.CharPreset = "0123456789"
 	log.Printf("全局文件读取无误,开始载入")
-	Dbinit()
-	Redisinit()
-	Loginit()
-	CasbinInit()
-	OracleInit()
-	ClickhouseInit()
-	//EtcdInit()
-	//Mqinit()
+	Dbinit()         //mysql初始化
+	Redisinit()      //redis初始化
+	Loginit()        //日志初始化
+	CasbinInit()     //rbac初始化
+	OracleInit()     //Oracle初始化
+	ClickhouseInit() //click house初始化
+	EtcdInit()
+	Mqinit()
 }

@@ -34,7 +34,7 @@ func FuzzyMatch(param string, paths []string) bool {
 	for _, y := range paths {
 		if regexp.MustCompile(y).MatchString(param) {
 
-			fmt.Print("匹配道路进了")
+			//fmt.Print("匹配道路进了")
 			return true
 		}
 

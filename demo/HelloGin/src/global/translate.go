@@ -1,6 +1,7 @@
 package global
 
 import (
+	"log"
 	"reflect"
 	"strings"
 
@@ -56,6 +57,8 @@ func init() {
 			en_translations.RegisterDefaultTranslations(v, trans)
 		}
 	}
+
+	log.Printf("翻译初始化成功")
 
 }
 

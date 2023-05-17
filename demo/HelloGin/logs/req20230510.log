@@ -17,3 +17,4 @@ time="2023-05-10 16:09:27" level=info Ip=127.0.0.1 Method=GET SpendTime="11 ms" 
 time="2023-05-10 16:09:27" level=info Ip=127.0.0.1 Method=GET SpendTime="8 ms" body="{}" message= path=/api/common/captcha proto=HTTP/1.1 query= status=200
 time="2023-05-10 16:09:28" level=info Ip=127.0.0.1 Method=GET SpendTime="10 ms" body="{}" message= path=/api/common/captcha proto=HTTP/1.1 query= status=200
 time="2023-05-10 16:09:29" level=error Ip=127.0.0.1 Method=GET SpendTime="3 ms" body="{}" message= path=/api/common/captcha proto=HTTP/1.1 query= status=429
+time="2023-05-10 16:13:50" level=info Ip=127.0.0.1 Method=GET SpendTime="8 ms" body="{}" message= path=/api/common/captcha proto=HTTP/1.1 query= status=200

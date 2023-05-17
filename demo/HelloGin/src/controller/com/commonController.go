@@ -33,6 +33,8 @@ func Routers(e *gin.Engine) {
 		commonGroup.GET("/captcha", getCaptcha)
 		commonGroup.POST("/file", upload)
 		commonGroup.POST("/video", uploadVideo)
+		commonGroup.GET("/test/post", testPost)
+		commonGroup.GET("/test/get", testGet)
 	}
 }
 
@@ -51,11 +53,6 @@ func getCaptcha(c *gin.Context) {
 		return
 	}
 	c.Set("res", capt)
-
-	//if resData != nil {
-	//	res.Success(endData)
-	//	return
-	//}
 
 }
 
@@ -153,4 +150,35 @@ func uploadVideo(c *gin.Context) {
 	c.SaveUploadedFile(file, pa)
 	res.Success(file.Filename)
 	return
+}
+
+/*
+ * @MethodName etcdTest
+ * @Description 测试etcd连接，读取写入修改删除数据
+ * @Author khr
+ * @Date 2023/5/12 9:54
+ */
+func testPost(c *gin.Context) {
+	message := "这是测试交换机队列的测试信息"
+	proName := "duilie"
+	//c.Error(errors.New("这是错误"))
+	// 发布消息到队列
+	global.Producer(message, proName)
+
+	c.Set("res", "Message published successfully")
+	//global.EtcdPut()
+	//global.EtcdGet()
+
+}
+func testGet(c *gin.Context) {
+	//message := "这是一条测试信息"
+	proName := "duilie"
+	//c.Error(errors.New("这是错误"))
+	// 发布消息到队列
+	msg := global.Consumer(proName)
+
+	c.Set("res", msg)
+	//global.EtcdPut()
+	//global.EtcdGet()
+
 }

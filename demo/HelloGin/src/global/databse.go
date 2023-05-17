@@ -15,16 +15,6 @@ var Db *gorm.DB
 
 // 初始化链接
 func Dbinit() {
-	//fmt.Println("打印全局的连接选项", connect)
-	//Cfg, _ := ini.Load("conf.ini")
-	//var (
-	//	dbName     = Cfg.Section("mysql").Key("username").String()
-	//	dbPwd      = Cfg.Section("mysql").Key("passWord").String()
-	//	dbHost     = Cfg.Section("mysql").Key("host").String()
-	//	dbDatebase = Cfg.Section("mysql").Key("database").String()
-	//	dbCharset  = Cfg.Section("mysql").Key("charset").String()
-	//)
-	//
 	//dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=%s&parseTime=True&loc=Local", dbName, dbPwd, dbHost, dbDatebase, dbCharset) //&timeout=%s , MysqlConfig.TimeOut
 	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=%s&parseTime=True&loc=Local", MysqlConfig.UserName, MysqlConfig.PassWord, MysqlConfig.HOST, MysqlConfig.DATABASE, MysqlConfig.CHARSET)
 	//dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=%s&parseTime=True&loc=Local", MysqlConfig.UserName, MysqlConfig.PassWord, MysqlConfig.HOST, MysqlConfig.DATABASE, MysqlConfig.CHARSET) //&timeout=%s , MysqlConfig.TimeOut

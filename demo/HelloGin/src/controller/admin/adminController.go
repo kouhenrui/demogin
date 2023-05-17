@@ -38,23 +38,23 @@ func Routers(e *gin.Engine) {
 // 登录接口
 func adminLogin(c *gin.Context) {
 	//res := global.NewResult(c)
-	//var js reqDto.AdminLogin
-	//if err := c.BindJSON(&js); err != nil {
-	//	errs, ok := err.(validator.ValidationErrors)
-	//	if !ok {
-	//		res.Error(http.StatusBadRequest, err.Error())
-	//		return
-	//	}
-	//	res.Error(http.StatusBadRequest, global.Translate(errs))
-	//	return
-	//}
-	//jude, result := adminService.AdminLogin(js)
-	//if !jude {
-	//	res.Err(result)
-	//	return
-	//}
-	//res.Success(result)
-	//return
+	var lg reqDto.AdminLogin
+	if err := c.BindJSON(&lg); err != nil {
+		errs, ok := err.(validator.ValidationErrors)
+		if !ok {
+			c.Error(err)
+			return
+		}
+		c.Error(errs)
+		return
+	}
+	logerr, result := adminService.AdminLogin(lg)
+	if logerr != nil {
+		c.Error(logerr)
+		return
+	}
+	c.Set("res", result)
+	return
 }
 
 // 登出
@@ -66,30 +66,23 @@ func logout(c *gin.Context) {
 
 // 获取详情接口
 func getAdminInfo(c *gin.Context) {
-	res := global.NewResult(c)
 	id := c.GetInt("id")
 	name := c.GetString("name")
-	p, info := adminService.AdminInfo(id, name)
-	if p {
-		res.Success(info)
-		return
-	}
-	res.Err(info)
-	return
+	_, info := adminService.AdminInfo(id, name)
+
+	c.Set("res", info)
 }
 
 // 增加管理员接口
 func registerAdmin(c *gin.Context) {
-	fmt.Println("进入控制层")
-	res := global.NewResult(c)
 	var re reqDto.AddAdmin
 	if err := c.BindJSON(&re); err != nil {
 		errs, ok := err.(validator.ValidationErrors)
 		if !ok {
-			res.Error(http.StatusBadRequest, err.Error())
+			c.Error(err)
 			return
 		}
-		res.Error(http.StatusBadRequest, global.Translate(errs))
+		c.Error(errs)
 		return
 	}
 	//异步线程操作
@@ -99,11 +92,10 @@ func registerAdmin(c *gin.Context) {
 	endErr := <-resErr
 	endData := <-resData
 	if endErr != nil {
-		res.Err(endData)
+		c.Error(endErr)
 		return
 	}
-	res.Success(endData)
-	return
+	c.Set("res", endData)
 	//judje, result := adminService.AdminAdd(re)
 	//if judje {
 	//	res.Success(result)
@@ -116,16 +108,15 @@ func registerAdmin(c *gin.Context) {
 
 // 管理员列表
 func adminList(c *gin.Context) {
-	res := global.NewResult(c)
 	var ls reqDto.AdminList
 	fmt.Println("请求参数：", ls)
 	if err := c.BindJSON(&ls); err != nil {
 		errs, ok := err.(validator.ValidationErrors)
 		if !ok {
-			res.Error(http.StatusBadRequest, err.Error())
+			c.Error(err)
 			return
 		}
-		res.Error(http.StatusBadRequest, global.Translate(errs))
+		c.Error(errs)
 		return
 	}
 	//异步线程操作
@@ -135,11 +126,10 @@ func adminList(c *gin.Context) {
 	endErr := <-resErr
 	endData := <-resData
 	if endErr != nil {
-		res.Err(endData)
+		c.Error(endErr)
 		return
 	}
-	res.Success(endData)
-	return
+	c.Set("res", endData)
 	//list := adminService.AdminList(ls)
 	//fmt.Println("list:", list)
 	//res.Success(list)
@@ -168,26 +158,23 @@ func userList(c *gin.Context) {
 
 // 权限列表
 func permissionList(c *gin.Context) {
-	res := global.NewResult(c)
 	var ls reqDto.PermissionList
 	//fmt.Println("请求体：", ls.Take, ls.Skip)
-	if err := c.ShouldBindJSON(&ls); err != nil {
+	if err := c.BindJSON(&ls); err != nil {
 		errs, ok := err.(validator.ValidationErrors)
-		fmt.Println("参数验证出错：", errs)
 		if !ok {
-			res.Error(http.StatusBadRequest, err.Error())
+			c.Error(err)
 			return
 		}
-		res.Error(http.StatusBadRequest, global.Translate(errs))
+		c.Error(errs)
 		return
 	}
 	listerr, list := adminService.PermissionList(ls)
 	if listerr != nil {
-		res.Err(listerr)
+		c.Error(listerr)
 		return
 	}
-	res.Success(list)
-	return
+	c.Set("res", list)
 }
 
 // 权限增加

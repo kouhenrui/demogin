@@ -1,11 +1,11 @@
 package middleWare
 
 import (
+	"HelloGin/src/dto/comDto"
 	"HelloGin/src/global"
 	"HelloGin/src/util"
 	"bytes"
 	"fmt"
-	"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/time/rate"
@@ -17,7 +17,8 @@ import (
 	"time"
 )
 
-//var userInfo comDto.TokenClaims
+var ii comDto.TokenClaims
+
 //var permissionServiceImpl = pojo.RbacPermission()
 
 // 定义一个记录请求次数的map
@@ -26,8 +27,8 @@ var requestCounts = make(map[string]int)
 // 全局路由中间件检测token
 func GolbalMiddleWare() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		fmt.Println("身份认证开始执行")
-		t := time.Now()
+		fmt.Println("token认证开始执行")
+		//t := time.Now()
 		requestUrl := c.Request.URL.String()
 		//路径模糊匹配
 		if !util.FuzzyMatch(requestUrl, global.ReuqestPaths) {
@@ -37,11 +38,13 @@ func GolbalMiddleWare() gin.HandlerFunc {
 				c.AbortWithStatusJSON(http.StatusUnauthorized, util.NO_AUTHORIZATION)
 				return
 			}
+			ii = util.ParseToken(c.GetHeader("Authorization"))
+			c.Set("role_name", ii.RoleName)
 		}
 		c.Next()
-		ts := time.Since(t)
-		fmt.Println("time", ts)
-		fmt.Println("身份认证执行结束")
+		//ts := time.Since(t)
+		//fmt.Println("time", ts)
+		//fmt.Println("token认证执行结束")
 
 	}
 }
@@ -140,7 +143,7 @@ func IPInterceptor() gin.HandlerFunc {
 			c.Next()
 		}
 		path := c.Request.URL.Path
-		fmt.Println(ip, path)
+		//fmt.Println(ip, path)
 
 		// 组合出 key
 		key := fmt.Sprintf("request:%s:%s", ip, path)
@@ -167,6 +170,8 @@ func IPInterceptor() gin.HandlerFunc {
 		}
 		//ip一小时内访问路径超过次数限制，拒绝访问
 		if accessTime > 60 {
+			requestLimit := fmt.Sprintf("request:%s:%s", ip, path)
+			global.Redis.RPush(c, global.RedisReqLimitUrl, requestLimit)
 			c.AbortWithStatusJSON(http.StatusTooManyRequests, gin.H{"error": "too many requests"})
 			return
 		}
@@ -188,23 +193,36 @@ func IPInterceptor() gin.HandlerFunc {
 }
 
 // casbin中间件
-func CasbinMiddleware(e *casbin.Enforcer) gin.HandlerFunc {
-	//adapter := ginadapter.NewAdapter(e)
+func CasbinMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		fmt.Println("权限认证开始执行")
 		requestUrl := c.Request.URL.String()
-		reqUrl := strings.Split(requestUrl, "/api/")
-		paths := global.ReuqestPaths
-		pathIsExist := util.ExistIn(reqUrl[1], paths)
-		if !pathIsExist {
-			sub := c.Request.Header.Get("Authorization")
-			obj := c.Request.URL.Path
-			act := c.Request.Method
-			if ok, _ := e.Enforce(sub, obj, act); !ok {
-				c.AbortWithStatusJSON(403, gin.H{"error": "not authorized"})
-				return
+		if !util.FuzzyMatch(requestUrl, global.ReuqestPaths) {
+			reqUrl := strings.Split(requestUrl, "/api/")
+			paths := global.ReuqestPaths
+			pathIsExist := util.ExistIn(reqUrl[1], paths)
+			//fmt.Println("在开放权限")
+			if !pathIsExist {
+				fmt.Println("不在开放权限")
+				sub := "superadmin"
+				dom := ""
+				//sub, _ := c.Get("role_name")
+				obj := c.Request.URL.Path
+				act := c.Request.Method
+				ok, _ := global.CasbinDb.Enforce(sub, dom, obj, act)
+				fmt.Println("见电工出错", ok)
+				if !ok {
+					c.AbortWithStatusJSON(403, gin.H{"error": "not authorized"})
+					return
+				}
+
+				fmt.Println("可以访问")
+				c.Next()
 			}
-			c.Next()
 		}
+
+		c.Next()
+		//fmt.Println("权限认证执行结束")
 	}
 	//return func(next http.Handler) http.Handler {
 	//	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -238,8 +256,9 @@ func FormatResponse() gin.HandlerFunc {
 
 		// 判断是否有错误信息
 		if len(c.Errors) > 0 {
+			fmt.Println("出现错误", c.Errors.Last().Error())
 			// 返回错误信息
-			c.JSON(http.StatusInternalServerError, gin.H{
+			c.JSON(http.StatusOK, gin.H{
 
 				"code": http.StatusInternalServerError,
 				"msg":  c.Errors.Last().Error(),

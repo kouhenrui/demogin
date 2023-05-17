@@ -1,0 +1,32 @@
+time="2023-05-15 16:11:08" level=error Ip=127.0.0.1 Method=GET SpendTime="48 ms" body="{}" message= path=/api/common/test/etcd proto=HTTP/1.1 query= status=404
+time="2023-05-15 16:11:12" level=error Ip=127.0.0.1 Method=GET SpendTime="2 ms" body="{}" message= path=/api/common/test/etcd proto=HTTP/1.1 query= status=404
+time="2023-05-15 16:11:15" level=error Ip=127.0.0.1 Method=GET SpendTime="2 ms" body="{}" message= path=/api/common/test/etcd proto=HTTP/1.1 query= status=404
+time="2023-05-15 16:11:30" level=error msg="Error #01: 这是错误\n" Ip=127.0.0.1 Method=GET SpendTime="3 ms" body="{}" message="Error #01: 这是错误\n" path=/api/common/test proto=HTTP/1.1 query= status=500
+time="2023-05-15 16:11:30" level=error Ip=127.0.0.1 Method=GET SpendTime="3 ms" body="{}" message="Error #01: 这是错误\n" path=/api/common/test proto=HTTP/1.1 query= status=500
+time="2023-05-15 16:12:22" level=error Ip=127.0.0.1 Method=GET SpendTime="4 ms" body="{}" message= path=/api/common/test/e proto=HTTP/1.1 query= status=404
+time="2023-05-15 16:13:01" level=error Ip=127.0.0.1 Method=GET SpendTime="6 ms" body="{}" message= path=/api/common/test/e proto=HTTP/1.1 query= status=404
+time="2023-05-15 16:13:02" level=error Ip=127.0.0.1 Method=GET SpendTime="2 ms" body="{}" message= path=/api/common/test/e proto=HTTP/1.1 query= status=404
+time="2023-05-15 16:13:03" level=error Ip=127.0.0.1 Method=GET SpendTime="3 ms" body="{}" message= path=/api/common/test/e proto=HTTP/1.1 query= status=404
+time="2023-05-15 16:13:03" level=error Ip=127.0.0.1 Method=GET SpendTime="3 ms" body="{}" message= path=/api/common/test/e proto=HTTP/1.1 query= status=404
+time="2023-05-15 16:13:03" level=error Ip=127.0.0.1 Method=GET SpendTime="2 ms" body="{}" message= path=/api/common/test/e proto=HTTP/1.1 query= status=404
+time="2023-05-15 16:13:32" level=error Ip=127.0.0.1 Method=GET SpendTime="3 ms" body="{}" message= path=/api/common/test/e proto=HTTP/1.1 query= status=404
+time="2023-05-15 16:13:47" level=error Ip=127.0.0.1 Method=GET SpendTime="3 ms" body="{}" message= path=/api/common/test/e proto=HTTP/1.1 query= status=404
+time="2023-05-15 16:13:53" level=error Ip=127.0.0.1 Method=GET SpendTime="34 ms" body="{}" message= path=/api/common/test/e proto=HTTP/1.1 query= status=404
+time="2023-05-15 16:14:42" level=error Ip=127.0.0.1 Method=GET SpendTime="3 ms" body="{}" message= path=/api/common/test/e proto=HTTP/1.1 query= status=404
+time="2023-05-15 16:20:27" level=error Ip=127.0.0.1 Method=GET SpendTime="2 ms" body="{}" message= path=/api/common/test/e proto=HTTP/1.1 query= status=403
+time="2023-05-15 16:20:27" level=error Ip=127.0.0.1 Method=GET SpendTime="4 ms" body="{}" message= path=/api/common/test/e proto=HTTP/1.1 query= status=403
+time="2023-05-15 16:20:28" level=error Ip=127.0.0.1 Method=GET SpendTime="2 ms" body="{}" message= path=/api/common/test/e proto=HTTP/1.1 query= status=403
+time="2023-05-15 16:20:28" level=error Ip=127.0.0.1 Method=GET SpendTime="2 ms" body="{}" message= path=/api/common/test/e proto=HTTP/1.1 query= status=403
+time="2023-05-15 16:20:28" level=error Ip=127.0.0.1 Method=GET SpendTime="3 ms" body="{}" message= path=/api/common/test/e proto=HTTP/1.1 query= status=403
+time="2023-05-15 16:20:28" level=error Ip=127.0.0.1 Method=GET SpendTime="2 ms" body="{}" message= path=/api/common/test/e proto=HTTP/1.1 query= status=403
+time="2023-05-15 16:20:28" level=error Ip=127.0.0.1 Method=GET SpendTime="3 ms" body="{}" message= path=/api/common/test/e proto=HTTP/1.1 query= status=403
+time="2023-05-15 16:20:28" level=error Ip=127.0.0.1 Method=GET SpendTime="3 ms" body="{}" message= path=/api/common/test/e proto=HTTP/1.1 query= status=403
+time="2023-05-15 16:24:54" level=error Ip=127.0.0.1 Method=GET SpendTime="2 ms" body="{}" message= path=/api/common/test/e proto=HTTP/1.1 query= status=403
+time="2023-05-15 16:26:00" level=error Ip=127.0.0.1 Method=GET SpendTime="2 ms" body="{}" message= path=/api/common/test/e proto=HTTP/1.1 query= status=403
+time="2023-05-15 16:44:36" level=error Ip=127.0.0.1 Method=GET SpendTime="48 ms" body="{}" message= path=/api/common/test proto=HTTP/1.1 query= status=403
+time="2023-05-15 16:45:50" level=error Ip=127.0.0.1 Method=GET SpendTime="3 ms" body="{}" message= path=/api/common/test proto=HTTP/1.1 query= status=403
+time="2023-05-15 16:47:41" level=error Ip=127.0.0.1 Method=GET SpendTime="2 ms" body="{}" message= path=/api/common/test proto=HTTP/1.1 query= status=403
+time="2023-05-15 16:49:12" level=error msg="Error #01: 这是错误\n" Ip=127.0.0.1 Method=GET SpendTime="4 ms" body="{}" message="Error #01: 这是错误\n" path=/api/common/test proto=HTTP/1.1 query= status=200
+time="2023-05-15 16:49:12" level=info Ip=127.0.0.1 Method=GET SpendTime="4 ms" body="{}" message="Error #01: 这是错误\n" path=/api/common/test proto=HTTP/1.1 query= status=200
+time="2023-05-15 16:53:26" level=error msg="Error #01: 这是错误\n" Ip=127.0.0.1 Method=GET SpendTime="21 ms" body="{}" message="Error #01: 这是错误\n" path=/api/common/test proto=HTTP/1.1 query= status=200
+time="2023-05-15 16:53:26" level=info Ip=127.0.0.1 Method=GET SpendTime="21 ms" body="{}" message="Error #01: 这是错误\n" path=/api/common/test proto=HTTP/1.1 query= status=200

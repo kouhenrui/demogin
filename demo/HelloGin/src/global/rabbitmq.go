@@ -31,6 +31,20 @@ func Mqinit() {
 		log.Println("获取RabbitMQ channel失败")
 		panic(err)
 	}
+	// 声明交换机
+	err = RabbitChannel.ExchangeDeclare(
+		"my_exchange",       // 交换机名称
+		amqp.ExchangeDirect, // 交换机类型
+		true,                // 是否持久化
+		false,               // 是否自动删除
+		false,               // 是否内部使用
+		false,               // 是否等待服务器响应
+		nil,                 // 其他属性
+	)
+	if err != nil {
+		log.Fatalf("Failed to declare an exchange: %v", err)
+	}
+
 	fmt.Println("rabbitmq初始化连接成功")
 }
 
@@ -49,18 +63,29 @@ func Producer(message string, producerName string) {
 		log.Printf("声明队列 %v 失败, error: %v", producerName, err)
 		panic(err)
 	}
+	// 将队列绑定到交换机
+	err = RabbitChannel.QueueBind(
+		declare.Name,  // 队列名称
+		"",            // 绑定键
+		"my_exchange", // 交换机名称
+		false,         // 是否等待服务器响应
+		nil,           // 其他属性
+	)
+	if err != nil {
+		log.Fatalf("Failed to bind the queue to the exchange: %v", err)
+	}
 
 	//request := model.Request{}
 	marshal, _ := json.Marshal(message)
 	// exchange、routing key、mandatory、immediate
-	err = RabbitChannel.Publish("", declare.Name, false, false, amqp.Publishing{
+	err = RabbitChannel.Publish("my_exchange", declare.Name, false, false, amqp.Publishing{
 		ContentType: "text/plain",
 		Body:        []byte(marshal),
 	})
 	if err != nil {
-		log.Printf("生产者发送消息失败, error: %v", err)
+		fmt.Println("生产者发送消息失败, error: %v", err)
 	} else {
-		log.Println("生产者发送消息成功")
+		fmt.Println("生产者发送消息成功")
 	}
 }
 func Consumer(consumerName string) string {

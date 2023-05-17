@@ -1,10 +1,12 @@
 package routers
 
 import (
-	"HelloGin/src/global"
+	"HelloGin/docs"
 	middleWare "HelloGin/src/middleware"
 	"HelloGin/src/util"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	"github.com/swaggo/gin-swagger"
 	"github.com/unrolled/secure"
 	"log"
 	"net/http"
@@ -27,8 +29,17 @@ func InitRoute() *gin.Engine {
 	//r.Use(TlsHandler())                         //转换为https协议
 	r.Use(middleWare.GolbalMiddleWare()) //全局中间件
 	r.Use(middleWare.LoggerMiddleWare()) //日志中间件
-	r.Use(middleWare.IPInterceptor())    //请求限制
+	r.Use(middleWare.IPInterceptor())    //请求ip次数限制
+	r.Use(middleWare.CasbinMiddleware()) //使用casbin鉴权中间件
+	// 初始化 swag
+	docs.SwaggerInfo.Title = "gin swag"
+	docs.SwaggerInfo.Description = "Your API description"
+	docs.SwaggerInfo.Version = "1.0"
+	docs.SwaggerInfo.Host = "localhost:8888"
+	docs.SwaggerInfo.BasePath = "/"
+	docs.SwaggerInfo.Schemes = []string{"https"}
 
+	r.GET("/api/swag/*any", ginSwagger.WrapHandler(swaggerFiles.Handler)) // 注册swagger中间件
 	//r.Use(middleWare.AuthMiddleWare())   //身份认证
 	//r.Use(middleWare.CasbinMiddleware(global.CasbinDb)) //casbin中间件
 	r.Use(middleWare.FormatResponse()) //统一返回格式
@@ -46,14 +57,16 @@ func InitRoute() *gin.Engine {
 
 // 404
 func HandleNotFound(c *gin.Context) {
-	res := global.NewResult(c)
-	res.Error(http.StatusNotFound, util.RESOURCE_NOT_FOUND_ERROR)
+	c.JSON(http.StatusNotFound, gin.H{
+		"code": http.StatusNotFound, "msg": util.RESOURCE_NOT_FOUND_ERROR,
+	})
 	return
 }
 
 func HandleNotAllowed(c *gin.Context) {
-	res := global.NewResult(c)
-	res.Error(http.StatusMethodNotAllowed, util.REQUEST_METHOD_NOT_ALLOWED_ERROE)
+	c.JSON(http.StatusMethodNotAllowed, gin.H{
+		"code": http.StatusMethodNotAllowed, "msg": util.REQUEST_METHOD_NOT_ALLOWED_ERROE,
+	})
 	return
 }
 

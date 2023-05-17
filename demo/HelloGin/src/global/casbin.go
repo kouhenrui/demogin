@@ -24,14 +24,14 @@ import (
  * @Author khr
  * @Date 2023/4/24 14:26
  */
-func check(e *casbin.Enforcer, sub, dom, obj, act string) {
-	ok, _ := e.Enforce(sub, dom, obj, act)
+func check(sub, obj, act string) {
+	ok, _ := CasbinDb.Enforce(sub, obj, act)
 
 	//fmt.Println(er, "err")
 	if ok {
-		fmt.Printf("%s CAN %s %s in %s\n", sub, act, obj, dom)
+		fmt.Printf("%s CAN %s %s in %s\n", sub, act, obj)
 	} else {
-		fmt.Printf("%s CANNOT %s %s in %s\n", sub, act, obj, dom)
+		fmt.Printf("%s CANNOT %s %s in %s\n", sub, act, obj)
 	}
 }
 func KeyMatchFunc(args ...interface{}) (interface{}, error) {
@@ -79,7 +79,7 @@ func CasbinInit() {
 	//check(e, "lili", "dev", "data2", "read")
 	//check(e, "dajun", "tenant1", "data1", "read")
 	//check(e, "dajun", "tenant2", "data2", "read")
-	//check(e, "root", "", "data2", "read")
+	check("superadmin", "", "")
 }
 
 // 正则匹配函数
