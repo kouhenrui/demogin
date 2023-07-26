@@ -16,7 +16,7 @@ import (
 var CronTesk *cron.Cron
 
 func init() {
-	CronTesk = cron.New()
+	//CronTesk = cron.New()
 
 	//CronTesk.AddFunc("0 * * * * *", addCron1)
 	////CronTesk.Start()

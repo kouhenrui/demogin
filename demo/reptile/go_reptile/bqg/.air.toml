@@ -1,0 +1,11 @@
+root = "."
+tmp_dir = "tmp"
+build_dir = "tmp/bin"
+exclude_dir = ["tmp", "vendor"]
+auto_clear = true
+
+[build]
+  cmd = "go build -o ./tmp/main.exe ."
+  watch = ["*.go"]
+  stdout_charset = "utf-8"
+
