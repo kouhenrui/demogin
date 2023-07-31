@@ -18,8 +18,8 @@ var (
 func Loginit() {
 	//Cfg, _ := ini.Load("conf.ini")
 	//var (
-	//	logPath  = Cfg.Section("server").Key("LogPath").String()
-	//	linkName = Cfg.Section("server").Key("LinkName").String()
+	//	logPath  = Cfg.Section("client").Key("LogPath").String()
+	//	linkName = Cfg.Section("client").Key("LinkName").String()
 	//)
 	// 写入日志文件
 	//logPath := "logs/req/log"         // 日志存放路径

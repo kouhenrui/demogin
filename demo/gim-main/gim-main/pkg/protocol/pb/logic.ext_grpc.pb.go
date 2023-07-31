@@ -209,7 +209,7 @@ func (c *logicExtClient) GetGroupMembers(ctx context.Context, in *GetGroupMember
 	return out, nil
 }
 
-// LogicExtServer is the server API for LogicExt service.
+// LogicExtServer is the client API for LogicExt service.
 // All implementations must embed UnimplementedLogicExtServer
 // for forward compatibility
 type LogicExtServer interface {

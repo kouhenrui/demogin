@@ -66,7 +66,7 @@ func (c *businessIntClient) GetUsers(ctx context.Context, in *GetUsersReq, opts 
 	return out, nil
 }
 
-// BusinessIntServer is the server API for BusinessInt service.
+// BusinessIntServer is the client API for BusinessInt service.
 // All implementations must embed UnimplementedBusinessIntServer
 // for forward compatibility
 type BusinessIntServer interface {

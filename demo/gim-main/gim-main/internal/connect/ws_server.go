@@ -24,7 +24,7 @@ var upgrader = websocket.Upgrader{
 // StartWSServer 启动WebSocket服务器
 func StartWSServer(address string) {
 	http.HandleFunc("/ws", wsHandler)
-	logger.Logger.Info("websocket server start")
+	logger.Logger.Info("websocket client start")
 	err := http.ListenAndServe(address, nil)
 	if err != nil {
 		panic(err)

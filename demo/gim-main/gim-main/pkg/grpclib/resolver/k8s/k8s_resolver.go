@@ -34,7 +34,7 @@ func GetK8sClient() (*kubernetes.Clientset, error) {
 	return k8sClientSet, nil
 }
 
-// 实现k8s地址解析，根据k8s的service的endpoints解析 比如，k8s:///namespace.server:port
+// 实现k8s地址解析，根据k8s的service的endpoints解析 比如，k8s:///namespace.client:port
 func init() {
 	resolver.Register(&k8sBuilder{})
 }
@@ -157,17 +157,17 @@ func (r *k8sResolver) updateState(isFromNew bool) error {
 	return nil
 }
 
-// parseTarget 对grpc的Endpoint进行解析，格式必须是：k8s:///namespace.server:port
+// parseTarget 对grpc的Endpoint进行解析，格式必须是：k8s:///namespace.client:port
 func parseTarget(target resolver.Target) (namespace string, service string, port string, err error) {
 	namespaceAndServerPort := strings.Split(target.Endpoint, ".")
 	if len(namespaceAndServerPort) != 2 {
-		err = errors.New("endpoint must is namespace.server:port")
+		err = errors.New("endpoint must is namespace.client:port")
 		return
 	}
 	namespace = namespaceAndServerPort[0]
 	serverAndPort := strings.Split(namespaceAndServerPort[1], ":")
 	if len(serverAndPort) != 2 {
-		err = errors.New("endpoint must is namespace.server:port")
+		err = errors.New("endpoint must is namespace.client:port")
 		return
 	}
 	service = serverAndPort[0]

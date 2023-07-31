@@ -44,7 +44,7 @@ func (c *connectIntClient) DeliverMessage(ctx context.Context, in *DeliverMessag
 	return out, nil
 }
 
-// ConnectIntServer is the server API for ConnectInt service.
+// ConnectIntServer is the client API for ConnectInt service.
 // All implementations must embed UnimplementedConnectIntServer
 // for forward compatibility
 type ConnectIntServer interface {

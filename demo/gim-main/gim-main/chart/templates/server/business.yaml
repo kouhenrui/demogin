@@ -5,20 +5,20 @@ metadata:
   name: business-deployment
   namespace: {{ $.Values.namespace }}
   labels:
-    app: {{ .Values.server.business.name }}
+    app: {{ .Values.client.business.name }}
 spec:
-  replicas: {{ .Values.server.logic.replicas }}
+  replicas: {{ .Values.client.logic.replicas }}
   selector:
     matchLabels:
-      app: {{ .Values.server.business.name }}
+      app: {{ .Values.client.business.name }}
   template:
     metadata:
       labels:
-        app: {{ .Values.server.business.name }}
+        app: {{ .Values.client.business.name }}
     spec:
       containers:
-        - name: {{ .Values.server.business.name }}
-          image: {{ .Values.server.business.image }}
+        - name: {{ .Values.client.business.name }}
+          image: {{ .Values.client.business.image }}
           imagePullPolicy: IfNotPresent     # 在kind中需要指定，不然会强制到远程拉取镜像，导致部署失败
           ports:
             - containerPort: 8000
@@ -41,13 +41,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.server.business.name }}
+  name: {{ .Values.client.business.name }}
   namespace: {{ $.Values.namespace }}
   labels:
-    app: {{ .Values.server.business.name }}  # 只有设置label,才能被服务发现找到
+    app: {{ .Values.client.business.name }}  # 只有设置label,才能被服务发现找到
 spec:
   selector:
-    app: {{ .Values.server.business.name }}
+    app: {{ .Values.client.business.name }}
   ports:
     - name: rpc
       protocol: TCP

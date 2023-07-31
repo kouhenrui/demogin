@@ -24,7 +24,7 @@ func main() {
 		c := make(chan os.Signal, 1)
 		signal.Notify(c, syscall.SIGTERM)
 		s := <-c
-		logger.Logger.Info("server stop", zap.Any("signal", s))
+		logger.Logger.Info("client stop", zap.Any("signal", s))
 		server.GracefulStop()
 	}()
 

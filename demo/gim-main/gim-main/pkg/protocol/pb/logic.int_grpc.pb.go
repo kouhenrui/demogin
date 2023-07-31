@@ -143,7 +143,7 @@ func (c *logicIntClient) ServerStop(ctx context.Context, in *ServerStopReq, opts
 	return out, nil
 }
 
-// LogicIntServer is the server API for LogicInt service.
+// LogicIntServer is the client API for LogicInt service.
 // All implementations must embed UnimplementedLogicIntServer
 // for forward compatibility
 type LogicIntServer interface {

@@ -77,7 +77,7 @@ func (c *businessExtClient) SearchUser(ctx context.Context, in *SearchUserReq, o
 	return out, nil
 }
 
-// BusinessExtServer is the server API for BusinessExt service.
+// BusinessExtServer is the client API for BusinessExt service.
 // All implementations must embed UnimplementedBusinessExtServer
 // for forward compatibility
 type BusinessExtServer interface {

@@ -39,9 +39,9 @@ func main() {
 		c := make(chan os.Signal, 1)
 		signal.Notify(c, syscall.SIGTERM)
 		s := <-c
-		logger.Logger.Info("server stop start", zap.Any("signal", s))
+		logger.Logger.Info("client stop start", zap.Any("signal", s))
 		_, _ = rpc.GetLogicIntClient().ServerStop(context.TODO(), &pb.ServerStopReq{ConnAddr: config.Config.ConnectLocalAddr})
-		logger.Logger.Info("server stop end")
+		logger.Logger.Info("client stop end")
 
 		server.GracefulStop()
 	}()

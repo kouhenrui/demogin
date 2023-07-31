@@ -144,7 +144,7 @@ func getUserInfo(c *gin.Context) {
 	user, _ := c.Get("user")
 	fmt.Println("request", user)
 	res.Success(gin.H{
-		"message": "hello gin",
+		"message": "proto gin",
 		"request": user,
 	})
 	return
