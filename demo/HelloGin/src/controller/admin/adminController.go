@@ -5,7 +5,6 @@ import (
 	"HelloGin/src/global"
 	"HelloGin/src/service/adminService"
 	"HelloGin/src/service/rbacService"
-	"HelloGin/src/service/userService"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -150,9 +149,9 @@ func userList(c *gin.Context) {
 		res.Error(http.StatusBadRequest, global.Translate(errs))
 		return
 	}
-	list := userService.UserList(ls)
+	//list := userService.UserList(ls)
 	//list := adminService.UserList(ls)
-	res.Success(list)
+	res.Success("list")
 	return
 }
 
